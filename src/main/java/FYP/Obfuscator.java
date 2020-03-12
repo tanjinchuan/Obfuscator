@@ -69,14 +69,20 @@ public class Obfuscator {
             //visit the nodes
             super.visit(md, arg);
             String s = md.getNameAsString();
-            if (s != "main") { //cannot change main method name
-                String newMethodName = "";
+            if (!s.equals("main")) { //cannot change main method name
+
+                String newMethodName = ""; 
+
+                
                 char [] firstLetters = new char[] {'l', 'I'};
                 //initialize first random character for new method name, first character cannot use '1'
+
+                //to initialize first charcter of new method name with either l or I
                 int random = rand.nextInt(2);
                 char firstChar = firstLetters[random];
                 newMethodName = newMethodName + firstChar;
                 
+                //loop to generate random method name (eg. l1l1lll1IIl)
                 for (int i = 0; i < numberofLetters; i++) {
                     int randomIndex = rand.nextInt(3);
                     char letter = letters[randomIndex];
@@ -118,8 +124,9 @@ public class Obfuscator {
                     }  
                 }
                 for (String s: split) {
-                    
+
                     newLine = newLine + " " + s;
+                    
                 }
                 //write to new Text
                 newText = newText + newLine + "\n";
