@@ -9,6 +9,8 @@ import java.io.*;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.TypeDeclaration;
+import com.github.javaparser.ast.body.BodyDeclaration;
 
 
 import com.github.javaparser.ast.comments.Comment;
@@ -26,21 +28,17 @@ public class Obfuscator {
         
         //save the method names into hash map
         ChangeMethodName c = new ChangeMethodName();
-        try {
-            System.out.println("Obfuscating Method Names...");
+        System.out.println("Obfuscating Method Names...");
             
-            //hardcoded file path, use your own to test
-            changeMethodNames("C:\\Users\\User\\Desktop\\test.java", "C:\\Users\\User\\Desktop\\testoutput.java");
-            System.out.println("Method Names Obfuscated!");
+        //hardcoded file path, use your own to test
+        changeMethodNames("C:\\Users\\User\\Desktop\\test.java", "C:\\Users\\User\\Desktop\\testoutput.java");
+        System.out.println("Method Names Obfuscated!");
 
             
             
-            refactorCode("C:\\Users\\User\\Desktop\\testoutput.java"); //help remove unnecessary spaces, make code look nice
-            System.out.println("Refactor complete");
+        refactorCode("C:\\Users\\User\\Desktop\\testoutput.java"); //help remove unnecessary spaces, make code look nice
+        System.out.println("Refactor complete");
 
-        } catch (IOException io) {
-        
-        }
         //have a hash map of method names
         //change the method names of test.java
 
@@ -194,7 +192,12 @@ public class Obfuscator {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static void getvairables(String inputFilePath) throws FileNotFoundException, IOException {
+        CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
+        for (TypeDeclaration<?> typeDec : cu.getTypes()){
+            for(BodyDeclaration<?> member: typeDec.getMembers()){
 
+            }
+        }
     }
 }
 
