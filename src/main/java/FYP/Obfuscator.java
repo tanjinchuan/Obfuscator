@@ -45,9 +45,13 @@ public class Obfuscator {
             System.out.println("Obfuscating Method Names...");
             
             //hardcoded file path, use your own to test
-            c.changeMethodNames("C:\\Users\\User\\Desktop\\test.java", "C:\\Users\\User\\Desktop\\testoutput.java");
-            
+            changeMethodNames("C:\\Users\\User\\Desktop\\test.java", "C:\\Users\\User\\Desktop\\testoutput.java");
             System.out.println("Method Names Obfuscated!");
+
+            
+            refactorCode("C:\\Users\\User\\Desktop\\testoutput.java"); //help remove unnecessary spaces, make code look nice
+            System.out.println("Refactor complete");
+
         } catch (IOException io) {
         
         }
@@ -57,7 +61,7 @@ public class Obfuscator {
 
         System.out.println("end");
     }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static class ChangeMethodName extends VoidVisitorAdapter<Void> {
         char [] letters = new char[] {'l', 'I', '1'};
         Random rand = new Random();
@@ -99,10 +103,13 @@ public class Obfuscator {
             
         }
 
-        public void changeMethodNames (String inputFilePath, String outputFilePath) throws FileNotFoundException, IOException {
+    }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        //Change method names
+        public static void changeMethodNames (String inputFilePath, String outputFilePath) throws FileNotFoundException, IOException {
             CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
             String newText = "";
-
             
             File inputFile = new File(inputFilePath);
 
@@ -118,32 +125,51 @@ public class Obfuscator {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
 
-                String[] split = line.split("\\s|(?=[(])|(?<=[.])"); 
+                String[] split = line.split("\\[s]|\\s|(?=[(])|(?<=[.])"); 
                 //(eg. public void setName(String s) will split into ["public","void", "setName", "(", "String", "s", ")"])
                 
                 String newLine = "";
+
+                //loop to check whether each seperated word is the method name, if it is, change to the new method name
                 for (int i = 0; i < split.length; i++) {
-                    
                     if(hash.containsKey(split[i])) {
                         split[i] = hash.get(split[i]);
                         //changes the method name to new value name
-                        //put back together the string
                     }  
                 }
-                for (String s: split) {
-                    newLine = newLine + " " + s;
-                }
-                //write to new Text
-                newText = newText + newLine + "\n";
 
+                //loop to add the code back into the line
+                for (int i = 0; i < split.length; i++) {
+                    
+                    newLine = newLine + split[i] + " ";
+                    
+                }
+                
+                //add the line into the new text of code
+                newText = newText + newLine + "\n";
+                
             }
+            //write the whole code into a new output file
             fw.write(newText);
             fw.close();
             scanner.close();
+            
         }
-    }
 
-    public void removeComments(String inputFilePath) throws FileNotFoundException, IOException {
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //help remove unecessary spaces in code
+    public static void refactorCode(String inputFilePath) throws FileNotFoundException, IOException{
+        CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
+        System.out.println(cu.toString());
+        File outputFile = new File(inputFilePath);
+        FileWriter fw = new FileWriter(outputFile, false);
+        fw.write(cu.toString());
+        fw.close();
+
+    }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Remove of comments
+    public static void removeComments(String inputFilePath) throws FileNotFoundException, IOException {
         System.out.println("Removing Comments");
         CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
 
@@ -159,42 +185,6 @@ public class Obfuscator {
         
     }
 
-    private static void copyFile(String inputDirectory, String outputDirectory) throws IOException{
-        InputStream is = null;
-        OutputStream os = null;
 
-        File source = new File(inputDirectory);
-        File dest = new File(outputDirectory);
-        try {
-            is = new FileInputStream(source);
-            os = new FileOutputStream(dest);
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = is.read(buffer)) > 0) {
-                os.write(buffer, 0, length);
-            }
-        } finally {
-            is.close();
-            os.close();
-        }
-
-    }
-
-    private static class FieldNamePrinter extends VoidVisitorAdapter<Void> {
-        @Override
-        public void visit(FieldDeclaration fd, Void arg) {
-            super.visit(fd, arg);
-            List<VariableDeclarator> nodes = fd.getVariables();
-            List<String> list = new ArrayList<String>();
-            for (VariableDeclarator v: nodes) {
-                list.add(v.toString());
-            }
-            for (String s: list) {
-                System.out.println("Variable names in class: " + s);
-            }
-            
-        }
-    }
-    
 }
 
