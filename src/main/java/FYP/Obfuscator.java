@@ -151,13 +151,20 @@ public class Obfuscator {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //help remove unecessary spaces in code
-    public static void refactorCode(String inputFilePath) throws FileNotFoundException, IOException{
-        CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
-        File outputFile = new File(inputFilePath);
-        FileWriter fw = new FileWriter(outputFile, false);
-        fw.write(cu.toString());
-        fw.close();
-
+    public static void refactorCode(String inputFilePath) {
+        try {
+            CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
+            File outputFile = new File(inputFilePath);
+            FileWriter fw = new FileWriter(outputFile, false);
+            fw.write(cu.toString());
+            fw.close();
+    
+        } catch (FileNotFoundException fe) {
+            System.out.println(fe.getMessage());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Remove of comments
