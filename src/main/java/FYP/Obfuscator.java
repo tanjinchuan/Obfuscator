@@ -3,33 +3,19 @@ package FYP;
 import java.io.FileInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+
 import java.util.*;
 import java.io.*;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.TypeDeclaration;
-import com.github.javaparser.ast.body.VariableDeclarator;
-import com.github.javaparser.ast.body.BodyDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
+
 
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
-import com.github.javaparser.ast.expr.*;
-
-import com.github.javaparser.resolution.types.ResolvedType;
-import com.github.javaparser.symbolsolver.JavaSymbolSolver;
-import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
-
-import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSolver;
-import com.google.common.io.Files;
-import com.github.javaparser.ast.Node;
 
 
 public class Obfuscator {
@@ -48,6 +34,7 @@ public class Obfuscator {
             changeMethodNames("C:\\Users\\User\\Desktop\\test.java", "C:\\Users\\User\\Desktop\\testoutput.java");
             System.out.println("Method Names Obfuscated!");
 
+            
             
             refactorCode("C:\\Users\\User\\Desktop\\testoutput.java"); //help remove unnecessary spaces, make code look nice
             System.out.println("Refactor complete");
@@ -160,7 +147,6 @@ public class Obfuscator {
     //help remove unecessary spaces in code
     public static void refactorCode(String inputFilePath) throws FileNotFoundException, IOException{
         CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
-        System.out.println(cu.toString());
         File outputFile = new File(inputFilePath);
         FileWriter fw = new FileWriter(outputFile, false);
         fw.write(cu.toString());
