@@ -1,6 +1,5 @@
 package FYP;
 
-import java.io.FileInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -94,52 +93,59 @@ public class Obfuscator {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         //Change method names
-        public static void changeMethodNames (String inputFilePath, String outputFilePath) throws FileNotFoundException, IOException {
-            CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
-            String newText = "";
-            
-            File inputFile = new File(inputFilePath);
-
-            VoidVisitor<?> methodNameVisitor = new ChangeMethodName();
-            methodNameVisitor.visit(cu, null);
-
-            Scanner scanner = new Scanner(inputFile);
-
-            //for output file
-            File outputFile = new File(outputFilePath);
-            FileWriter fw = new FileWriter(outputFile, false);
-
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-
-                String[] split = line.split("\\[s]|\\s|(?=[(])|(?<=[.])"); 
-                //(eg. public void setName(String s) will split into ["public","void", "setName", "(", "String", "s", ")"])
+        public static void changeMethodNames (String inputFilePath, String outputFilePath)  {
+            try {
+                CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
+                String newText = "";
                 
-                String newLine = "";
+                File inputFile = new File(inputFilePath);
 
-                //loop to check whether each seperated word is the method name, if it is, change to the new method name
-                for (int i = 0; i < split.length; i++) {
-                    if(hash.containsKey(split[i])) {
-                        split[i] = hash.get(split[i]);
-                        //changes the method name to new value name
-                    }  
-                }
+                VoidVisitor<?> methodNameVisitor = new ChangeMethodName();
+                methodNameVisitor.visit(cu, null);
 
-                //loop to add the code back into the line
-                for (int i = 0; i < split.length; i++) {
+                Scanner scanner = new Scanner(inputFile);
+
+                //for output file
+                File outputFile = new File(outputFilePath);
+                FileWriter fw = new FileWriter(outputFile, false);
+
+                while (scanner.hasNextLine()) {
+                    String line = scanner.nextLine();
+
+                    String[] split = line.split("\\[s]|\\s|(?=[(])|(?<=[.])"); 
+                    //(eg. public void setName(String s) will split into ["public","void", "setName", "(", "String", "s", ")"])
                     
-                    newLine = newLine + split[i] + " ";
+                    String newLine = "";
+
+                    //loop to check whether each seperated word is the method name, if it is, change to the new method name
+                    for (int i = 0; i < split.length; i++) {
+                        if(hash.containsKey(split[i])) {
+                            split[i] = hash.get(split[i]);
+                            //changes the method name to new value name
+                        }  
+                    }
+
+                    //loop to add the code back into the line
+                    for (int i = 0; i < split.length; i++) {
+                        
+                        newLine = newLine + split[i] + " ";
+                        
+                    }
+                    
+                    //add the line into the new text of code
+                    newText = newText + newLine + "\n";
                     
                 }
+                //write the whole code into a new output file
+                fw.write(newText);
+                fw.close();
+                scanner.close();
                 
-                //add the line into the new text of code
-                newText = newText + newLine + "\n";
-                
+            } catch (FileNotFoundException fe) {
+                System.out.println(fe.getMessage());
+            } catch (IOException e){
+                System.out.println(e.getMessage());
             }
-            //write the whole code into a new output file
-            fw.write(newText);
-            fw.close();
-            scanner.close();
             
         }
 
@@ -155,22 +161,33 @@ public class Obfuscator {
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Remove of comments
-    public static void removeComments(String inputFilePath) throws FileNotFoundException, IOException {
+    public static void removeComments(String inputFilePath) {
         System.out.println("Removing Comments");
-        CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
+        try {
+            CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
 
-        for (Comment c : cu.getComments()){
-            System.out.println(c);
-            c.remove();
+            for (Comment c : cu.getComments()){
+                System.out.println(c);
+                c.remove();
+            }
+            File inputFile = new File(inputFilePath);
+            String code = cu.toString();
+            FileWriter fw = new FileWriter(inputFile, false);
+            fw.write(code);
+            fw.close();
+             
+        } catch (FileNotFoundException fe){
+            System.out.println(fe.getMessage());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
-        File inputFile = new File(inputFilePath);
-        String code = cu.toString();
-        FileWriter fw = new FileWriter(inputFile, false);
-        fw.write(code);
-        fw.close();
-        
+           
     }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public static void getvairables(String inputFilePath) throws FileNotFoundException, IOException {
+
+    }
 }
 
