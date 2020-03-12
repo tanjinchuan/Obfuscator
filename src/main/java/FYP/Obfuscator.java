@@ -42,7 +42,12 @@ public class Obfuscator {
         //save the method names into hash map
         ChangeMethodName c = new ChangeMethodName();
         try {
-            c.changeMethodNames("C:\\Users\\User\\Desktop\\test.java");
+            System.out.println("Obfuscating Method Names...");
+            
+            //hardcoded file path, use your own to test
+            c.changeMethodNames("C:\\Users\\User\\Desktop\\test.java", "C:\\Users\\User\\Desktop\\testoutput.java");
+            
+            System.out.println("Method Names Obfuscated!");
         } catch (IOException io) {
         
         }
@@ -70,7 +75,6 @@ public class Obfuscator {
             super.visit(md, arg);
             String s = md.getNameAsString();
             if (!s.equals("main")) { //cannot change main method name
-
                 String newMethodName = ""; 
 
                 
@@ -95,10 +99,11 @@ public class Obfuscator {
             
         }
 
-        public void changeMethodNames (String inputFilePath) throws FileNotFoundException, IOException {
+        public void changeMethodNames (String inputFilePath, String outputFilePath) throws FileNotFoundException, IOException {
             CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
             String newText = "";
 
+            
             File inputFile = new File(inputFilePath);
 
             VoidVisitor<?> methodNameVisitor = new ChangeMethodName();
@@ -106,14 +111,16 @@ public class Obfuscator {
 
             Scanner scanner = new Scanner(inputFile);
 
-            FileWriter fw = new FileWriter(inputFile, true);
+            //for output file
+            File outputFile = new File(outputFilePath);
+            FileWriter fw = new FileWriter(outputFile, false);
 
-            System.out.println("Obfuscating Method Names...");
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
 
-                String[] split = line.split("\\s|(?=[(])|(?<=[.])");
-
+                String[] split = line.split("\\s|(?=[(])|(?<=[.])"); 
+                //(eg. public void setName(String s) will split into ["public","void", "setName", "(", "String", "s", ")"])
+                
                 String newLine = "";
                 for (int i = 0; i < split.length; i++) {
                     
@@ -124,9 +131,7 @@ public class Obfuscator {
                     }  
                 }
                 for (String s: split) {
-
                     newLine = newLine + " " + s;
-                    
                 }
                 //write to new Text
                 newText = newText + newLine + "\n";
@@ -135,7 +140,6 @@ public class Obfuscator {
             fw.write(newText);
             fw.close();
             scanner.close();
-            System.out.println("Method Names Obfuscated!");
         }
     }
 
@@ -173,11 +177,9 @@ public class Obfuscator {
             is.close();
             os.close();
         }
-      
-       
+
     }
 
-    
     private static class FieldNamePrinter extends VoidVisitorAdapter<Void> {
         @Override
         public void visit(FieldDeclaration fd, Void arg) {
