@@ -45,7 +45,7 @@ public class Obfuscator {
         //have a hash map of method names
         //change the method names of test.java
 
-        VoidVisitor<?> visitor = new ChangeVariableName();
+        VoidVisitor<?> visitor = new VariableNameVisitor();
         try {
             CompilationUnit cu = StaticJavaParser.parse(new File("C:\\Users\\User\\Desktop\\testoutput.java"));
             visitor.visit(cu, null);
@@ -57,7 +57,7 @@ public class Obfuscator {
         System.out.println("end");
     }
 
-    public static class ChangeVariableName extends VoidVisitorAdapter<HashMap<String, String>> {
+    public static class VariableNameVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
 
         @Override
         public void visit(VariableDeclarator vd, HashMap<String, String> variables) {
@@ -69,9 +69,16 @@ public class Obfuscator {
         }
     }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public static void changeVariableNames() {
+
+    }
+
+
+
    
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public static class ChangeMethodName extends VoidVisitorAdapter<HashMap<String, String>> {
+    public static class MethodNameVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
         //to get method names and put into hash map
         @Override
         public void visit(MethodDeclaration md, HashMap<String, String> hash) {
@@ -92,62 +99,62 @@ public class Obfuscator {
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        //Change method names
-        public static void changeMethodNames (String inputFilePath, String outputFilePath)  {
-            try {
-                CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
-                String newText = "";
+    //Change method names
+    public static void changeMethodNames (String inputFilePath, String outputFilePath)  {
+        try {
+            CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
+            String newText = "";
+            
+            File inputFile = new File(inputFilePath);
+            HashMap<String, String> hash = new HashMap<String, String>();
+            VoidVisitor<HashMap<String, String>> methodNameVisitor = new MethodNameVisitor();
+            methodNameVisitor.visit(cu, hash);
+
+            Scanner scanner = new Scanner(inputFile);
+
+            //for output file
+            File outputFile = new File(outputFilePath);
+            FileWriter fw = new FileWriter(outputFile, false);
+
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+
+                String[] split = line.split("\\[s]|\\s|(?=[(])|(?<=[.])"); 
+                //(eg. public void setName(String s) will split into ["public","void", "setName", "(", "String", "s", ")"])
                 
-                File inputFile = new File(inputFilePath);
-                HashMap<String, String> hash = new HashMap<String, String>();
-                VoidVisitor<HashMap<String, String>> methodNameVisitor = new ChangeMethodName();
-                methodNameVisitor.visit(cu, hash);
+                String newLine = "";
 
-                Scanner scanner = new Scanner(inputFile);
+                //loop to check whether each seperated word is the method name, if it is, change to the new method name
+                for (int i = 0; i < split.length; i++) {
+                    if(hash.containsKey(split[i])) {
+                        split[i] = hash.get(split[i]);
+                        //changes the method name to new value name
+                    }  
+                }
 
-                //for output file
-                File outputFile = new File(outputFilePath);
-                FileWriter fw = new FileWriter(outputFile, false);
-
-                while (scanner.hasNextLine()) {
-                    String line = scanner.nextLine();
-
-                    String[] split = line.split("\\[s]|\\s|(?=[(])|(?<=[.])"); 
-                    //(eg. public void setName(String s) will split into ["public","void", "setName", "(", "String", "s", ")"])
+                //loop to add the code back into the line
+                for (int i = 0; i < split.length; i++) {
                     
-                    String newLine = "";
-
-                    //loop to check whether each seperated word is the method name, if it is, change to the new method name
-                    for (int i = 0; i < split.length; i++) {
-                        if(hash.containsKey(split[i])) {
-                            split[i] = hash.get(split[i]);
-                            //changes the method name to new value name
-                        }  
-                    }
-
-                    //loop to add the code back into the line
-                    for (int i = 0; i < split.length; i++) {
-                        
-                        newLine = newLine + split[i] + " ";
-                        
-                    }
-                    
-                    //add the line into the new text of code
-                    newText = newText + newLine + "\n";
+                    newLine = newLine + split[i] + " ";
                     
                 }
-                //write the whole code into a new output file
-                fw.write(newText);
-                fw.close();
-                scanner.close();
                 
-            } catch (FileNotFoundException fe) {
-                System.out.println(fe.getMessage());
-            } catch (IOException e){
-                System.out.println(e.getMessage());
+                //add the line into the new text of code
+                newText = newText + newLine + "\n";
+                
             }
+            //write the whole code into a new output file
+            fw.write(newText);
+            fw.close();
+            scanner.close();
             
+        } catch (FileNotFoundException fe) {
+            System.out.println(fe.getMessage());
+        } catch (IOException e){
+            System.out.println(e.getMessage());
         }
+        
+    }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //help remove unecessary spaces in code
