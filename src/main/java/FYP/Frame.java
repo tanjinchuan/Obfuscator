@@ -2,11 +2,12 @@ package FYP;
 
 import java.io.*;
 import java.util.Hashtable;
+import java.util.Scanner;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
+import java.io.FileWriter;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -72,6 +73,10 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 			return false;
 		}
 	}
+	
+
+    
+	
 
 	/**
 	 * Create the application.
@@ -135,7 +140,6 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		advOptionsPanel.setLayout(null);
 		
 		JPanel progressBarPanel = new JPanel();
-		//progressBarPanel.setCloseable(false);
 		layeredPane.add(progressBarPanel, "name_593232346549900");
 		progressBarPanel.setLayout(null);
 		
@@ -156,7 +160,6 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		btnNextAdvOptions.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				switchPanel(progressBarPanel);
-				//////////////////////////////////////////////////////////////////////////////
 			}
 		});
 		btnNextAdvOptions.setBounds(620, 390, 97, 25);
@@ -171,35 +174,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		btnBackSliderPanel.setBounds(48, 380, 97, 25);
 		sliderOptionPanel.add(btnBackSliderPanel);
 		
-		JButton btnNextSliderPanel = new JButton("Next");
-		btnNextSliderPanel.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//start obsfuscation
-				switchPanel(progressBarPanel);
 
-				Obfuscator obfuscator = new Obfuscator();
-				try {
-					System.out.println("Obfuscating...");
-
-					//haven't implement boolean methods to check for obfusaction check box
-					//should have boolean methods here
-					//if
-					Obfuscator.ChangeMethodName i = new Obfuscator.ChangeMethodName();
-					i.changeMethodNames(inputTextfield.getText());
-					//end if
-					//if
-					obfuscator.removeComments(inputTextfield.getText());
-					//end if
-
-				} catch (FileNotFoundException fileExcep) {
-					System.out.println(fileExcep.getMessage());
-				} catch (IOException ioExcep){
-					System.out.println(ioExcep.getMessage());
-				}
-			}
-		});
-		btnNextSliderPanel.setBounds(608, 380, 148, 25);
-		sliderOptionPanel.add(btnNextSliderPanel);
 		
 		JButton btnAdvancedSettings = new JButton("Advanced settings");
 		btnAdvancedSettings.addActionListener(new ActionListener() {
@@ -341,14 +316,42 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 			}
 		});
 		
+		JButton btnNextSliderPanel = new JButton("Next");
+		btnNextSliderPanel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//write settings to settings file 
+				File file = new File ("./src/settings/easysettings.txt");
+				try {
+					FileWriter fr = new FileWriter(file);
+					
+					//-------fix
+					fr.write(Integer.toString(slider.getValue()));
+					fr.close();
+					
+					
+					//start obsfuscation
+					switchPanel(progressBarPanel);
+				}
+				catch (IOException e2)
+				{
+					e2.printStackTrace();
+				}
+				
+				
+			}
+		});
+		btnNextSliderPanel.setBounds(608, 380, 148, 25);
+		sliderOptionPanel.add(btnNextSliderPanel);
+		
 		JButton btnSliderDefaultSettings = new JButton("Save as default settings");
 		btnSliderDefaultSettings.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)  {
 				try {
 					File file = new File ("./src/settings/easysettings.txt");
 					if (file.createNewFile()) {
+						/*
 						Process p = Runtime.getRuntime().exec("attrib +H " + file.getPath());
-					   p.waitFor();
+					   p.waitFor();*/
 					}
 					
 					File file2 = new File ("./src/settings/advsettings.txt");
@@ -360,9 +363,6 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 				}
 				catch (IOException e1){
 					//handle error if file does not exist
-				}
-				catch (InterruptedException e2) {
-					//handle error
 				}
 			}
 		});
@@ -437,7 +437,16 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 				}
 				else if (file.exists())
 				{
-					switchPanel(sliderOptionPanel);
+					try {
+						Scanner scan = new Scanner(file);
+						int i = Integer.parseInt(scan.next());
+						slider.setValue(i);
+						switchPanel(sliderOptionPanel);
+					}
+					catch (FileNotFoundException e2)
+					{
+						e2.printStackTrace();
+					}
 				}
 					
 				
@@ -492,7 +501,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		            if (returnVal == JFileChooser.APPROVE_OPTION) {
 		                File file = fc.getSelectedFile();
 		                //This is where a real application would open the file.
-		                inputTextfield.setText(file.getAbsolutePath());
+		                inputTextfield.setText(file.getName());
 		                
 		                if (checkExt(file.getName()) == true) {
 		                	inputFileTypeLabel.setText("");
@@ -508,7 +517,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		
 		btnBrowseInitialPanel.setBounds(644, 124, 97, 25);
 		initialPanel.add(btnBrowseInitialPanel);
-
+		
 	}
 
 	@Override
