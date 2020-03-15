@@ -70,8 +70,18 @@ public class Obfuscator {
     }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void changeVariableNames() {
+    public static void changeVariableNames(String inputFilePath) {
+        try {
+            CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
+            HashMap<String, String> variables = new HashMap<String, String>();
 
+            VoidVisitorAdapter<HashMap<String, String>> variableNameVisitor = new VariableNameVisitor();
+            variableNameVisitor.visit(cu, variables); //saves the variables into hashmap
+
+        } catch (FileNotFoundException fe){
+            System.out.println(fe.getMessage());
+        }
+        
     }
 
 
@@ -106,9 +116,9 @@ public class Obfuscator {
             String newText = "";
             
             File inputFile = new File(inputFilePath);
-            HashMap<String, String> hash = new HashMap<String, String>();
+            HashMap<String, String> methods = new HashMap<String, String>();
             VoidVisitor<HashMap<String, String>> methodNameVisitor = new MethodNameVisitor();
-            methodNameVisitor.visit(cu, hash);
+            methodNameVisitor.visit(cu, methods);
 
             Scanner scanner = new Scanner(inputFile);
 
@@ -126,8 +136,8 @@ public class Obfuscator {
 
                 //loop to check whether each seperated word is the method name, if it is, change to the new method name
                 for (int i = 0; i < split.length; i++) {
-                    if(hash.containsKey(split[i])) {
-                        split[i] = hash.get(split[i]);
+                    if(methods.containsKey(split[i])) {
+                        split[i] = methods.get(split[i]);
                         //changes the method name to new value name
                     }  
                 }
