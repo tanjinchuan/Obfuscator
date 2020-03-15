@@ -22,19 +22,19 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 	/**
 	 * Launch the application.
 	 */
-	// public static void main(String[] args) {
-	// 	EventQueue.invokeLater(new Runnable() {
-	// 		public void run() {
-	// 			try {
-	// 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-	// 				Frame window = new Frame();
-	// 				window.frame.setVisible(true);
-	// 			} catch (Exception e) {
-	// 				e.printStackTrace();
-	// 			}
-	// 		}
-	// 	});
-	// }
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					Frame window = new Frame();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 	
 	//function for next/back btns
 	public void switchPanel(JPanel panel) {
@@ -331,20 +331,33 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 					
 					//start obsfuscation
 					switchPanel(progressBarPanel);
-					Obfuscator obfuscator = new Obfuscator();
 					String inputFilePath = inputTextfield.getText();
 					String outputFilePath = outputTextfield.getText();
+					Obfuscator obfuscator = new Obfuscator();
 
+					String code = obfuscator.compileCode(inputFilePath);
 					switch(difficulty) {
 						//difficulty 0 is name obfuscation and comments removal
 						case 0: {
-							obfuscator.changeMethodNames(inputFilePath, outputFilePath);
-							obfuscator.changeVariableNames(outputFilePath);
-							obfuscator.removeComments(outputFilePath);
+							code = obfuscator.removeComments(code);
+							code = obfuscator.changeMethodNames(code);
+							
+							break;
+						}	
+						case 1: {
+
+							code = obfuscator.removeComments(code);
+							code = obfuscator.changeMethodNames(code);
+							code = obfuscator.changeVariableNames(code);
+							break;
 						}
 						
 						
 					}
+					FileWriter fw = new FileWriter(outputFilePath);
+
+					fw.write(code);
+					fw.close();
 				}
 				catch (IOException e2)
 				{

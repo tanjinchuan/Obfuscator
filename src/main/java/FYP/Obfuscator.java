@@ -27,27 +27,44 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 
 public class Obfuscator {
-
-    public static void main(String[] args) {
+    public Obfuscator() {
+        
+    }
+    public Obfuscator (String inputFilePath, int difficulty){
         try {
-            CompilationUnit cu = StaticJavaParser.parse(new File("C:\\Users\\User\\Desktop\\test.java"));
-
-            FileWriter fw = new FileWriter("C:\\Users\\User\\Desktop\\frametest.java");
+            CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
             String code = cu.toString();
-            code = removeComments(code);
-            code = changeVariableNames(code);
-            code = changeMethodNames(code);
-            code = refactorCode(code);
-            fw.write(code);
-            fw.close();
-        } catch (FileNotFoundException fe) {
-
-        } catch (IOException e) {
+            switch (difficulty){
+                case 0: {
+                    code = removeComments(code);
+                    code = changeMethodNames(code);
+                }
+            }
+        } catch (FileNotFoundException fe){
             
         }
+        
     }
+    // public static void main(String[] args) {
+    //     try {
+    //         CompilationUnit cu = StaticJavaParser.parse(new File("C:\\Users\\User\\Desktop\\test.java"));
+
+    //         FileWriter fw = new FileWriter("C:\\Users\\User\\Desktop\\frametest.java");
+    //         String code = cu.toString();
+    //         code = removeComments(code);
+    //         code = changeVariableNames(code);
+    //         code = changeMethodNames(code);
+    //         code = refactorCode(code);
+    //         fw.write(code);
+    //         fw.close();
+    //     } catch (FileNotFoundException fe) {
+
+    //     } catch (IOException e) {
+            
+    //     }
+    // }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public static class VariableNameVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
+    private class VariableNameVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
 
         @Override
         public void visit(VariableDeclarator vd, HashMap<String, String> variables) {
@@ -59,7 +76,7 @@ public class Obfuscator {
     }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public static String changeVariableNames(String code) {
+    public String changeVariableNames(String code) {
         CompilationUnit cu = StaticJavaParser.parse(code);
         HashMap<String, String> variables = new HashMap<String, String>();
 
@@ -96,7 +113,9 @@ public class Obfuscator {
         }
             
         scanner.close();
-        return newCode;
+
+    
+        return refactorCode(newCode);
         
     
         
@@ -106,7 +125,7 @@ public class Obfuscator {
 
    
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public static class MethodNameVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
+    private class MethodNameVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
         //to get method names and put into hash map
         @Override
         public void visit(MethodDeclaration md, HashMap<String, String> hash) {
@@ -128,7 +147,7 @@ public class Obfuscator {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //Change method names
-    public static String changeMethodNames (String code)  {
+    public  String changeMethodNames (String code)  {
         CompilationUnit cu = StaticJavaParser.parse(code);
         String newCode = "";
         
@@ -167,22 +186,20 @@ public class Obfuscator {
         }
         
         scanner.close();
-        return newCode;
+        return refactorCode(newCode);
 
     }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //help remove unecessary spaces in code
-    public static String refactorCode(String code) {
+    public String refactorCode(String code) {
         CompilationUnit cu = StaticJavaParser.parse(code);
-        code = cu.toString();
-        return code;        
-
-        
+        String cleanCode = cu.toString();
+        return cleanCode;
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Remove of comments
-    public static String removeComments(String code) {
+    public String removeComments(String code) {
         System.out.println("Removing Comments");
         CompilationUnit cu = StaticJavaParser.parse(code);
 
@@ -195,7 +212,7 @@ public class Obfuscator {
            
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
-    private static String randomWord() {
+    private String randomWord() {
         char[] letters = new char[] {'1', 'I', '1'};
         Random rand = new Random();
         String newWord = "";
@@ -218,7 +235,7 @@ public class Obfuscator {
         return newWord;
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
-    public static String compileCode(String inputFilePath){
+    public String compileCode(String inputFilePath){
         String code = "";
         try {
             CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
@@ -229,7 +246,7 @@ public class Obfuscator {
         return code;
 
     }
-    public static void writeFile(String outputFilePath) {
+    public void writeFile(String outputFilePath) {
 
     }
 
