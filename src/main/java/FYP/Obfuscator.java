@@ -27,31 +27,24 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 
 public class Obfuscator {
-    // private static final String inputFilePath = "C:\\Users\\User\\Desktop\\test.java";
-    // private static final String newFilePath = "C:\\Users\\User\\Desktop\\testoutput.java";
 
     public static void main(String[] args) {
-        
-        //save the method names into hash map
-        // ChangeMethodName c = new ChangeMethodName();
-        // System.out.println("Obfuscating Method Names...");
-            
-        // //hardcoded file path, use your own to test
-        // changeMethodNames("C:\\Users\\User\\Desktop\\test.java", "C:\\Users\\User\\Desktop\\testoutput.java");
-        // System.out.println("Method Names Obfuscated!");
+        try {
+            CompilationUnit cu = StaticJavaParser.parse(new File("C:\\Users\\User\\Desktop\\test.java"));
 
-            
-            
-        // refactorCode("C:\\Users\\User\\Desktop\\testoutput.java"); //help remove unnecessary spaces, make code look nice
-        // System.out.println("Refactor complete");
+            FileWriter fw = new FileWriter("C:\\Users\\User\\Desktop\\frametest.java");
+            String code = cu.toString();
+            code = removeComments(code);
+            code = changeVariableNames(code);
+            code = changeMethodNames(code);
+            code = refactorCode(code);
+            fw.write(code);
+            fw.close();
+        } catch (FileNotFoundException fe) {
 
-        //have a hash map of method names
-        //change the method names of test.java
-
-        System.out.println("Obfuscating Variable Names...");
-        changeVariableNames("C:\\Users\\User\\Desktop\\testoutput.java");
-        refactorCode("C:\\Users\\User\\Desktop\\testoutput.java");
-        System.out.println("end");
+        } catch (IOException e) {
+            
+        }
     }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static class VariableNameVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
@@ -66,50 +59,46 @@ public class Obfuscator {
     }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void changeVariableNames(String inputFilePath) {
-        try {
-            CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
-            HashMap<String, String> variables = new HashMap<String, String>();
+    public static String changeVariableNames(String code) {
+        CompilationUnit cu = StaticJavaParser.parse(code);
+        HashMap<String, String> variables = new HashMap<String, String>();
 
-            VoidVisitorAdapter<HashMap<String, String>> variableNameVisitor = new VariableNameVisitor();
-            variableNameVisitor.visit(cu, variables); //saves the variables into hashmap
+        VoidVisitorAdapter<HashMap<String, String>> variableNameVisitor = new VariableNameVisitor();
+        variableNameVisitor.visit(cu, variables); //saves the variables into hashmap
 
-            //open file to change variables
-            File inputFile = new File(inputFilePath);
-            FileWriter fw = new FileWriter(inputFile, true);
 
-            Scanner scanner = new Scanner(inputFile);
+        Scanner scanner = new Scanner(code);
 
-            //to store the new code with new names
-            String newText = "";
+        //to store the new code with new names
+        String newCode = "";
+        
+        //loop each line of code in file
+        while (scanner.hasNextLine()){
+            String line = scanner.nextLine();
             
-            //loop each line of code in file
-            while (scanner.hasNextLine()){
-                String line = scanner.nextLine();
-                
-                String[] split = line.split("\\s|(?=[;])|(?<=[(])|(?=[)])|(?<=[.])");
-                String newLine = "";
-                for (int i = 0; i < split.length; i++){
-                    if (variables.containsKey(split[i])){
-                        split[i] = variables.get(split[i]); //set the variable name to new random word
+            String[] split = line.split("\\s|(?=[;])|(?<=[(])|(?=[)])|(?<=[.])|(?=[.])");
+            String newLine = "";
+            for (int i = 0; i < split.length; i++){
+                if (variables.containsKey(split[i])){
+                    split[i] = variables.get(split[i]); //set the variable name to new random word
 
-                    }
-                    //put together back the line
-                    newLine = newLine + split[i] + " ";
                 }
-
-                //put together the code
-                newText = newText + newLine + "\n";
+                
             }
-            scanner.close();
-            fw.write(newText);
-            fw.close();
-            
-        } catch (FileNotFoundException fe){
-            System.out.println(fe.getMessage());
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+
+            for (int i = 0; i < split.length; i++){
+                //put together back the line
+                newLine = newLine + split[i] + " ";
+            }
+
+            //put together the code
+            newCode = newCode + newLine + "\n";
         }
+            
+        scanner.close();
+        return newCode;
+        
+    
         
     }
 
@@ -139,101 +128,70 @@ public class Obfuscator {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //Change method names
-    public static void changeMethodNames (String inputFilePath, String outputFilePath)  {
-        try {
-            CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
-            String newText = "";
+    public static String changeMethodNames (String code)  {
+        CompilationUnit cu = StaticJavaParser.parse(code);
+        String newCode = "";
+        
+        HashMap<String, String> methods = new HashMap<String, String>();
+        VoidVisitor<HashMap<String, String>> methodNameVisitor = new MethodNameVisitor();
+        methodNameVisitor.visit(cu, methods);
+
+        Scanner scanner = new Scanner(code);
+
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+
+            String[] split = line.split("\\[s]|\\s|(?=[(])|(?<=[.])"); 
+            //(eg. public void setName(String s) will split into ["public","void", "setName", "(", "String", "s", ")"])
             
-            File inputFile = new File(inputFilePath);
-            HashMap<String, String> methods = new HashMap<String, String>();
-            VoidVisitor<HashMap<String, String>> methodNameVisitor = new MethodNameVisitor();
-            methodNameVisitor.visit(cu, methods);
+            String newLine = "";
 
-            Scanner scanner = new Scanner(inputFile);
+            //loop to check whether each seperated word is the method name, if it is, change to the new method name
+            for (int i = 0; i < split.length; i++) {
+                if(methods.containsKey(split[i])) {
+                    split[i] = methods.get(split[i]);
+                    //changes the method name to new value name
+                }  
+            }
 
-            //for output file
-            File outputFile = new File(outputFilePath);
-            FileWriter fw = new FileWriter(outputFile, false);
-
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-
-                String[] split = line.split("\\[s]|\\s|(?=[(])|(?<=[.])"); 
-                //(eg. public void setName(String s) will split into ["public","void", "setName", "(", "String", "s", ")"])
+            //loop to add the code back into the line
+            for (int i = 0; i < split.length; i++) {
                 
-                String newLine = "";
-
-                //loop to check whether each seperated word is the method name, if it is, change to the new method name
-                for (int i = 0; i < split.length; i++) {
-                    if(methods.containsKey(split[i])) {
-                        split[i] = methods.get(split[i]);
-                        //changes the method name to new value name
-                    }  
-                }
-
-                //loop to add the code back into the line
-                for (int i = 0; i < split.length; i++) {
-                    
-                    newLine = newLine + split[i] + " ";
-                    
-                }
-                
-                //add the line into the new text of code
-                newText = newText + newLine + "\n";
+                newLine = newLine + split[i] + " ";
                 
             }
-            //write the whole code into a new output file
-            fw.write(newText);
-            fw.close();
-            scanner.close();
             
-        } catch (FileNotFoundException fe) {
-            System.out.println(fe.getMessage());
-        } catch (IOException e){
-            System.out.println(e.getMessage());
+            //add the line into the new text of code
+            newCode = newCode + newLine + "\n";
+            
         }
         
+        scanner.close();
+        return newCode;
+
     }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //help remove unecessary spaces in code
-    public static void refactorCode(String inputFilePath) {
-        try {
-            CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
-            File outputFile = new File(inputFilePath);
-            FileWriter fw = new FileWriter(outputFile, false);
-            fw.write(cu.toString());
-            fw.close();
-    
-        } catch (FileNotFoundException fe) {
-            System.out.println(fe.getMessage());
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+    public static String refactorCode(String code) {
+        CompilationUnit cu = StaticJavaParser.parse(code);
+        code = cu.toString();
+        return code;        
+
         
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Remove of comments
-    public static void removeComments(String inputFilePath) {
+    public static String removeComments(String code) {
         System.out.println("Removing Comments");
-        try {
-            CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
+        CompilationUnit cu = StaticJavaParser.parse(code);
 
-            for (Comment c : cu.getComments()){
-                System.out.println(c);
-                c.remove();
-            }
-            File inputFile = new File(inputFilePath);
-            String code = cu.toString();
-            FileWriter fw = new FileWriter(inputFile, false);
-            fw.write(code);
-            fw.close();
-             
-        } catch (FileNotFoundException fe){
-            System.out.println(fe.getMessage());
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+        for (Comment c : cu.getComments()){
+            c.remove();
         }
+        
+        code = cu.toString();
+        return code;
            
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
@@ -259,6 +217,22 @@ public class Obfuscator {
             }
         return newWord;
     }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+    public static String compileCode(String inputFilePath){
+        String code = "";
+        try {
+            CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
+            code = cu.toString();
+        } catch (FileNotFoundException fe) {
+            System.out.println(fe.toString());
+        }
+        return code;
+
+    }
+    public static void writeFile(String outputFilePath) {
+
+    }
+
 }
 
 

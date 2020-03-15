@@ -18,23 +18,23 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 	private final JLayeredPane layeredPane = new JLayeredPane();
 	private JTextField inputTextfield;
 	private JTextField outputTextfield;
-
+	private int difficulty;
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-					Frame window = new Frame();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	// public static void main(String[] args) {
+	// 	EventQueue.invokeLater(new Runnable() {
+	// 		public void run() {
+	// 			try {
+	// 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+	// 				Frame window = new Frame();
+	// 				window.frame.setVisible(true);
+	// 			} catch (Exception e) {
+	// 				e.printStackTrace();
+	// 			}
+	// 		}
+	// 	});
+	// }
 	
 	//function for next/back btns
 	public void switchPanel(JPanel panel) {
@@ -300,6 +300,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		@Override
 		public void stateChanged(ChangeEvent e) {
 			int level = ((JSlider)e.getSource()).getValue();
+			difficulty = level;
 			if(level == 0) {
 				sliderOptionDescriptionLabel.setText("Description 0");
 			}
@@ -328,9 +329,22 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 					fr.write(Integer.toString(slider.getValue()));
 					fr.close();
 					
-					
 					//start obsfuscation
 					switchPanel(progressBarPanel);
+					Obfuscator obfuscator = new Obfuscator();
+					String inputFilePath = inputTextfield.getText();
+					String outputFilePath = outputTextfield.getText();
+
+					switch(difficulty) {
+						//difficulty 0 is name obfuscation and comments removal
+						case 0: {
+							obfuscator.changeMethodNames(inputFilePath, outputFilePath);
+							obfuscator.changeVariableNames(outputFilePath);
+							obfuscator.removeComments(outputFilePath);
+						}
+						
+						
+					}
 				}
 				catch (IOException e2)
 				{
@@ -501,7 +515,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		            if (returnVal == JFileChooser.APPROVE_OPTION) {
 		                File file = fc.getSelectedFile();
 		                //This is where a real application would open the file.
-		                inputTextfield.setText(file.getName());
+		                inputTextfield.setText(file.getAbsolutePath());
 		                
 		                if (checkExt(file.getName()) == true) {
 		                	inputFileTypeLabel.setText("");
