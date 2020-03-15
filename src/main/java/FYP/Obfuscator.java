@@ -12,10 +12,13 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.body.BodyDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.visitor.VoidVisitor;
@@ -45,26 +48,19 @@ public class Obfuscator {
         //have a hash map of method names
         //change the method names of test.java
 
-        VoidVisitor<?> visitor = new VariableNameVisitor();
-        try {
-            CompilationUnit cu = StaticJavaParser.parse(new File("C:\\Users\\User\\Desktop\\testoutput.java"));
-            visitor.visit(cu, null);
-
-        } catch(FileNotFoundException fe){
-
-        }
-        
+        System.out.println("Obfuscating Variable Names...");
+        changeVariableNames("C:\\Users\\User\\Desktop\\testoutput.java");
+        refactorCode("C:\\Users\\User\\Desktop\\testoutput.java");
         System.out.println("end");
     }
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static class VariableNameVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
 
         @Override
         public void visit(VariableDeclarator vd, HashMap<String, String> variables) {
             super.visit(vd, variables);
-
             String newWord = randomWord();
-            String variable = vd.toString();
+            String variable = vd.getNameAsString();
             variables.put(variable, newWord);
         }
     }
@@ -78,8 +74,41 @@ public class Obfuscator {
             VoidVisitorAdapter<HashMap<String, String>> variableNameVisitor = new VariableNameVisitor();
             variableNameVisitor.visit(cu, variables); //saves the variables into hashmap
 
+            //open file to change variables
+            File inputFile = new File(inputFilePath);
+            FileWriter fw = new FileWriter(inputFile, true);
+
+            Scanner scanner = new Scanner(inputFile);
+
+            //to store the new code with new names
+            String newText = "";
+            
+            //loop each line of code in file
+            while (scanner.hasNextLine()){
+                String line = scanner.nextLine();
+                
+                String[] split = line.split("\\s|(?=[;])|(?<=[(])|(?=[)])|(?<=[.])");
+                String newLine = "";
+                for (int i = 0; i < split.length; i++){
+                    if (variables.containsKey(split[i])){
+                        split[i] = variables.get(split[i]); //set the variable name to new random word
+
+                    }
+                    //put together back the line
+                    newLine = newLine + split[i] + " ";
+                }
+
+                //put together the code
+                newText = newText + newLine + "\n";
+            }
+            scanner.close();
+            fw.write(newText);
+            fw.close();
+            
         } catch (FileNotFoundException fe){
             System.out.println(fe.getMessage());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
         
     }
