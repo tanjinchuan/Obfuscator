@@ -337,13 +337,14 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 
 					String code = obfuscator.compileCode(inputFilePath);
 					switch(difficulty) {
-						//difficulty 0 is name obfuscation and comments removal
+						//difficulty 0 is method obfuscation and comments removal
 						case 0: {
 							code = obfuscator.removeComments(code);
 							code = obfuscator.changeMethodNames(code);
 							
 							break;
 						}	
+						//difficulty 1 is plus variable obfuscation
 						case 1: {
 
 							code = obfuscator.removeComments(code);

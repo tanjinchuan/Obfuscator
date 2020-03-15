@@ -27,24 +27,8 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 
 public class Obfuscator {
-    public Obfuscator() {
-        
-    }
-    public Obfuscator (String inputFilePath, int difficulty){
-        try {
-            CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
-            String code = cu.toString();
-            switch (difficulty){
-                case 0: {
-                    code = removeComments(code);
-                    code = changeMethodNames(code);
-                }
-            }
-        } catch (FileNotFoundException fe){
-            
-        }
-        
-    }
+    
+    
     // public static void main(String[] args) {
     //     try {
     //         CompilationUnit cu = StaticJavaParser.parse(new File("C:\\Users\\User\\Desktop\\test.java"));
