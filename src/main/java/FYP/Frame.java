@@ -25,6 +25,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
+
 				try {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 					Frame window = new Frame();
@@ -104,6 +105,8 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		Obfuscator obfuscator = new Obfuscator();
+
 		frame = new JFrame("Obsfuscator");
 		frame.setBounds(100, 100, 800, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -159,6 +162,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 			public void actionPerformed(ActionEvent e) {
 
 				switchPanel(progressBarPanel);
+				obfuscator.obfuscate(inputTextfield.getText(), outputTextfield.getText(), difficulty);
 			}
 		});
 		btnNextAdvOptions.setBounds(620, 390, 97, 25);
@@ -181,7 +185,8 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		});
 		btnAdvancedSettings.setBounds(608, 336, 148, 25);
 		sliderOptionPanel.add(btnAdvancedSettings);
-
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		//End advanced settings panel
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		JLabel lblProgressBarStatus = new JLabel("Scanning files...");
@@ -333,40 +338,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 					
 					//start obsfuscation
 					switchPanel(progressBarPanel);
-					String inputFilePath = inputTextfield.getText();
-					String outputFilePath = outputTextfield.getText();
-					Obfuscator obfuscator = new Obfuscator();
-
-					String code = obfuscator.compileCode(inputFilePath);
-					switch(difficulty) {
-						//difficulty 0 is method obfuscation and comments removal
-						case 0: {
-							code = obfuscator.removeComments(code);
-							code = obfuscator.changeMethodNames(code);
-							
-							break;
-						}	
-						//difficulty 1 is plus variable obfuscation
-						case 1: {
-
-							code = obfuscator.removeComments(code);
-							code = obfuscator.changeMethodNames(code);
-							code = obfuscator.changeVariableNames(code);
-							break;
-						}
-						
-						
-					}
-					FileWriter fw;
-					if (outputFilePath != ""){
-						fw = new FileWriter(outputFilePath);
-
-					} else {
-						fw = new FileWriter(inputFilePath);
-					}
-
-					fw.write(code);
-					fw.close();
+					obfuscator.obfuscate(inputTextfield.getText(), outputTextfield.getText(), difficulty);
 				}
 				catch (IOException e2)
 				{
@@ -376,6 +348,8 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		});
 		btnNextSliderPanel.setBounds(608, 380, 148, 25);
 		sliderOptionPanel.add(btnNextSliderPanel);
+		////////////////////////////////////////////////////////////////////////////////////////////////
+		//end Slider panel
 		////////////////////////////////////////////////////////////////////////////////////////////////
 		JButton btnSliderDefaultSettings = new JButton("Save as default settings");
 		btnSliderDefaultSettings.addActionListener(new ActionListener() {

@@ -154,7 +154,6 @@ public class Obfuscator {
             super.visit(md, hash);
             if (!md.isAnnotationPresent("Override")){ //prevent changing method names that need the method to stay the same
                 String s = md.getNameAsString();
-                System.out.println(s);
                 if (!s.equals("main")) { //cannot change main method name
                     String newMethodName = randomWord(); 
     
@@ -163,8 +162,6 @@ public class Obfuscator {
     
                 }
             }
-           
-            
         }
 
     }
@@ -240,7 +237,7 @@ public class Obfuscator {
         char[] letters = new char[] {'1', 'I', '1'};
         Random rand = new Random();
         String newWord = "";
-        int length = 10;
+        int length = 12;
 
         char [] firstLetters = new char[] {'l', 'I'};
             //initialize first random character for new method name, first character cannot use '1'
