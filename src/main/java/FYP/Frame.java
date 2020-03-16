@@ -141,6 +141,10 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		//switchPanel(sliderOptionPanel);
 		
 		
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		//Advanced settings panel
+		///////////////////////////////////////////////////////////////////////////////////////////
 		JButton btnBackAdvOptions = new JButton("Back");
 		btnBackAdvOptions.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -153,6 +157,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		JButton btnNextAdvOptions = new JButton("Next");
 		btnNextAdvOptions.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+
 				switchPanel(progressBarPanel);
 			}
 		});
@@ -167,9 +172,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		});
 		btnBackSliderPanel.setBounds(48, 380, 97, 25);
 		sliderOptionPanel.add(btnBackSliderPanel);
-		
 
-		
 		JButton btnAdvancedSettings = new JButton("Advanced settings");
 		btnAdvancedSettings.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -178,7 +181,9 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		});
 		btnAdvancedSettings.setBounds(608, 336, 148, 25);
 		sliderOptionPanel.add(btnAdvancedSettings);
-		
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+
 		JLabel lblProgressBarStatus = new JLabel("Scanning files...");
 		lblProgressBarStatus.setBounds(88, 219, 160, 16);
 		progressBarPanel.add(lblProgressBarStatus);
@@ -310,7 +315,10 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 			
 			}
 		});
-		
+
+		/////////////////////////////////////////////////////////////////////////////////////////////////////
+		//Obfuscation part, after choosing slider
+		////////////////////////////////////////////////////////////////////////////////////////////////////
 		JButton btnNextSliderPanel = new JButton("Next");
 		btnNextSliderPanel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -368,7 +376,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		});
 		btnNextSliderPanel.setBounds(608, 380, 148, 25);
 		sliderOptionPanel.add(btnNextSliderPanel);
-		
+		////////////////////////////////////////////////////////////////////////////////////////////////
 		JButton btnSliderDefaultSettings = new JButton("Save as default settings");
 		btnSliderDefaultSettings.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)  {

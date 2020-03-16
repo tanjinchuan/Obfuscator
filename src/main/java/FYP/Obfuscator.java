@@ -47,6 +47,45 @@ public class Obfuscator {
             
     //     }
     // }
+    public void obfuscate (String inputFilePath, String outputFilePath, int difficulty) {
+
+        String code = compileCode(inputFilePath);
+        switch(difficulty) {
+            //difficulty 0 is method obfuscation and comments removal
+            case 0: {
+                code = removeComments(code);
+                code = changeMethodNames(code);
+                
+                break;
+            }	
+            //difficulty 1 is plus variable obfuscation
+            case 1: {
+
+                code = removeComments(code);
+                code = changeMethodNames(code);
+                code = changeVariableNames(code);
+                break;
+            }
+            
+            
+        }
+        try {
+            FileWriter fw;
+            if (outputFilePath != ""){
+                fw = new FileWriter(outputFilePath);
+    
+            } else {
+                fw = new FileWriter(inputFilePath);
+            }
+    
+            fw.write(code);
+            fw.close();
+        } catch (IOException e){
+            System.out.println(e.getMessage());
+        }
+        
+    
+    }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private class VariableNameVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
 
@@ -113,7 +152,7 @@ public class Obfuscator {
 
             //visit the nodes
             super.visit(md, hash);
-            if (!md.isAnnotationPresent("Override")){
+            if (!md.isAnnotationPresent("Override")){ //prevent changing method names that need the method to stay the same
                 String s = md.getNameAsString();
                 System.out.println(s);
                 if (!s.equals("main")) { //cannot change main method name
@@ -132,7 +171,7 @@ public class Obfuscator {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //Change method names
-    public  String changeMethodNames (String code)  {
+    public String changeMethodNames (String code)  {
         CompilationUnit cu = StaticJavaParser.parse(code);
         String newCode = "";
         
