@@ -14,6 +14,8 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.Parameter;
+
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
@@ -28,25 +30,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 public class Obfuscator {
     
-    
-    // public static void main(String[] args) {
-    //     try {
-    //         CompilationUnit cu = StaticJavaParser.parse(new File("C:\\Users\\User\\Desktop\\test.java"));
 
-    //         FileWriter fw = new FileWriter("C:\\Users\\User\\Desktop\\frametest.java");
-    //         String code = cu.toString();
-    //         code = removeComments(code);
-    //         code = changeVariableNames(code);
-    //         code = changeMethodNames(code);
-    //         code = refactorCode(code);
-    //         fw.write(code);
-    //         fw.close();
-    //     } catch (FileNotFoundException fe) {
-
-    //     } catch (IOException e) {
-            
-    //     }
-    // }
     public void obfuscate (String inputFilePath, String outputFilePath, int difficulty) {
 
         String code = compileCode(inputFilePath);
@@ -66,8 +50,6 @@ public class Obfuscator {
                 code = changeVariableNames(code);
                 break;
             }
-            
-            
         }
         try {
             FileWriter fw;
@@ -86,7 +68,74 @@ public class Obfuscator {
         
     
     }
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//For Parameters
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private class ParameterNameVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
+        
+        @Override
+        public void visit(Parameter p, HashMap<String, String> parameters) {
+            super.visit(p, parameters);
+            String parameter = p.getNameAsString();
+
+            String newWord = randomWord();
+            if (parameter != "args"){
+                System.out.println(parameter);
+
+                parameters.put(parameter, newWord);
+            }
+
+        }
+    }
+
+    public String changeParameterName(String code) {
+        CompilationUnit cu = StaticJavaParser.parse(code);
+        HashMap<String, String> parameters = new HashMap<String, String>();
+
+        VoidVisitorAdapter<HashMap<String, String>> parameterNameVisitor = new ParameterNameVisitor();
+        parameterNameVisitor.visit(cu, parameters); //saves the variables into hashmap
+
+
+        Scanner scanner = new Scanner(code);
+
+        //to store the new code with new names
+        String newCode = "";
+        
+        //loop each line of code in file
+        while (scanner.hasNextLine()){
+            String line = scanner.nextLine();
+            
+            String[] split = line.split("\\s|(?=[;])|(?=[,])|(?<=[(])|(?=[)])|(?<=[.])|(?=[.])");
+            String newLine = "";
+            for (int i = 0; i < split.length; i++){
+                if (parameters.containsKey(split[i])){
+                    split[i] = parameters.get(split[i]); //set the variable name to new random word
+
+                }
+                
+            }
+
+            for (int i = 0; i < split.length; i++){
+                //put together back the line
+                newLine = newLine + split[i] + " ";
+            }
+
+            //put together the code
+            newCode = newCode + newLine + "\n";
+        }
+            
+        scanner.close();
+
+    
+        return refactorCode(newCode);
+        
+    
+        
+    }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//For Variables
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
     private class VariableNameVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
 
         @Override
@@ -98,7 +147,6 @@ public class Obfuscator {
         }
     }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public String changeVariableNames(String code) {
         CompilationUnit cu = StaticJavaParser.parse(code);
         HashMap<String, String> variables = new HashMap<String, String>();
@@ -145,6 +193,8 @@ public class Obfuscator {
     }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//For Methods
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
     private class MethodNameVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
         //to get method names and put into hash map
         @Override
@@ -153,20 +203,18 @@ public class Obfuscator {
             //visit the nodes
             super.visit(md, hash);
             if (!md.isAnnotationPresent("Override")){ //prevent changing method names that need the method to stay the same
-                String s = md.getNameAsString();
-                if (!s.equals("main")) { //cannot change main method name
+                String method = md.getNameAsString();
+                if (!method.equals("main")) { //cannot change main method name
                     String newMethodName = randomWord(); 
     
                     //put into hash map
-                    hash.put(s, newMethodName);
+                    hash.put(method, newMethodName);
     
                 }
             }
         }
 
     }
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     //Change method names
     public String changeMethodNames (String code)  {
         CompilationUnit cu = StaticJavaParser.parse(code);
