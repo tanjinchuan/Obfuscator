@@ -20,7 +20,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 
 public class Obfuscator {
-    
+    Statistics statistics = new Statistics();
 
     public void obfuscate (String inputFilePath, String outputFilePath, int difficulty) {
 
@@ -30,7 +30,6 @@ public class Obfuscator {
             case 0: {
                 code = removeComments(code);
                 code = changeMethodNames(code);
-                
                 break;
             }	
             //difficulty 1 is plus variable obfuscation
@@ -39,9 +38,13 @@ public class Obfuscator {
                 code = removeComments(code);
                 code = changeMethodNames(code);
                 code = changeVariableNames(code);
+                code = changeParameterNames(code);
                 break;
             }
+
         }
+        statistics.printStats(statistics.getStats());
+
         try {
             FileWriter fw;
             if (outputFilePath != ""){
@@ -59,7 +62,76 @@ public class Obfuscator {
         
     
     }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//For Methods
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+    private class MethodNameVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
+        //to get method names and put into hash map
+        @Override
+        public void visit(MethodDeclaration md, HashMap<String, String> hash) {
 
+            //visit the nodes
+            super.visit(md, hash);
+            if (!md.isAnnotationPresent("Override")){ //prevent changing method names that need the method to stay the same
+                String method = md.getNameAsString();
+                if (!method.equals("main")) { //cannot change main method name
+                    String newMethodName = randomWord(); 
+
+                    //put into hash map
+                    hash.put(method, newMethodName);
+
+                }
+            }
+        }
+
+    }
+    //Function to call for changing method names
+    public String changeMethodNames (String code)  {
+        CompilationUnit cu = StaticJavaParser.parse(code);
+        String newCode = "";
+        
+        HashMap<String, String> methods = new HashMap<String, String>();
+        VoidVisitor<HashMap<String, String>> methodNameVisitor = new MethodNameVisitor();
+        methodNameVisitor.visit(cu, methods);
+
+        Scanner scanner = new Scanner(code);
+
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+
+            String[] split = line.split("\\[s]|\\s|(?=[(])|(?<=[.])"); 
+            //(eg. public void setName(String s) will split into ["public","void", "setName", "(", "String", "s", ")"])
+            
+            String newLine = "";
+
+            //loop to check whether each seperated word is the method name, if it is, change to the new method name
+            for (int i = 0; i < split.length; i++) {
+                if(methods.containsKey(split[i])) {
+                    //changes the method name to new value name
+                    statistics.setMethodStats("Method Name: " + split[i], methods.get(split[i]));
+                    split[i] = methods.get(split[i]);
+
+                    
+                    //save the names to statistics for printing
+                }  
+            }
+
+            //loop to add the code back into the line
+            for (int i = 0; i < split.length; i++) {
+                
+                newLine = newLine + split[i] + " ";
+                
+            }
+            
+            //add the line into the new text of code
+            newCode = newCode + newLine + "\n";
+            
+        }
+        statistics.addToList(statistics.getMethodStats());
+        scanner.close();
+        return refactorCode(newCode);
+
+    }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //For Parameters
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,21 +143,19 @@ public class Obfuscator {
             String parameter = p.getNameAsString();
 
             String newWord = randomWord();
-            if (parameter != "args"){
-                System.out.println(parameter);
+            if (!parameter.equals("args")){
                 parameters.put(parameter, newWord);
             }
 
         }
     }
 
-    public String changeParameterName(String code) {
+    public String changeParameterNames(String code) {
         CompilationUnit cu = StaticJavaParser.parse(code);
         HashMap<String, String> parameters = new HashMap<String, String>();
 
         VoidVisitorAdapter<HashMap<String, String>> parameterNameVisitor = new ParameterNameVisitor();
         parameterNameVisitor.visit(cu, parameters); //saves the variables into hashmap
-
 
         Scanner scanner = new Scanner(code);
 
@@ -100,8 +170,11 @@ public class Obfuscator {
             String newLine = "";
             for (int i = 0; i < split.length; i++){
                 if (parameters.containsKey(split[i])){
-                    split[i] = parameters.get(split[i]); //set the variable name to new random word
 
+                    //save the names for printing later
+                    statistics.setParameterStats("Parameter Name: " + split[i], parameters.get(split[i]));
+
+                    split[i] = parameters.get(split[i]); //set the variable name to new random word
                 }
                 
             }
@@ -115,12 +188,13 @@ public class Obfuscator {
             newCode = newCode + newLine + "\n";
         }
             
+
+        statistics.addToList(statistics.getParameterStats());
+
         scanner.close();
 
     
         return refactorCode(newCode);
-        
-    
         
     }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -158,8 +232,12 @@ public class Obfuscator {
             String newLine = "";
             for (int i = 0; i < split.length; i++){
                 if (variables.containsKey(split[i])){
-                    split[i] = variables.get(split[i]); //set the variable name to new random word
 
+                    //save the names to statistics for printing
+                    statistics.setVariableStats("Variable Name: " + split[i], variables.get(split[i])); 
+                    
+                    split[i] = variables.get(split[i]); //set the variable name to new random word
+                    
                 }
                 
             }
@@ -175,79 +253,13 @@ public class Obfuscator {
             
         scanner.close();
 
+        statistics.addToList(statistics.getVariableStats());
+
     
         return refactorCode(newCode);
         
-    
-        
     }
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//For Methods
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
-    private class MethodNameVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
-        //to get method names and put into hash map
-        @Override
-        public void visit(MethodDeclaration md, HashMap<String, String> hash) {
-
-            //visit the nodes
-            super.visit(md, hash);
-            if (!md.isAnnotationPresent("Override")){ //prevent changing method names that need the method to stay the same
-                String method = md.getNameAsString();
-                if (!method.equals("main")) { //cannot change main method name
-                    String newMethodName = randomWord(); 
-    
-                    //put into hash map
-                    hash.put(method, newMethodName);
-    
-                }
-            }
-        }
-
-    }
-    //Change method names
-    public String changeMethodNames (String code)  {
-        CompilationUnit cu = StaticJavaParser.parse(code);
-        String newCode = "";
-        
-        HashMap<String, String> methods = new HashMap<String, String>();
-        VoidVisitor<HashMap<String, String>> methodNameVisitor = new MethodNameVisitor();
-        methodNameVisitor.visit(cu, methods);
-
-        Scanner scanner = new Scanner(code);
-
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-
-            String[] split = line.split("\\[s]|\\s|(?=[(])|(?<=[.])"); 
-            //(eg. public void setName(String s) will split into ["public","void", "setName", "(", "String", "s", ")"])
-            
-            String newLine = "";
-
-            //loop to check whether each seperated word is the method name, if it is, change to the new method name
-            for (int i = 0; i < split.length; i++) {
-                if(methods.containsKey(split[i])) {
-                    split[i] = methods.get(split[i]);
-                    //changes the method name to new value name
-                }  
-            }
-
-            //loop to add the code back into the line
-            for (int i = 0; i < split.length; i++) {
-                
-                newLine = newLine + split[i] + " ";
-                
-            }
-            
-            //add the line into the new text of code
-            newCode = newCode + newLine + "\n";
-            
-        }
-        
-        scanner.close();
-        return refactorCode(newCode);
-
-    }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //help remove unecessary spaces in code
