@@ -284,7 +284,7 @@ public class Obfuscator {
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
     private String randomWord() {
-        char[] letters = new char[] {'1', 'I', '1'};
+        char[] letters = new char[] {'1', 'I', 'l'};
         Random rand = new Random();
         String newWord = "";
         int length = 12;
