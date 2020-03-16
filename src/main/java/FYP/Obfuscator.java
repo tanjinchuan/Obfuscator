@@ -9,19 +9,10 @@ import java.io.*;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
-import com.github.javaparser.ast.body.BodyDeclaration;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.SimpleName;
-import com.github.javaparser.ast.expr.VariableDeclarationExpr;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.ast.type.PrimitiveType;
-import com.github.javaparser.ast.Node;
+
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
@@ -82,7 +73,6 @@ public class Obfuscator {
             String newWord = randomWord();
             if (parameter != "args"){
                 System.out.println(parameter);
-
                 parameters.put(parameter, newWord);
             }
 
