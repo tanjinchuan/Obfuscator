@@ -44,8 +44,6 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		layeredPane.revalidate();
 	}
 	
-	
-	
 	//check selected file ext	
 	public boolean checkExt(String fileName) {
 		fileName = fileName.toLowerCase();
@@ -74,10 +72,6 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		}
 	}
 	
-
-    
-	
-
 	/**
 	 * Create the application.
 	 */
@@ -302,7 +296,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 			int level = ((JSlider)e.getSource()).getValue();
 			difficulty = level;
 			if(level == 0) {
-				sliderOptionDescriptionLabel.setText("Description 0");
+				sliderOptionDescriptionLabel.setText("Comments removal | Name Obfuscation");
 			}
 			else if (level == 1) {
 				sliderOptionDescriptionLabel.setText("Description 1");
@@ -355,7 +349,13 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 						
 						
 					}
-					FileWriter fw = new FileWriter(outputFilePath);
+					FileWriter fw;
+					if (outputFilePath != ""){
+						fw = new FileWriter(outputFilePath);
+
+					} else {
+						fw = new FileWriter(inputFilePath);
+					}
 
 					fw.write(code);
 					fw.close();
@@ -364,8 +364,6 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 				{
 					e2.printStackTrace();
 				}
-				
-				
 			}
 		});
 		btnNextSliderPanel.setBounds(608, 380, 148, 25);
@@ -400,9 +398,6 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		sliderOptionPanel.add(btnSliderDefaultSettings);
 		
 		
-	
-
-
 		//Create the label table 
 		Hashtable labelTable = new Hashtable();
 		labelTable.put(new Integer(0), new JLabel("Weak"));

@@ -77,7 +77,7 @@ public class Obfuscator {
         while (scanner.hasNextLine()){
             String line = scanner.nextLine();
             
-            String[] split = line.split("\\s|(?=[;])|(?<=[(])|(?=[)])|(?<=[.])|(?=[.])");
+            String[] split = line.split("\\s|(?=[;])|(?=[,])|(?<=[(])|(?=[)])|(?<=[.])|(?=[.])");
             String newLine = "";
             for (int i = 0; i < split.length; i++){
                 if (variables.containsKey(split[i])){
@@ -105,9 +105,6 @@ public class Obfuscator {
         
     }
 
-
-
-   
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private class MethodNameVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
         //to get method names and put into hash map
@@ -116,14 +113,18 @@ public class Obfuscator {
 
             //visit the nodes
             super.visit(md, hash);
-            String s = md.getNameAsString();
-            if (!s.equals("main")) { //cannot change main method name
-                String newMethodName = randomWord(); 
-
-                //put into hash map
-                hash.put(s, newMethodName);
-
+            if (!md.isAnnotationPresent("Override")){
+                String s = md.getNameAsString();
+                System.out.println(s);
+                if (!s.equals("main")) { //cannot change main method name
+                    String newMethodName = randomWord(); 
+    
+                    //put into hash map
+                    hash.put(s, newMethodName);
+    
+                }
             }
+           
             
         }
 
