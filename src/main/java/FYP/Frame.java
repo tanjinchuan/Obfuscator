@@ -140,9 +140,9 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		layeredPane.add(progressBarPanel);
 		progressBarPanel.setLayout(null);
 		
-		JPanel statisticsPanel = new JPanel();
-		layeredPane.add(statisticsPanel);
-		statisticsPanel.setLayout(null);
+		JPanel changelogPanel = new JPanel();
+		layeredPane.add(changelogPanel);
+		changelogPanel.setLayout(null);
 		//switch to desired frame for testing purposes
 		//switchPanel(sliderOptionPanel);
 		
@@ -188,10 +188,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		});
 		btnAdvancedSettings.setBounds(608, 336, 148, 25);
 		sliderOptionPanel.add(btnAdvancedSettings);
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		//End advanced settings panel
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-
+		
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		//Progress Bar panel
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -202,9 +199,31 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		//Statistics panel
+		//Changelog panel
 		//////////////////////////////////////////////////////////////////////////////////////////////////
 
+		JTextField originalCodeField = new JTextField();
+		JTextField newCodeField = new JTextField();
+		originalCodeField.setBounds(0, 0, 400, 500);
+		newCodeField.setBounds(400, 0, 400, 500);
+		changelogPanel.add(originalCodeField);
+		changelogPanel.add(newCodeField);
+
+		JScrollBar scrollBar = new JScrollBar(JScrollBar.VERTICAL);
+		BoundedRangeModel brm = originalCodeField.getHorizontalVisibility();
+
+		scrollBar.setModel(brm);
+		changelogPanel.add(scrollBar);
+		
+		JScrollBar scrollBar2 = new JScrollBar(JScrollBar.VERTICAL);
+		BoundedRangeModel brm2 = newCodeField.getHorizontalVisibility();
+		
+		scrollBar2.setModel(brm2);
+		changelogPanel.add(scrollBar2);
+		
+		//////////////////////////////////////////////////////////////////////////////////////////////////
+		//Final panel
+		//////////////////////////////////////////////////////////////////////////////////////////////////
 		JButton btnViewOutput = new JButton("View output file");
 		btnViewOutput.setBounds(59, 196, 143, 25);
 		finalPanel.add(btnViewOutput);
@@ -212,12 +231,17 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		JButton btnViewChangelog = new JButton("View changelog");
 		btnViewChangelog.setBounds(310, 196, 143, 25);
 		finalPanel.add(btnViewChangelog);
+		btnViewChangelog.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				switchPanel(changelogPanel);
+			}
+		});
 		
 		JButton btnAnother = new JButton("Obfuscate another file");
 		btnAnother.setBounds(526, 196, 184, 25);
 		finalPanel.add(btnAnother);
 		
-		
+		/////////////////////////////////////////////////////////////////////////////////////////////////
 		//for adv options
 		JComboBox comboBox = new JComboBox();
 		comboBox.setToolTipText("Select one");
@@ -352,8 +376,13 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 					//start obsfuscation
 					switchPanel(progressBarPanel);
 					obfuscator.obfuscate(inputTextfield.getText(), outputTextfield.getText(), difficulty);
+
+					//show statistics
+					originalCodeField.setText(inputTextfield.getText());
+					newCodeField.setText(outputTextfield.getText());
+
 					//do delay to switch panel
-					int delay = 1000;
+					int delay = 500;
 					ActionListener taskPerformer = new ActionListener() {
 						public void actionPerformed(ActionEvent event) {
 							if (progressBar.getValue() < 100) {

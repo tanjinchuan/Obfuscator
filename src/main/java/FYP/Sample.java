@@ -6,7 +6,7 @@ class Sample {
         
 
             Obfuscator obfuscator = new Obfuscator();
-            obfuscator.obfuscate("C:\\Users\\User\\Desktop\\Obfuscator\\src\\main\\java\\FYP\\Obfuscator.java", "C:\\Users\\User\\Desktop\\finaltest.java", 1);
+            obfuscator.obfuscate("C:\\Users\\User\\Desktop\\test.java", "C:\\Users\\User\\Desktop\\finaltest.java", 1);
 
         // String test = "testString";
         // String s = "System.out.println(\\s\\()=!==s=*7(*))";
