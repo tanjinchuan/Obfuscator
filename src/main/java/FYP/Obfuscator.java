@@ -99,7 +99,7 @@ public class Obfuscator {
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
 
-            String[] split = line.split("\\[s]|\\s|(?=[(])|(?<=[.])"); 
+            String[] split = line.split("\\s|(?=[(])|(?<=[.])"); 
             //(eg. public void setName(String s) will split into ["public","void", "setName", "(", "String", "s", ")"])
             
             String newLine = "";
@@ -166,7 +166,7 @@ public class Obfuscator {
         while (scanner.hasNextLine()){
             String line = scanner.nextLine();
             
-            String[] split = line.split("\\s|(?=[;])|(?=[,])|(?<=[(])|(?=[)])|(?<=[.])|(?=[.])");
+            String[] split = line.split("\\s|(?<=\\()|(?=\\))|(?=[;])|(?=[.])|(?<=[.])|(?<=[!])|(?=[,])");
             String newLine = "";
             for (int i = 0; i < split.length; i++){
                 if (parameters.containsKey(split[i])){
@@ -228,7 +228,7 @@ public class Obfuscator {
         while (scanner.hasNextLine()){
             String line = scanner.nextLine();
             
-            String[] split = line.split("\\s|(?=[;])|(?=[,])|(?<=[(])|(?=[)])|(?<=[.])|(?=[.])");
+            String[] split = line.split("\\s|(?<=\\()|(?=\\))|(?=[;])|(?=[.])|(?<=[.])|(?<=[!])");
             String newLine = "";
             for (int i = 0; i < split.length; i++){
                 if (variables.containsKey(split[i])){
@@ -322,6 +322,7 @@ public class Obfuscator {
     }
 
 }
+
 
 
 
