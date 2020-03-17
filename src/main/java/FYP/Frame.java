@@ -100,7 +100,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 			  e.printStackTrace();
 		  }
 	}
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -120,26 +120,29 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		
 
 		JPanel initialPanel = new JPanel();
-		layeredPane.add(initialPanel, "name_593191110180600");
+		layeredPane.add(initialPanel);
 		initialPanel.setLayout(null);
 		
 		JPanel sliderOptionPanel = new JPanel();
-		layeredPane.add(sliderOptionPanel, "name_593229759907800");
+		layeredPane.add(sliderOptionPanel);
 		sliderOptionPanel.setLayout(null);
 		
 		JPanel finalPanel = new JPanel();
-		layeredPane.add(finalPanel, "name_593233716152100");
+		layeredPane.add(finalPanel);
 		finalPanel.setLayout(null);
 		
 		//for advanced settings
 		JPanel advOptionsPanel = new JPanel();
-		layeredPane.add(advOptionsPanel, "name_593230996977100");
+		layeredPane.add(advOptionsPanel);
 		advOptionsPanel.setLayout(null);
 		
 		JPanel progressBarPanel = new JPanel();
-		layeredPane.add(progressBarPanel, "name_593232346549900");
+		layeredPane.add(progressBarPanel);
 		progressBarPanel.setLayout(null);
 		
+		JPanel statisticsPanel = new JPanel();
+		layeredPane.add(statisticsPanel);
+		statisticsPanel.setLayout(null);
 		//switch to desired frame for testing purposes
 		//switchPanel(sliderOptionPanel);
 		
@@ -189,10 +192,19 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		//End advanced settings panel
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		//Progress Bar panel
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		
 		JLabel lblProgressBarStatus = new JLabel("Scanning files...");
 		lblProgressBarStatus.setBounds(88, 219, 160, 16);
 		progressBarPanel.add(lblProgressBarStatus);
 		
+		
+		///////////////////////////////////////////////////////////////////////////////////////////////////
+		//Statistics panel
+		//////////////////////////////////////////////////////////////////////////////////////////////////
+
 		JButton btnViewOutput = new JButton("View output file");
 		btnViewOutput.setBounds(59, 196, 143, 25);
 		finalPanel.add(btnViewOutput);
@@ -247,6 +259,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		
 		JProgressBar progressBar = new JProgressBar(0, 100);
 		progressBar.setValue(0);
+		progressBar.setStringPainted(true);
 		progressBar.setBounds(88, 167, 560, 38);
 		/*
 		progressBar.addPropertyChangeListener((PropertyChangeListener)this);
@@ -339,6 +352,20 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 					//start obsfuscation
 					switchPanel(progressBarPanel);
 					obfuscator.obfuscate(inputTextfield.getText(), outputTextfield.getText(), difficulty);
+					//do delay to switch panel
+					int delay = 1000;
+					ActionListener taskPerformer = new ActionListener() {
+						public void actionPerformed(ActionEvent event) {
+							if (progressBar.getValue() < 100) {
+								progressBar.setValue(progressBar.getValue()+5);
+								if (progressBar.getValue() == 100) {
+									switchPanel(finalPanel);
+								}
+							}
+						}
+
+					};
+					new Timer(delay, taskPerformer).start();
 				}
 				catch (IOException e2)
 				{
@@ -346,6 +373,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 				}
 			}
 		});
+		
 		btnNextSliderPanel.setBounds(608, 380, 148, 25);
 		sliderOptionPanel.add(btnNextSliderPanel);
 		////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,8 +1,5 @@
 package FYP;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-
 import java.util.*;
 import java.io.*;
 
@@ -166,7 +163,7 @@ public class Obfuscator {
         while (scanner.hasNextLine()){
             String line = scanner.nextLine();
             
-            String[] split = line.split("\\s|(?<=\\()|(?=\\))|(?=[;])|(?=[.])|(?<=[.])|(?<=[!])|(?=[,])");
+            String[] split = line.split("\\[s]|(?<=\\()|(?=\\))|(?=[;])|(?=[.])|(?<=[.])|(?=[!])|(?=[,])");
             String newLine = "";
             for (int i = 0; i < split.length; i++){
                 if (parameters.containsKey(split[i])){
@@ -228,7 +225,7 @@ public class Obfuscator {
         while (scanner.hasNextLine()){
             String line = scanner.nextLine();
             
-            String[] split = line.split("\\s|(?<=\\()|(?=\\))|(?=[;])|(?=[.])|(?<=[.])|(?<=[!])");
+            String[] split = line.split("\\[s]|(?<=\\[(])|(?=\\[)])|(?=[;])|(?<=[.])|(?=[.])|(?=!])");
             String newLine = "";
             for (int i = 0; i < split.length; i++){
                 if (variables.containsKey(split[i])){
@@ -287,7 +284,7 @@ public class Obfuscator {
         char[] letters = new char[] {'1', 'I', 'l'};
         Random rand = new Random();
         String newWord = "";
-        int length = 12;
+        int wordLength = 12;
 
         char [] firstLetters = new char[] {'l', 'I'};
             //initialize first random character for new method name, first character cannot use '1'
@@ -298,7 +295,7 @@ public class Obfuscator {
             newWord = newWord + firstChar;
             
             //loop to generate random method name (eg. l1l1lll1IIl)
-            for (int i = 0; i < length; i++) {
+            for (int i = 0; i < wordLength; i++) {
                 int randomIndex = rand.nextInt(3);
                 char letter = letters[randomIndex];
                 newWord = newWord + letter;
@@ -309,11 +306,11 @@ public class Obfuscator {
     public String compileCode(String inputFilePath){
         String code = "";
         try {
-            CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
+            CompilationUnit cu = StaticJavaParser.parse(new FileInputStream(inputFilePath));
             code = cu.toString();
         } catch (FileNotFoundException fe) {
             System.out.println(fe.toString());
-        }
+        } 
         return code;
 
     }
