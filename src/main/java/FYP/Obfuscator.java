@@ -18,7 +18,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 public class Obfuscator {
     Statistics statistics = new Statistics();
-
+    
     public void obfuscate (String inputFilePath, String outputFilePath, int difficulty) {
 
         String code = compileCode(inputFilePath);
@@ -69,7 +69,8 @@ public class Obfuscator {
 
             //visit the nodes
             super.visit(md, hash);
-            if (!md.isAnnotationPresent("Override")){ //prevent changing method names that need the method to stay the same
+            
+            if (!md.isAnnotationPresent("Override") && !(md.isClassOrInterfaceDeclaration())){ //prevent changing method names that need the method to stay the same
                 String method = md.getNameAsString();
                 if (!method.equals("main")) { //cannot change main method name
                     String newMethodName = randomWord(); 
@@ -163,7 +164,7 @@ public class Obfuscator {
         while (scanner.hasNextLine()){
             String line = scanner.nextLine();
             
-            String[] split = line.split("\\s|(?<=\\()|(?=\\))|(?=[;])|(?=[.])|(?<=[.])|(?<=[!])|(?=[!])|(?<=[,])|(?=[,])");
+            String[] split = line.split("\\s|(?<=\\()|(?=\\))|(?=[;])|(?=[.])|(?<=[.])|(^?<=[!])|(?=!)|(?<=[,])|(?=[,])");
             String newLine = "";
             for (int i = 0; i < split.length; i++){
                 if (parameters.containsKey(split[i])){
@@ -225,7 +226,7 @@ public class Obfuscator {
         while (scanner.hasNextLine()){
             String line = scanner.nextLine();
             
-            String[] split = line.split("\\s|(?<=\\()|(?=\\))|(?=[;])|(?=[.])|(?<=[.])|(?<=[!])|(?=[!])|(?<=[,])|(?=[,])");
+            String[] split = line.split("\\s|(?<=\\()|(?=\\))|(?=[;])|(?=[.])|(?<=[.])|(^?<=[!])|(?=!)|(?<=[,])|(?=[,])");
             String newLine = "";
             for (int i = 0; i < split.length; i++){
                 if (variables.containsKey(split[i])){

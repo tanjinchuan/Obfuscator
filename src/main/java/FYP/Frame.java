@@ -202,24 +202,25 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		//Changelog panel
 		//////////////////////////////////////////////////////////////////////////////////////////////////
 
-		JTextField originalCodeField = new JTextField();
-		JTextField newCodeField = new JTextField();
-		originalCodeField.setBounds(0, 0, 400, 500);
-		newCodeField.setBounds(400, 0, 400, 500);
-		changelogPanel.add(originalCodeField);
-		changelogPanel.add(newCodeField);
+		JTextArea originalCodeArea = new JTextArea();
+		originalCodeArea.setPreferredSize(new Dimension(400,500));
+		JTextArea newCodeArea = new JTextArea();
+		newCodeArea.setPreferredSize(new Dimension(400,500));
 
-		JScrollBar scrollBar = new JScrollBar(JScrollBar.VERTICAL);
-		BoundedRangeModel brm = originalCodeField.getHorizontalVisibility();
+		//set the size of the text areas and add into panel
+		originalCodeArea.setBounds(0, 0, 380, 500);
+		newCodeArea.setBounds(400, 0, 380, 500);
+		
+		//set the text areas not editable
+		originalCodeArea.setEditable(false);
+		newCodeArea.setEditable(false);
+		
+		//add the text areas
+		changelogPanel.add(originalCodeArea);
+		changelogPanel.add(newCodeArea);
 
-		scrollBar.setModel(brm);
-		changelogPanel.add(scrollBar);
+		//create scrollbars
 		
-		JScrollBar scrollBar2 = new JScrollBar(JScrollBar.VERTICAL);
-		BoundedRangeModel brm2 = newCodeField.getHorizontalVisibility();
-		
-		scrollBar2.setModel(brm2);
-		changelogPanel.add(scrollBar2);
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////////
 		//Final panel
@@ -376,10 +377,12 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 					//start obsfuscation
 					switchPanel(progressBarPanel);
 					obfuscator.obfuscate(inputTextfield.getText(), outputTextfield.getText(), difficulty);
-
+					
+					String originalCode = obfuscator.compileCode(inputTextfield.getText());
+					String newCode = obfuscator.compileCode(outputTextfield.getText());
 					//show statistics
-					originalCodeField.setText(inputTextfield.getText());
-					newCodeField.setText(outputTextfield.getText());
+					originalCodeArea.setText(originalCode);
+					newCodeArea.setText(newCode);
 
 					//do delay to switch panel
 					int delay = 500;
