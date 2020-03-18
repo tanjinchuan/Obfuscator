@@ -70,7 +70,7 @@ public class Obfuscator {
             //visit the nodes
             super.visit(md, hash);
             
-            if (!md.isAnnotationPresent("Override") && !(md.isClassOrInterfaceDeclaration())){ //prevent changing method names that need the method to stay the same
+            if (!md.isAnnotationPresent("Override") && !(md.isPublic())){ //prevent changing method names that need the method to stay the same
                 String method = md.getNameAsString();
                 if (!method.equals("main")) { //cannot change main method name
                     String newMethodName = randomWord(); 
