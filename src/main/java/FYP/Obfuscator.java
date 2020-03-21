@@ -16,6 +16,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 
 
+
 public class Obfuscator {
     Statistics statistics = new Statistics();
     
@@ -40,7 +41,7 @@ public class Obfuscator {
             }
 
         }
-        statistics.printStats(statistics.getStats());
+        statistics.printStats(statistics.getStats(), statistics.getCount());
 
         try {
             FileWriter fw;
@@ -69,16 +70,14 @@ public class Obfuscator {
 
             //visit the nodes
             super.visit(md, hash);
-            
-            if (!md.isAnnotationPresent("Override") && !(md.isPublic())){ //prevent changing method names that need the method to stay the same
+            if (!md.isPublic() && !md.isAnnotationPresent("Override")){ //prevent changing method names that need the method to stay the same
                 String method = md.getNameAsString();
-                if (!method.equals("main")) { //cannot change main method name
-                    String newMethodName = randomWord(); 
+                String newMethodName = randomWord(); 
 
-                    //put into hash map
-                    hash.put(method, newMethodName);
+                //put into hash map
+                hash.put(method, newMethodName);
 
-                }
+            
             }
         }
 
@@ -106,10 +105,12 @@ public class Obfuscator {
             for (int i = 0; i < split.length; i++) {
                 if(methods.containsKey(split[i])) {
                     //changes the method name to new value name
-                    statistics.setMethodStats("Method Name: " + split[i], methods.get(split[i]));
+
+                    statistics.setMethodStats(split[i], methods.get(split[i]));
+
+                    statistics.increaseCount(split[i]); // save the number of times method changed
                     split[i] = methods.get(split[i]);
 
-                    
                     //save the names to statistics for printing
                 }  
             }
@@ -126,6 +127,7 @@ public class Obfuscator {
             
         }
         statistics.addToList(statistics.getMethodStats());
+
         scanner.close();
         return refactorCode(newCode);
 
@@ -170,7 +172,8 @@ public class Obfuscator {
                 if (parameters.containsKey(split[i])){
 
                     //save the names for printing later
-                    statistics.setParameterStats("Parameter Name: " + split[i], parameters.get(split[i]));
+                    statistics.setParameterStats(split[i], parameters.get(split[i]));
+                    statistics.increaseCount(split[i]); // save the number of times method changed
 
                     split[i] = parameters.get(split[i]); //set the variable name to new random word
                 }
@@ -188,7 +191,6 @@ public class Obfuscator {
             
 
         statistics.addToList(statistics.getParameterStats());
-
         scanner.close();
 
     
@@ -232,8 +234,9 @@ public class Obfuscator {
                 if (variables.containsKey(split[i])){
 
                     //save the names to statistics for printing
-                    statistics.setVariableStats("Variable Name: " + split[i], variables.get(split[i])); 
-                    
+                    statistics.setVariableStats(split[i], variables.get(split[i])); 
+                    statistics.increaseCount(split[i]); // save the number of times method changed
+
                     split[i] = variables.get(split[i]); //set the variable name to new random word
                     
                 }
@@ -269,13 +272,11 @@ public class Obfuscator {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Remove of comments
     public String removeComments(String code) {
+
         System.out.println("Removing Comments");
+        StaticJavaParser.getConfiguration().setAttributeComments(false);
         CompilationUnit cu = StaticJavaParser.parse(code);
 
-        for (Comment c : cu.getComments()){
-            c.remove();
-        }
-        
         code = cu.toString();
         return code;
            
@@ -315,8 +316,24 @@ public class Obfuscator {
         return code;
 
     }
-    public void writeFile(String outputFilePath) {
+    
 
+    private boolean isMethodOverriden(MethodDeclaration myMethod) {
+        Class<?> declaringClass = myMethod.getClass();
+        
+        if (declaringClass.equals(Object.class)) {
+            return false;
+        }
+        else {
+            try {
+                declaringClass.getSuperclass().getMethod(myMethod.getNameAsString());
+                return true;
+            } catch (NoSuchMethodException e) {
+                return false;
+            } 
+         
+        }
+        
     }
 
 }

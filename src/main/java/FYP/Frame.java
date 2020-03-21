@@ -17,8 +17,10 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 	private JFrame frame;
 	private final JLayeredPane layeredPane = new JLayeredPane();
 	private JTextField inputTextfield;
-	private JTextField outputTextfield;
+	private JTextField outputDirTextfield;
 	private int difficulty;
+	private JTextField outputFileTextfield;
+	private String outputFilePath;
 	/**
 	 * Launch the application.
 	 */
@@ -117,6 +119,8 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		layeredPane.setLayout(new CardLayout(0, 0));
 		
 		JFileChooser fc = new JFileChooser();
+		JFileChooser fc2 = new JFileChooser();
+		fc2.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		
 
 		JPanel initialPanel = new JPanel();
@@ -143,8 +147,10 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		JPanel changelogPanel = new JPanel();
 		layeredPane.add(changelogPanel);
 		changelogPanel.setLayout(null);
+		
+		
 		//switch to desired frame for testing purposes
-		//switchPanel(sliderOptionPanel);
+		//switchPanel(finalPanel);
 		
 		
 
@@ -165,7 +171,8 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 			public void actionPerformed(ActionEvent e) {
 
 				switchPanel(progressBarPanel);
-				obfuscator.obfuscate(inputTextfield.getText(), outputTextfield.getText(), difficulty);
+				obfuscator.obfuscate(inputTextfield.getText(), outputFilePath, difficulty);
+
 			}
 		});
 		btnNextAdvOptions.setBounds(620, 390, 97, 25);
@@ -228,13 +235,106 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		JButton btnViewOutput = new JButton("View output file");
 		btnViewOutput.setBounds(59, 196, 143, 25);
 		finalPanel.add(btnViewOutput);
+		btnViewOutput.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				/*
+				JOptionPane originalText = new JOptionPane();
+				JDialog dialog = originalText.createDialog(null, "Original");
+				dialog.setPreferredSize(new Dimension(400,400));
+				dialog.setLocationRelativeTo(frame);
+				dialog.pack();
+				dialog.setModal(false);
+				dialog.show();*/
+				
+				/*
+				JTextArea textArea = new JTextArea("Insert your Text here" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n");
+				JScrollPane scrollPane = new JScrollPane(textArea);  
+				textArea.setLineWrap(true);  
+				textArea.setWrapStyleWord(true); 
+				scrollPane.setPreferredSize( new Dimension( 500, 500 ) );
+				JOptionPane originalText = new JOptionPane();
+				JOptionPane.showConfirmDialog(frame, scrollPane, "Original", JOptionPane.CLOSED_OPTION , JOptionPane.PLAIN_MESSAGE, null);
+					
+				JTextArea textArea2 = new JTextArea(text);
+				JScrollPane scrollPane2 = new JScrollPane(textArea);  
+				textArea2.setLineWrap(true);  
+				textArea2.setWrapStyleWord(true); 
+				scrollPane2.setPreferredSize( new Dimension( 500, 500 ) );
+				JOptionPane originalText2 = new JOptionPane();
+				JOptionPane.showConfirmDialog(frame, scrollPane, "Original", JOptionPane.CLOSED_OPTION , JOptionPane.PLAIN_MESSAGE, null);
+				*/
+
+		        /*
+				UIManager.put("OptionPane.minimumSize",new Dimension(800,800)); 
+				JOptionPane.showConfirmDialog(frame, dialog, null, JOptionPane.CLOSED_OPTION , JOptionPane.PLAIN_MESSAGE, null);
+				*/
+				String originalText = "";
+				String obfuscatedText;
+				
+				for (int i = 0; i < 100; i++)
+				{
+					originalText = originalText + "Line " + i + "\n";
+				}
+				
+				obfuscatedText = originalText;
+						
+				
+				JTextArea originalTextArea = new JTextArea(originalText); 
+				originalTextArea.setLineWrap(true);  
+				originalTextArea.setWrapStyleWord(true); 
+				originalTextArea.setEditable(false);
+				JScrollPane originalScrollPane = new JScrollPane(originalTextArea); 
+				originalScrollPane.setPreferredSize(new Dimension(500, 500));
+				
+				JTextArea obfuscatedTextArea = new JTextArea(obfuscatedText);
+				obfuscatedTextArea.setEditable(false);
+				obfuscatedTextArea.setLineWrap(true);  
+				obfuscatedTextArea.setWrapStyleWord(true); 
+				JScrollPane obfuscatedScrollPane = new JScrollPane(obfuscatedTextArea);  
+				obfuscatedScrollPane.setPreferredSize(new Dimension(500, 500));
+				
+				/*
+				Object[] scrollPanes = {
+						"Original", scrollPane,
+						"Obfuscated", scrollPane2
+				};
+				*/
+				
+				Object[] scrollPanes = {
+						"Original", originalScrollPane,
+						"Obfuscated", obfuscatedScrollPane,
+				};
+				
+				UIManager.put("OptionPane.minimumSize",new Dimension(800,800)); 
+				JOptionPane.showConfirmDialog(frame, scrollPanes, null, JOptionPane.CLOSED_OPTION , JOptionPane.PLAIN_MESSAGE, null);
+				
+				
+				
+			}
+		});
 		
 		JButton btnViewChangelog = new JButton("View changelog");
 		btnViewChangelog.setBounds(310, 196, 143, 25);
 		finalPanel.add(btnViewChangelog);
 		btnViewChangelog.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				switchPanel(changelogPanel);
+				
+				String changelogtext = "";
+				for (int i = 0; i < 50; i++)
+				{
+					changelogtext = changelogtext + "Line " + i + "\n";
+				}
+				
+				JTextArea changelog = new JTextArea(changelogtext); 
+				changelog.setLineWrap(true);  
+				changelog.setWrapStyleWord(true); 
+				changelog.setEditable(false);
+				JScrollPane changelogScrollPane = new JScrollPane(changelog); 
+				changelogScrollPane.setPreferredSize(new Dimension(400, 400));
+				UIManager.put("OptionPane.minimumSize",new Dimension(400,400)); 
+				JOptionPane.showConfirmDialog(frame, changelog, null, JOptionPane.CLOSED_OPTION , JOptionPane.PLAIN_MESSAGE, null);
+				
 			}
 		});
 		
@@ -314,10 +414,11 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		initialPanel.add(inputTextfield);
 		inputTextfield.setColumns(10);
 		
-		outputTextfield = new JTextField();
-		outputTextfield.setColumns(10);
-		outputTextfield.setBounds(139, 193, 470, 22);
-		initialPanel.add(outputTextfield);
+		outputDirTextfield = new JTextField();
+		outputDirTextfield.setEditable(false);
+		outputDirTextfield.setColumns(10);
+		outputDirTextfield.setBounds(139, 217, 470, 22);
+		initialPanel.add(outputDirTextfield);
 		
 		btnFinish.setBounds(629, 386, 97, 25);
 		finalPanel.add(btnFinish);
@@ -326,8 +427,12 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		lblInputLabel.setBounds(48, 128, 56, 16);
 		initialPanel.add(lblInputLabel);
 		
+		JLabel lblOutputDir = new JLabel("Output dir");
+		lblOutputDir.setBounds(48, 220, 59, 16);
+		initialPanel.add(lblOutputDir);
+		
 		JLabel lblOutputFile = new JLabel("Output file");
-		lblOutputFile.setBounds(48, 196, 59, 16);
+		lblOutputFile.setBounds(48, 260, 59, 16);
 		initialPanel.add(lblOutputFile);
 		
 		JLabel sliderOptionDescriptionLabel = new JLabel("Description 0");
@@ -376,10 +481,10 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 					
 					//start obsfuscation
 					switchPanel(progressBarPanel);
-					obfuscator.obfuscate(inputTextfield.getText(), outputTextfield.getText(), difficulty);
+					obfuscator.obfuscate(inputTextfield.getText(), outputFilePath, difficulty);
 					
 					String originalCode = obfuscator.compileCode(inputTextfield.getText());
-					String newCode = obfuscator.compileCode(outputTextfield.getText());
+					String newCode = obfuscator.compileCode(outputFilePath);
 					//show statistics
 					originalCodeArea.setText(originalCode);
 					newCodeArea.setText(newCode);
@@ -456,39 +561,42 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		/*
 		//JSlider changes
 	    public void stateChanged(ChangeEvent e) {
-
 	        }*/
 		
 		JLabel inputFileTypeLabel = new JLabel("");
 		inputFileTypeLabel.setBounds(139, 151, 470, 16);
 		initialPanel.add(inputFileTypeLabel);
 		
-		JLabel outputFileTypeLabel2 = new JLabel("");
-		outputFileTypeLabel2.setBounds(139, 220, 470, 16);
-		initialPanel.add(outputFileTypeLabel2);
+		JLabel outputFileTypeLabel = new JLabel("");
+		outputFileTypeLabel.setBounds(139, 275, 470, 16);
+		initialPanel.add(outputFileTypeLabel);
 		
 		JButton btnNextInitialPanel = new JButton("Next");
 		btnNextInitialPanel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (outputTextfield.getText().equals("")) {
+				if (outputDirTextfield.getText().equals("") || outputDirTextfield.getText().equals("") || inputTextfield.getText().equals("")) {			
+					JOptionPane.showConfirmDialog(frame, "All fields must be filled", "Warning", JOptionPane.OK_OPTION);
+					}
+				else if (outputDirTextfield.getText() != "" && (outputFileTextfield.getText() != "")) {
+					String s = outputDirTextfield.getText();
+					String s2 = outputFileTextfield.getText();
+					String s3 = inputTextfield.getText();
+					outputFilePath = s + s2 + ".java";
 					
-					int response = JOptionPane.showConfirmDialog(frame, "Input file will be overwritten. Proceed?", "Warning", JOptionPane.YES_NO_OPTION);
-					if (response == JOptionPane.YES_OPTION) {
+					//if input file dir and output file dir and file is same name
+					if (inputTextfield.getText().equals(outputFilePath)) {
+						JOptionPane.showConfirmDialog(frame, "Input and output file cannot be the same", "Warning", JOptionPane.OK_OPTION);
+					}
+					
+					//if output file ext  is not valid
+					if (outputFileTextfield.getText().indexOf(".") > 0 ) { //if "." exists
+						JOptionPane.showConfirmDialog(frame, "Invalid output file name. Please exclude the file extension", "Warning", JOptionPane.OK_OPTION);
+					}
+					else{
+						File outputFile = new File (outputFilePath);
 						switchPanel(sliderOptionPanel);
 					}
-				}
-				else if (outputTextfield.getText() != "") {
-					String s = outputTextfield.getText();
-					String s2 = inputTextfield.getText();
-					if (checkExt(s) == false) { //if file ext is not valid 
-						outputFileTypeLabel2.setText("Invalid output file. Output file can only be a .java file");
-					}
-					else if (checkFileName(s, s2) == false){ //if input and output file names are different
-						switchPanel(sliderOptionPanel);
-					}
-					else if (checkFileName(s, s2) == true) { //if input and output file names are same
-						outputFileTypeLabel2.setText("Input and output file cannot have the same name");
-					}
+					
 							
 				}
 				
@@ -496,27 +604,26 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 				File file = new File ("./src/settings/easysettings.txt");
 				File file2 = new File ("./src/settings/advsettings.txt");
 
-				if (file2.exists())
-				{
+				if (file2.exists()) {
 					switchPanel(advOptionsPanel);
 				}
-				else if (file.exists())
-				{
+				else if (file.exists()) {
 					try {
 						Scanner scan = new Scanner(file);
-						int i = Integer.parseInt(scan.next());
+						int i = Integer.parseInt(scan.nextLine());
+						scan.close();
 						slider.setValue(i);
 						switchPanel(sliderOptionPanel);
+						
 					}
-					catch (FileNotFoundException e2)
-					{
+					catch (FileNotFoundException e2) {
 						e2.printStackTrace();
 					}
 				}
-					
-				
 			}
 		});
+		
+		
 		btnNextInitialPanel.setBounds(607, 385, 97, 25);
 		btnNextInitialPanel.setEnabled(false);
 		initialPanel.add(btnNextInitialPanel);
@@ -553,19 +660,19 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		advOptionsPanel.add(btnAdvDefaultSettings);
 		
 		
-		//File chooser function
-		JButton btnBrowseInitialPanel = new JButton("Browse...");
-		btnBrowseInitialPanel.addActionListener(new ActionListener() {
+		//File input chooser function
+		JButton btnInputBrowseInitialPanel = new JButton("Browse...");
+		btnInputBrowseInitialPanel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 				btnNextInitialPanel.setEnabled(false);
 		        //Handle open button action.
-		        if (e.getSource() == btnBrowseInitialPanel) {
+		        if (e.getSource() == btnInputBrowseInitialPanel) {
 		            int returnVal = fc.showOpenDialog(frame);
 
 		            if (returnVal == JFileChooser.APPROVE_OPTION) {
 		                File file = fc.getSelectedFile();
-		                //This is where a real application would open the file.
+		             
 		                inputTextfield.setText(file.getAbsolutePath());
 		                
 		                if (checkExt(file.getName()) == true) {
@@ -580,8 +687,63 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		}
 		});
 		
-		btnBrowseInitialPanel.setBounds(644, 124, 97, 25);
-		initialPanel.add(btnBrowseInitialPanel);
+		btnInputBrowseInitialPanel.setBounds(644, 124, 97, 25);
+		initialPanel.add(btnInputBrowseInitialPanel);
+		
+		//File output chooser function
+		JButton btnOutputBrowseInitialPanel = new JButton("Browse...");
+		btnOutputBrowseInitialPanel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				btnNextInitialPanel.setEnabled(false);
+		        //Handle open button action.
+		        if (e.getSource() == btnOutputBrowseInitialPanel) {
+		            int returnVal = fc2.showOpenDialog(frame);
+
+		            if (returnVal == JFileChooser.APPROVE_OPTION) {
+		                File file = fc2.getSelectedFile();
+		                
+		                outputDirTextfield.setText(file.getAbsolutePath());
+		                
+		                if (checkExt(file.getName()) == true) {
+		                	inputFileTypeLabel.setText("");
+		                	btnNextInitialPanel.setEnabled(true);
+		                }
+		                else {
+		                	inputFileTypeLabel.setText("Invalid input file");
+		                }
+		            } 
+			}
+		}
+		});
+				
+				btnOutputBrowseInitialPanel.setBounds(644, 216, 97, 25);
+				initialPanel.add(btnOutputBrowseInitialPanel);
+				
+				outputFileTextfield = new JTextField();
+				outputFileTextfield.setText("Enter output file name (without extension)");
+				outputFileTextfield.setColumns(10);
+				outputFileTextfield.setBounds(139, 257, 470, 22);
+				outputFileTextfield.addMouseListener(new MouseAdapter(){
+		            @Override
+		            public void mouseClicked(MouseEvent e){
+		            	outputFileTextfield.setText("");
+		            }
+		        });
+				outputFileTextfield.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						if ((outputFileTextfield.getText() != "") && (inputTextfield.getText() != "") 
+								&& (outputDirTextfield.getText() != "") && (inputFileTypeLabel.getText() != "")) {
+							btnNextInitialPanel.setEnabled(true);
+						}
+						else {
+							btnNextInitialPanel.setEnabled(false);
+						}
+
+				}
+				});
+				initialPanel.add(outputFileTextfield);
 		
 	}
 
@@ -597,10 +759,6 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		// TODO Auto-generated method stub
 		
 	}
-
-
-	
-
 }
 
 
