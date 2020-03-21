@@ -171,6 +171,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 			public void actionPerformed(ActionEvent e) {
 
 				switchPanel(progressBarPanel);
+				//obfuscate the file
 				obfuscator.obfuscate(inputTextfield.getText(), outputFilePath, difficulty);
 
 			}
@@ -209,24 +210,6 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		//Changelog panel
 		//////////////////////////////////////////////////////////////////////////////////////////////////
 
-		JTextArea originalCodeArea = new JTextArea();
-		originalCodeArea.setPreferredSize(new Dimension(400,500));
-		JTextArea newCodeArea = new JTextArea();
-		newCodeArea.setPreferredSize(new Dimension(400,500));
-
-		//set the size of the text areas and add into panel
-		originalCodeArea.setBounds(0, 0, 380, 500);
-		newCodeArea.setBounds(400, 0, 380, 500);
-		
-		//set the text areas not editable
-		originalCodeArea.setEditable(false);
-		newCodeArea.setEditable(false);
-		
-		//add the text areas
-		changelogPanel.add(originalCodeArea);
-		changelogPanel.add(newCodeArea);
-
-		//create scrollbars
 		
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -483,11 +466,6 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 					switchPanel(progressBarPanel);
 					obfuscator.obfuscate(inputTextfield.getText(), outputFilePath, difficulty);
 					
-					String originalCode = obfuscator.compileCode(inputTextfield.getText());
-					String newCode = obfuscator.compileCode(outputFilePath);
-					//show statistics
-					originalCodeArea.setText(originalCode);
-					newCodeArea.setText(newCode);
 
 					//do delay to switch panel
 					int delay = 500;
