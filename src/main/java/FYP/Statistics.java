@@ -34,25 +34,27 @@ class Statistics {
     }
 
     public void setMethodStats(String oldName, String newName) {
-        methodStats.put("Method Name: " + oldName, newName);
-        changeCount.put(oldName, 0); // initialize number of times changed to 0
+        methodStats.put(oldName, newName);
     }
 
     public void setVariableStats(String oldName, String newName) {
-        variableStats.put("Variable Name: " + oldName, newName);
-        changeCount.put(oldName, 0); // initialize number of times changed to 0
+        variableStats.put(oldName, newName);
 
     }
     
     public void setParameterStats(String oldName, String newName) {
-        parameterStats.put("Parameter Name: " + oldName, newName);
-        changeCount.put(oldName, 0); // initialize number of times changed to 0
+        parameterStats.put(oldName, newName);
 
     }
 
     public void increaseCount(String methodName) {
-        int count = changeCount.get(methodName);
-        changeCount.put(methodName, count+ 1);
+        if (changeCount.get(methodName) == null) {
+            changeCount.put(methodName, 0);
+        }
+        else {
+            int count = changeCount.get(methodName);
+            changeCount.put(methodName, count + 1);
+        }
     }
     public HashMap<String, Integer> getCount() {
         return changeCount;
@@ -60,13 +62,15 @@ class Statistics {
 
 
 
-    public void printStats(ArrayList<HashMap<String, String>> allStats, HashMap<String, Integer> allCount) {
+    public String printStats(ArrayList<HashMap<String, String>> allStats, HashMap<String, Integer> allCount) {
         System.out.println("\nStatistics\n==========================================================\n");
+        String text = "";
         for (HashMap<String, String> h: allStats) {
             for(HashMap.Entry<String, String> entry: h.entrySet()){
-                System.out.println(String.format("%-50s %5s %20s %20d",entry.getKey(), "------->", entry.getValue(), allCount.get(entry.getKey())));
+                text = text + String.format("%-40s %5s %-20s Replaced %2d times\n",entry.getKey(), "------->", entry.getValue(), allCount.get(entry.getKey()));
             }
         }
+        return text;
         
     }
 

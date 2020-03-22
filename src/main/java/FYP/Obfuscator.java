@@ -41,7 +41,7 @@ public class Obfuscator {
             }
 
         }
-        statistics.printStats(statistics.getStats(), statistics.getCount());
+        //statistics.printStats(statistics.getStats(), statistics.getCount());
 
         try {
             FileWriter fw;

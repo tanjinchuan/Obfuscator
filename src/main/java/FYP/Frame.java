@@ -20,6 +20,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 	private JTextField outputDirTextfield;
 	private int difficulty;
 	private JTextField outputFileTextfield;
+	private String inputFilePath;
 	private String outputFilePath;
 	/**
 	 * Launch the application.
@@ -108,6 +109,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 	 */
 	private void initialize() {
 		Obfuscator obfuscator = new Obfuscator();
+		Statistics statistics = obfuscator.statistics;
 
 		frame = new JFrame("Obsfuscator");
 		frame.setBounds(100, 100, 800, 500);
@@ -206,12 +208,6 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		progressBarPanel.add(lblProgressBarStatus);
 		
 		
-		///////////////////////////////////////////////////////////////////////////////////////////////////
-		//Changelog panel
-		//////////////////////////////////////////////////////////////////////////////////////////////////
-
-		
-		
 		//////////////////////////////////////////////////////////////////////////////////////////////////
 		//Final panel
 		//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -253,30 +249,36 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 				JOptionPane.showConfirmDialog(frame, dialog, null, JOptionPane.CLOSED_OPTION , JOptionPane.PLAIN_MESSAGE, null);
 				*/
 				String originalText = "";
-				String obfuscatedText;
+				String obfuscatedText = "";
 				
-				for (int i = 0; i < 100; i++)
-				{
-					originalText = originalText + "Line " + i + "\n";
-				}
+				// for (int i = 0; i < 100; i++)
+				// {
+				// 	originalText = originalText + "Line " + i + "\n";
+				// }
 				
-				obfuscatedText = originalText;
+				// obfuscatedText = originalText;
 						
 				
-				JTextArea originalTextArea = new JTextArea(originalText); 
+				JTextArea originalTextArea = new JTextArea(); 
 				originalTextArea.setLineWrap(true);  
 				originalTextArea.setWrapStyleWord(true); 
 				originalTextArea.setEditable(false);
 				JScrollPane originalScrollPane = new JScrollPane(originalTextArea); 
 				originalScrollPane.setPreferredSize(new Dimension(500, 500));
 				
-				JTextArea obfuscatedTextArea = new JTextArea(obfuscatedText);
+				JTextArea obfuscatedTextArea = new JTextArea();
 				obfuscatedTextArea.setEditable(false);
 				obfuscatedTextArea.setLineWrap(true);  
 				obfuscatedTextArea.setWrapStyleWord(true); 
 				JScrollPane obfuscatedScrollPane = new JScrollPane(obfuscatedTextArea);  
 				obfuscatedScrollPane.setPreferredSize(new Dimension(500, 500));
 				
+				//try try
+				originalText = obfuscator.compileCode(inputTextfield.getText());
+				originalTextArea.setText(originalText);
+
+				obfuscatedText = obfuscator.compileCode(outputFilePath);
+				obfuscatedTextArea.setText(obfuscatedText);
 				/*
 				Object[] scrollPanes = {
 						"Original", scrollPane,
@@ -296,6 +298,9 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 				
 			}
 		});
+		////////////////////////////////////////////////////////////////////////////////////////////////
+		//Changelog panel
+		///////////////////////////////////////////////////////////////////////////////////////////////
 		
 		JButton btnViewChangelog = new JButton("View changelog");
 		btnViewChangelog.setBounds(310, 196, 143, 25);
@@ -304,21 +309,24 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 			public void actionPerformed(ActionEvent e) {
 				
 				String changelogtext = "";
-				for (int i = 0; i < 50; i++)
-				{
-					changelogtext = changelogtext + "Line " + i + "\n";
-				}
-				
+				// for (int i = 0; i < 50; i++)
+				// {
+				// 	changelogtext = changelogtext + "Line " + i + "\n";
+				// }
+				//put statistics in changelog
+				changelogtext = statistics.printStats(statistics.getStats(), statistics.getCount());
+				System.out.println(outputFilePath);
 				JTextArea changelog = new JTextArea(changelogtext); 
 				changelog.setLineWrap(true);  
 				changelog.setWrapStyleWord(true); 
 				changelog.setEditable(false);
 				JScrollPane changelogScrollPane = new JScrollPane(changelog); 
-				changelogScrollPane.setPreferredSize(new Dimension(400, 400));
-				UIManager.put("OptionPane.minimumSize",new Dimension(400,400)); 
+				changelogScrollPane.setPreferredSize(new Dimension(800, 800));
+				UIManager.put("OptionPane.minimumSize",new Dimension(800, 800)); 
 				JOptionPane.showConfirmDialog(frame, changelog, null, JOptionPane.CLOSED_OPTION , JOptionPane.PLAIN_MESSAGE, null);
 				
-			}
+				
+	}
 		});
 		
 		JButton btnAnother = new JButton("Obfuscate another file");
@@ -464,7 +472,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 					
 					//start obsfuscation
 					switchPanel(progressBarPanel);
-					obfuscator.obfuscate(inputTextfield.getText(), outputFilePath, difficulty);
+					obfuscator.obfuscate(inputFilePath, outputFilePath, difficulty);
 					
 
 					//do delay to switch panel
@@ -559,7 +567,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 					String s = outputDirTextfield.getText();
 					String s2 = outputFileTextfield.getText();
 					String s3 = inputTextfield.getText();
-					outputFilePath = s + s2 + ".java";
+					outputFilePath = s + "\\" + s2 + ".java";
 					
 					//if input file dir and output file dir and file is same name
 					if (inputTextfield.getText().equals(outputFilePath)) {
@@ -652,7 +660,8 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		                File file = fc.getSelectedFile();
 		             
 		                inputTextfield.setText(file.getAbsolutePath());
-		                
+						inputFilePath = inputTextfield.getText();
+
 		                if (checkExt(file.getName()) == true) {
 		                	inputFileTypeLabel.setText("");
 		                	btnNextInitialPanel.setEnabled(true);
@@ -705,7 +714,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 				outputFileTextfield.addMouseListener(new MouseAdapter(){
 		            @Override
 		            public void mouseClicked(MouseEvent e){
-		            	outputFileTextfield.setText("");
+						outputFileTextfield.setText("");
 		            }
 		        });
 				outputFileTextfield.addActionListener(new ActionListener() {
@@ -714,6 +723,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 						if ((outputFileTextfield.getText() != "") && (inputTextfield.getText() != "") 
 								&& (outputDirTextfield.getText() != "") && (inputFileTypeLabel.getText() != "")) {
 							btnNextInitialPanel.setEnabled(true);
+							
 						}
 						else {
 							btnNextInitialPanel.setEnabled(false);
