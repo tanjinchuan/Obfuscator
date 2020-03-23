@@ -152,7 +152,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		
 		
 		//switch to desired frame for testing purposes
-		//switchPanel(finalPanel);
+		switchPanel(sliderOptionPanel);
 		
 		
 
@@ -291,7 +291,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 						"Obfuscated", obfuscatedScrollPane,
 				};
 				
-				UIManager.put("OptionPane.minimumSize",new Dimension(800,800)); 
+				UIManager.put("OptionPane.minimumSize",new Dimension(1200,1200)); 
 				JOptionPane.showConfirmDialog(frame, scrollPanes, null, JOptionPane.CLOSED_OPTION , JOptionPane.PLAIN_MESSAGE, null);
 				
 				
@@ -426,8 +426,8 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		lblOutputFile.setBounds(48, 260, 59, 16);
 		initialPanel.add(lblOutputFile);
 		
-		JLabel sliderOptionDescriptionLabel = new JLabel("Description 0");
-		sliderOptionDescriptionLabel.setBounds(92, 243, 562, 40);
+		JLabel sliderOptionDescriptionLabel = new JLabel();
+		sliderOptionDescriptionLabel.setBounds(92, 243, 900, 40);
 		sliderOptionPanel.add(sliderOptionDescriptionLabel);
 		
 		//JSlider + description label
@@ -440,16 +440,16 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 			int level = ((JSlider)e.getSource()).getValue();
 			difficulty = level;
 			if(level == 0) {
-				sliderOptionDescriptionLabel.setText("Comments removal | Name Obfuscation");
+				sliderOptionDescriptionLabel.setText("Comments removal | Method Name Obfuscation");
 			}
 			else if (level == 1) {
-				sliderOptionDescriptionLabel.setText("Description 1");
+				sliderOptionDescriptionLabel.setText("Comments Removal | Method Name Obfuscation | Variable Name Obfuscation");
 			}
 			else if (level == 2) {
-				sliderOptionDescriptionLabel.setText("Description 2");
+				sliderOptionDescriptionLabel.setText("Comments Removal | Method Name Obfuscation | Variable Name Obfuscation | Flow Obfuscation");
 			}
 			else if (level == 3) {
-				sliderOptionDescriptionLabel.setText("Description 3");
+				sliderOptionDescriptionLabel.setText("Comments Removal | Method Name Obfuscation | Variable Name Obfuscation | Flow Obfuscation | String Encoding");
 			}
 			
 			}

@@ -63,7 +63,6 @@ class Statistics {
 
 
     public String printStats(ArrayList<HashMap<String, String>> allStats, HashMap<String, Integer> allCount) {
-        System.out.println("\nStatistics\n==========================================================\n");
         String text = "";
         for (HashMap<String, String> h: allStats) {
             for(HashMap.Entry<String, String> entry: h.entrySet()){

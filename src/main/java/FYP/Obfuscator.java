@@ -7,6 +7,8 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+
 import com.github.javaparser.ast.body.Parameter;
 
 
@@ -28,6 +30,7 @@ public class Obfuscator {
             case 0: {
                 code = removeComments(code);
                 code = changeMethodNames(code);
+                code = changeInterfaceNames(code);
                 break;
             }	
             //difficulty 1 is plus variable obfuscation
@@ -35,6 +38,7 @@ public class Obfuscator {
 
                 code = removeComments(code);
                 code = changeMethodNames(code);
+                code = changeInterfaceNames(code);
                 code = changeVariableNames(code);
                 code = changeParameterNames(code);
                 break;
@@ -70,12 +74,15 @@ public class Obfuscator {
 
             //visit the nodes
             super.visit(md, hash);
-            if (!md.isPublic() && !md.isAnnotationPresent("Override")){ //prevent changing method names that need the method to stay the same
-                String method = md.getNameAsString();
-                String newMethodName = randomWord(); 
+            if (!md.getClass().isInterface() && !md.isAnnotationPresent("Override")){ //prevent changing method names that need the method to stay the same
+                if (!md.getNameAsString().equals("main")){
+                    String method = md.getNameAsString();
+                    String newMethodName = randomWord(); 
+                    hash.put(method, newMethodName);
 
+                }
+                
                 //put into hash map
-                hash.put(method, newMethodName);
 
             
             }
@@ -228,7 +235,7 @@ public class Obfuscator {
         while (scanner.hasNextLine()){
             String line = scanner.nextLine();
             
-            String[] split = line.split("\\s|(?<=\\()|(?=\\))|(?=[;])|(?=[.])|(?<=[.])|(^?<=[!])|(?=!)|(?<=[,])|(?=[,])");
+            String[] split = line.split("\\s|(?<=\\()|(?=\\))|(?=[;])|(?=[.])|(?<=[.])|(^?<=[!])|(?=!)|(?<=[,])|(?=[,])|(?=\\+)\\b");
             String newLine = "";
             for (int i = 0; i < split.length; i++){
                 if (variables.containsKey(split[i])){
@@ -318,22 +325,58 @@ public class Obfuscator {
     }
     
 
-    private boolean isMethodOverriden(MethodDeclaration myMethod) {
-        Class<?> declaringClass = myMethod.getClass();
-        
-        if (declaringClass.equals(Object.class)) {
-            return false;
-        }
-        else {
-            try {
-                declaringClass.getSuperclass().getMethod(myMethod.getNameAsString());
-                return true;
-            } catch (NoSuchMethodException e) {
-                return false;
+    private class InterfaceVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
+        @Override
+        public void visit(ClassOrInterfaceDeclaration c, HashMap<String, String> hash) {
+            super.visit(c, null);
+            if (c.isInterface() == true) {
+                System.out.println(c.getName());
+                hash.put(c.getName().toString(), randomWord());
             } 
-         
         }
+    }
+
+    public String changeInterfaceNames(String code) {
+        CompilationUnit cu = StaticJavaParser.parse(code);
+        HashMap<String, String> interfaceNames = new HashMap<String, String>();
+        VoidVisitorAdapter<HashMap<String, String>> InterfaceVisitor = new InterfaceVisitor();
+
+        InterfaceVisitor.visit(cu, interfaceNames);
         
+        
+        Scanner scanner = new Scanner(code);
+        String newCode = "";
+
+        while (scanner.hasNextLine()){
+            String line = scanner.nextLine();
+            
+            String[] split = line.split("\\s|(?<=\\()|(?=\\))|(?=[;])|(?=[.])|(?<=[.])|(^?<=[!])|(?=!)|(?<=[,])|(?=[,])");
+            String newLine = "";
+            for (int i = 0; i < split.length; i++){
+                if (interfaceNames.containsKey(split[i])){
+
+                    //save the names to statistics for printing
+                    statistics.setVariableStats(split[i], interfaceNames.get(split[i])); 
+                    statistics.increaseCount(split[i]); // save the number of times method changed
+
+                    split[i] = interfaceNames.get(split[i]); //set the variable name to new random word
+                    
+                }
+                
+            }
+
+            for (int i = 0; i < split.length; i++){
+                //put together back the line
+                newLine = newLine + split[i] + " ";
+            }
+
+            //put together the code
+            newCode = newCode + newLine + "\n";
+        }
+            
+        scanner.close();
+
+        return newCode;
     }
 
 }
