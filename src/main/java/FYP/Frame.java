@@ -109,7 +109,6 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 	 */
 	private void initialize() {
 		Obfuscator obfuscator = new Obfuscator();
-		Statistics statistics = obfuscator.statistics;
 
 		frame = new JFrame("Obsfuscator");
 		frame.setBounds(100, 100, 800, 500);
@@ -314,7 +313,8 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 				// 	changelogtext = changelogtext + "Line " + i + "\n";
 				// }
 				//put statistics in changelog
-				changelogtext = statistics.printStats(statistics.getStats(), statistics.getCount());
+
+				changelogtext = obfuscator.getStatistics();
 				System.out.println(outputFilePath);
 				JTextArea changelog = new JTextArea(changelogtext); 
 				changelog.setLineWrap(true);  
