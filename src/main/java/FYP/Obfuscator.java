@@ -11,8 +11,6 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 
 import com.github.javaparser.ast.body.Parameter;
 
-
-import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
@@ -46,7 +44,6 @@ public class Obfuscator {
             }
 
         }
-        //statistics.printStats(statistics.getStats(), statistics.getCount());
 
         try {
             FileWriter fw;
@@ -103,15 +100,19 @@ public class Obfuscator {
 
         
         //initialize method statistics
-        Statistics methodStats = new Statistics();
-        methodStats.setType("Method");
+        Statistics stats = new Statistics();
+        stats.setType("Method");
 
 
         Scanner scanner = new Scanner(code);
 
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
+            if (line.startsWith("import")) {
+                newCode = newCode + line + "\n";
 
+                continue;
+            }
             String[] split = line.split("\\s|(?=[(])|(?<=[.])"); 
             //(eg. public void setName(String s) will split into ["public","void", "setName", "(", "String", "s", ")"])
             
@@ -121,8 +122,8 @@ public class Obfuscator {
             for (int i = 0; i < split.length; i++) {
                 if(methods.containsKey(split[i])) {
 
-                    methodStats.setStats(split[i], methods.get(split[i]));
-                    methodStats.increaseCount(split[i]); // save the number of times method changed
+                    stats.setStats(split[i], methods.get(split[i]));
+                    stats.increaseCount(split[i]); // save the number of times method changed
                     //save the names to statistics for printing
 
                     //changes the method name to new value name
@@ -142,7 +143,7 @@ public class Obfuscator {
             newCode = newCode + newLine + "\n";
             
         }
-        statistics.add(methodStats);
+        statistics.add(stats);
 
         scanner.close();
         return refactorCode(newCode);
@@ -175,8 +176,8 @@ public class Obfuscator {
 
 
         //initialize parameter statistics
-        Statistics parameterStats = new Statistics();
-        parameterStats.setType("Parameter");
+        Statistics stats = new Statistics();
+        stats.setType("Parameter");
         
         
         Scanner scanner = new Scanner(code);
@@ -187,15 +188,19 @@ public class Obfuscator {
         //loop each line of code in file
         while (scanner.hasNextLine()){
             String line = scanner.nextLine();
-            
+            if (line.startsWith("import")) {
+                newCode = newCode + line + "\n";
+
+                continue;
+            }
             String[] split = line.split("\\s|(?<=\\()|(?=\\))|(?=[;])|(?=[.])|(?<=[.])|(^?<=[!])|(?=!)|(?<=[,])|(?=[,])");
             String newLine = "";
             for (int i = 0; i < split.length; i++){
                 if (parameters.containsKey(split[i])){
 
                     //save the names for printing later
-                    parameterStats.setStats(split[i], parameters.get(split[i]));
-                    parameterStats.increaseCount(split[i]); // save the number of times method changed
+                    stats.setStats(split[i], parameters.get(split[i]));
+                    stats.increaseCount(split[i]); // save the number of times method changed
 
                     split[i] = parameters.get(split[i]); //set the variable name to new random word
                 }
@@ -212,7 +217,7 @@ public class Obfuscator {
         }
             
 
-        statistics.add(parameterStats);
+        statistics.add(stats);
         scanner.close();
 
     
@@ -241,8 +246,8 @@ public class Obfuscator {
         variableNameVisitor.visit(cu, variables); //saves the variables into hashmap
 
         //initialize variable statistics
-        Statistics variableStats = new Statistics();
-        variableStats.setType("Variable");
+        Statistics stats = new Statistics();
+        stats.setType("Variable");
 
         
 
@@ -254,15 +259,19 @@ public class Obfuscator {
         //loop each line of code in file
         while (scanner.hasNextLine()){
             String line = scanner.nextLine();
-            
+            if (line.startsWith("import")) {
+                newCode = newCode + line + "\n";
+
+                continue;
+            }
             String[] split = line.split("\\s|(?<=\\()|(?=\\))|(?=[;])|(?=[.])|(?<=[.])|(^?<=[!])|(?=!)|(?<=[,])|(?=[,])|(?=\\+)\\b");
             String newLine = "";
             for (int i = 0; i < split.length; i++){
                 if (variables.containsKey(split[i])){
 
                     //save the names to statistics for printing
-                    variableStats.setStats(split[i], variables.get(split[i])); 
-                    variableStats.increaseCount(split[i]); // save the number of times method changed
+                    stats.setStats(split[i], variables.get(split[i])); 
+                    stats.increaseCount(split[i]); // save the number of times method changed
 
                     split[i] = variables.get(split[i]); //set the variable name to new random word
                     
@@ -281,7 +290,7 @@ public class Obfuscator {
             
         scanner.close();
 
-        statistics.add(variableStats);
+        statistics.add(stats);
 
     
         return refactorCode(newCode);
@@ -294,7 +303,7 @@ public class Obfuscator {
         public void visit(ClassOrInterfaceDeclaration c, HashMap<String, String> interfaceNames) {
             super.visit(c, null);
             if (c.isInterface() == true) {
-                interfaceNames.put(c.getName().toString(), randomWord());
+                interfaceNames.put(c.getNameAsString(), randomWord());
             } 
         }
     }
@@ -309,25 +318,26 @@ public class Obfuscator {
         InterfaceVisitor.visit(cu, interfaceNames);
         
         //initialize interface statistics
-        Statistics interfaceStats = new Statistics();
-        interfaceStats.setType("Method");
+        Statistics stats = new Statistics();
+        stats.setType("Interface");
 
-        
-        
         Scanner scanner = new Scanner(code);
         String newCode = "";
 
         while (scanner.hasNextLine()){
             String line = scanner.nextLine();
-            
+            if (line.startsWith("import")) {
+                newCode = newCode + line + "\n";
+                continue;
+            }
             String[] split = line.split("\\s|(?<=\\()|(?=\\))|(?=[;])|(?=[.])|(?<=[.])|(^?<=[!])|(?=!)|(?<=[,])|(?=[,])");
             String newLine = "";
             for (int i = 0; i < split.length; i++){
                 if (interfaceNames.containsKey(split[i])){
 
                     //save the names to statistics
-                    interfaceStats.setStats(split[i], interfaceNames.get(split[i])); 
-                    interfaceStats.increaseCount(split[i]); // save the number of times method changed
+                    stats.setStats(split[i], interfaceNames.get(split[i])); 
+                    stats.increaseCount(split[i]); // save the number of times method changed
 
                     split[i] = interfaceNames.get(split[i]); //set the variable name to new random word
                     
@@ -346,10 +356,11 @@ public class Obfuscator {
         
         scanner.close();
 
-        statistics.add(interfaceStats);
+        statistics.add(stats);
         return newCode;
     }
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //to use for printing all the stats in the frame.java
     public String getStatistics() {
         String text = "";
 
@@ -370,7 +381,6 @@ public class Obfuscator {
     //Remove of comments
     public String removeComments(String code) {
 
-        System.out.println("Removing Comments");
         StaticJavaParser.getConfiguration().setAttributeComments(false);
         CompilationUnit cu = StaticJavaParser.parse(code);
 

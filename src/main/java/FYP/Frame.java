@@ -113,6 +113,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		frame = new JFrame("Obsfuscator");
 		frame.setBounds(100, 100, 800, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLocationRelativeTo(null);
 		frame.setResizable(false);
 		frame.getContentPane().setLayout(null);
 		layeredPane.setBounds(0, 0, 782, 453);
@@ -151,7 +152,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		
 		
 		//switch to desired frame for testing purposes
-		switchPanel(sliderOptionPanel);
+		//switchPanel(finalPanel);
 		
 		
 
@@ -249,50 +250,53 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 				*/
 				String originalText = "";
 				String obfuscatedText = "";
-				
-				// for (int i = 0; i < 100; i++)
-				// {
-				// 	originalText = originalText + "Line " + i + "\n";
-				// }
-				
-				// obfuscatedText = originalText;
+			
+				originalText = obfuscator.compileCode(inputFilePath);
+				obfuscatedText = obfuscator.compileCode(outputFilePath);
+
+				JPanel comparePanel = new JPanel(new GridLayout(1, 2));
 						
 				
-				JTextArea originalTextArea = new JTextArea(); 
+				JTextArea originalTextArea = new JTextArea(originalText); 
 				originalTextArea.setLineWrap(true);  
 				originalTextArea.setWrapStyleWord(true); 
 				originalTextArea.setEditable(false);
 				JScrollPane originalScrollPane = new JScrollPane(originalTextArea); 
 				originalScrollPane.setPreferredSize(new Dimension(500, 500));
 				
-				JTextArea obfuscatedTextArea = new JTextArea();
+				JTextArea obfuscatedTextArea = new JTextArea(obfuscatedText);
 				obfuscatedTextArea.setEditable(false);
 				obfuscatedTextArea.setLineWrap(true);  
 				obfuscatedTextArea.setWrapStyleWord(true); 
 				JScrollPane obfuscatedScrollPane = new JScrollPane(obfuscatedTextArea);  
 				obfuscatedScrollPane.setPreferredSize(new Dimension(500, 500));
 				
+				comparePanel.add(originalScrollPane);
+				comparePanel.add(obfuscatedScrollPane);
+				
+				UIManager.put("OptionPane.minimumSize",new Dimension(800,800)); 
+				JOptionPane.showConfirmDialog(frame, comparePanel, "Comparing files", JOptionPane.CLOSED_OPTION , JOptionPane.PLAIN_MESSAGE, null);
+				
+				
+				/*
 				//try try
 				originalText = obfuscator.compileCode(inputTextfield.getText());
 				originalTextArea.setText(originalText);
-
 				obfuscatedText = obfuscator.compileCode(outputFilePath);
-				obfuscatedTextArea.setText(obfuscatedText);
-				/*
-				Object[] scrollPanes = {
-						"Original", scrollPane,
-						"Obfuscated", scrollPane2
-				};
+				obfuscatedTextArea.setText(obfuscatedText); 
+				
 				*/
 				
+				
+				/*
 				Object[] scrollPanes = {
 						"Original", originalScrollPane,
 						"Obfuscated", obfuscatedScrollPane,
 				};
 				
-				UIManager.put("OptionPane.minimumSize",new Dimension(1200,1200)); 
+				UIManager.put("OptionPane.minimumSize",new Dimension(800,800)); 
 				JOptionPane.showConfirmDialog(frame, scrollPanes, null, JOptionPane.CLOSED_OPTION , JOptionPane.PLAIN_MESSAGE, null);
-				
+				*/
 				
 				
 			}
@@ -308,12 +312,18 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 			public void actionPerformed(ActionEvent e) {
 				
 				String changelogtext = "";
-				// for (int i = 0; i < 50; i++)
-				// {
-				// 	changelogtext = changelogtext + "Line " + i + "\n";
-				// }
+				
+				
+				/*
+				for (int i = 0; i < 50; i++)
+				{
+				 	changelogtext = changelogtext + "Line " + i +  " daNP:DWUhfiofhneuwneGNOEWGNMROE[HGMNROE[HNRE[OHNREO[HNEIOHNREIOHNREI[R\n";
+				}
+				*/
+				
+				
+				
 				//put statistics in changelog
-
 				changelogtext = obfuscator.getStatistics();
 				System.out.println(outputFilePath);
 				JTextArea changelog = new JTextArea(changelogtext); 
@@ -321,9 +331,8 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 				changelog.setWrapStyleWord(true); 
 				changelog.setEditable(false);
 				JScrollPane changelogScrollPane = new JScrollPane(changelog); 
-				changelogScrollPane.setPreferredSize(new Dimension(800, 800));
-				UIManager.put("OptionPane.minimumSize",new Dimension(800, 800)); 
-				JOptionPane.showConfirmDialog(frame, changelog, null, JOptionPane.CLOSED_OPTION , JOptionPane.PLAIN_MESSAGE, null);
+				changelogScrollPane.setPreferredSize(new Dimension (800, 800));
+				JOptionPane.showConfirmDialog(frame, changelogScrollPane, "Changelog", JOptionPane.CLOSED_OPTION , JOptionPane.PLAIN_MESSAGE, null);
 				
 				
 	}
@@ -426,8 +435,8 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		lblOutputFile.setBounds(48, 260, 59, 16);
 		initialPanel.add(lblOutputFile);
 		
-		JLabel sliderOptionDescriptionLabel = new JLabel();
-		sliderOptionDescriptionLabel.setBounds(92, 243, 900, 40);
+		JLabel sliderOptionDescriptionLabel = new JLabel("Description 0");
+		sliderOptionDescriptionLabel.setBounds(92, 243, 562, 40);
 		sliderOptionPanel.add(sliderOptionDescriptionLabel);
 		
 		//JSlider + description label
@@ -440,23 +449,23 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 			int level = ((JSlider)e.getSource()).getValue();
 			difficulty = level;
 			if(level == 0) {
-				sliderOptionDescriptionLabel.setText("Comments removal | Method Name Obfuscation");
+				sliderOptionDescriptionLabel.setText("Comments removal | Name Obfuscation");
 			}
 			else if (level == 1) {
-				sliderOptionDescriptionLabel.setText("Comments Removal | Method Name Obfuscation | Variable Name Obfuscation");
+				sliderOptionDescriptionLabel.setText("Description 1");
 			}
 			else if (level == 2) {
-				sliderOptionDescriptionLabel.setText("Comments Removal | Method Name Obfuscation | Variable Name Obfuscation | Flow Obfuscation");
+				sliderOptionDescriptionLabel.setText("Description 2");
 			}
 			else if (level == 3) {
-				sliderOptionDescriptionLabel.setText("Comments Removal | Method Name Obfuscation | Variable Name Obfuscation | Flow Obfuscation | String Encoding");
+				sliderOptionDescriptionLabel.setText("Description 3");
 			}
 			
 			}
 		});
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
-		//Obfuscation part, after choosing slider
+		//Obfuscation part, after choosing difficulty
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		JButton btnNextSliderPanel = new JButton("Next");
 		btnNextSliderPanel.addActionListener(new ActionListener() {
@@ -560,52 +569,64 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		JButton btnNextInitialPanel = new JButton("Next");
 		btnNextInitialPanel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (outputDirTextfield.getText().equals("") || outputDirTextfield.getText().equals("") || inputTextfield.getText().equals("")) {			
-					JOptionPane.showConfirmDialog(frame, "All fields must be filled", "Warning", JOptionPane.OK_OPTION);
-					}
-				else if (outputDirTextfield.getText() != "" && (outputFileTextfield.getText() != "")) {
-					String s = outputDirTextfield.getText();
-					String s2 = outputFileTextfield.getText();
-					String s3 = inputTextfield.getText();
-					outputFilePath = s + "\\" + s2 + ".java";
-					
-					//if input file dir and output file dir and file is same name
-					if (inputTextfield.getText().equals(outputFilePath)) {
-						JOptionPane.showConfirmDialog(frame, "Input and output file cannot be the same", "Warning", JOptionPane.OK_OPTION);
-					}
-					
-					//if output file ext  is not valid
-					if (outputFileTextfield.getText().indexOf(".") > 0 ) { //if "." exists
-						JOptionPane.showConfirmDialog(frame, "Invalid output file name. Please exclude the file extension", "Warning", JOptionPane.OK_OPTION);
-					}
-					else{
-						File outputFile = new File (outputFilePath);
-						switchPanel(sliderOptionPanel);
-					}
-					
-							
-				}
 				
-				//check which settings file exists and direct to appropriate one
-				File file = new File ("./src/settings/easysettings.txt");
-				File file2 = new File ("./src/settings/advsettings.txt");
-
-				if (file2.exists()) {
-					switchPanel(advOptionsPanel);
-				}
-				else if (file.exists()) {
-					try {
-						Scanner scan = new Scanner(file);
-						int i = Integer.parseInt(scan.nextLine());
-						scan.close();
-						slider.setValue(i);
-						switchPanel(sliderOptionPanel);
+					if (outputDirTextfield.getText().equals("") || outputFileTextfield.getText().equals("") || inputTextfield.getText().equals("")) {	
 						
+						JOptionPane.showMessageDialog(frame, "All fields must be filled", "Warning", JOptionPane.OK_OPTION);
+						
+						}
+					else if (inputFileTypeLabel.getText() != "") {
+						
+						JOptionPane.showMessageDialog(frame, "Please check input file", "Warning", JOptionPane.OK_OPTION);
 					}
-					catch (FileNotFoundException e2) {
-						e2.printStackTrace();
+						
+					else if ((outputDirTextfield.getText() != "") && (outputFileTextfield.getText() != "") && (inputTextfield.getText() != "") && (inputFileTypeLabel.getText() == "")) 
+					{
+						String s = outputDirTextfield.getText();
+						String s2 = outputFileTextfield.getText();
+						String s3 = inputTextfield.getText();
+						outputFilePath = s + "\\" + s2 + ".java";
+						
+						//if input file dir and output file dir and file is same name
+						if (inputTextfield.getText().equals(outputFilePath)) 
+						{
+							JOptionPane.showMessageDialog(frame, "Input and output file cannot be the same", "Warning", JOptionPane.OK_OPTION);
+						}
+						 //if output file ext  is not valid
+						else if (outputFileTextfield.getText().indexOf(".") > 0 ) 
+						{ //if "." exists
+							JOptionPane.showMessageDialog(frame, "Invalid output file name. Please exclude the file extension", "Warning", JOptionPane.OK_OPTION);
+						}
+						else
+						{
+							//check which settings file exists and direct to appropriate one
+							File file = new File ("./src/settings/easysettings.txt");
+							File file2 = new File ("./src/settings/advsettings.txt");
+
+							if (file2.exists()) {
+								System.out.println("here");
+								switchPanel(advOptionsPanel);
+							}
+							else if (file.exists()) {
+								try {
+									Scanner scan = new Scanner(file);
+									int i = Integer.parseInt(scan.nextLine());
+									scan.close();
+									slider.setValue(i);
+									switchPanel(sliderOptionPanel);
+									
+								}
+								catch (FileNotFoundException e2) {
+									e2.printStackTrace();
+								}
+							}
+							else {
+								switchPanel(sliderOptionPanel);
+							}
+						}
 					}
-				}
+				
+				
 			}
 		});
 		
@@ -664,13 +685,21 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 
 		                if (checkExt(file.getName()) == true) {
 		                	inputFileTypeLabel.setText("");
-		                	btnNextInitialPanel.setEnabled(true);
 		                }
 		                else {
-		                	inputFileTypeLabel.setText("Invalid input file");
+		                	inputFileTypeLabel.setText("Invalid file extension");
 		                }
-		            } 
-			}
+		     
+							
+					}
+	            } 
+		        
+		        if ((outputFileTextfield.getText() == "") && (inputTextfield.getText() == "") && (outputDirTextfield.getText() == "") && 
+						 (inputFileTypeLabel.getText() != "")) 
+					{
+		        	
+						btnNextInitialPanel.setEnabled(true);
+					}
 		}
 		});
 		
@@ -683,6 +712,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 			public void actionPerformed(ActionEvent e) {
 				
 				btnNextInitialPanel.setEnabled(false);
+				
 		        //Handle open button action.
 		        if (e.getSource() == btnOutputBrowseInitialPanel) {
 		            int returnVal = fc2.showOpenDialog(frame);
@@ -691,16 +721,14 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		                File file = fc2.getSelectedFile();
 		                
 		                outputDirTextfield.setText(file.getAbsolutePath());
-		                
-		                if (checkExt(file.getName()) == true) {
-		                	inputFileTypeLabel.setText("");
-		                	btnNextInitialPanel.setEnabled(true);
-		                }
-		                else {
-		                	inputFileTypeLabel.setText("Invalid input file");
-		                }
 		            } 
 			}
+		        if ((outputFileTextfield.getText() == "") && (inputTextfield.getText() == "") && (outputDirTextfield.getText() == "") && 
+						 (inputFileTypeLabel.getText() != "")) 
+					{
+		        	
+						btnNextInitialPanel.setEnabled(true);
+					}
 		}
 		});
 				
@@ -717,20 +745,22 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 						outputFileTextfield.setText("");
 		            }
 		        });
+				
+				
+				
 				outputFileTextfield.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						if ((outputFileTextfield.getText() != "") && (inputTextfield.getText() != "") 
-								&& (outputDirTextfield.getText() != "") && (inputFileTypeLabel.getText() != "")) {
-							btnNextInitialPanel.setEnabled(true);
-							
-						}
-						else {
-							btnNextInitialPanel.setEnabled(false);
-						}
+						if ((outputFileTextfield.getText() != "") && (inputTextfield.getText() != "") && (outputDirTextfield.getText() != "") && 
+								 (inputFileTypeLabel.getText() == "")) 
+							{
+				        	
+								btnNextInitialPanel.setEnabled(true);
+							}
+						
 
 				}
-				});
+				}); 
 				initialPanel.add(outputFileTextfield);
 		
 	}
@@ -748,7 +778,3 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		
 	}
 }
-
-
-	
-
