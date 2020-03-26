@@ -114,7 +114,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		ArrayList<String> questions = new ArrayList<String>();
 		JTextArea tutorialTextArea = new JTextArea();
 		JDialog tutorialDialog = new JDialog();
-		tutorialTextArea.setSize(900,780);
+		tutorialTextArea.setSize(1080,650);
 		
 		for (int i = 1; i < 10; i++)
 		{
@@ -155,22 +155,22 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		
 		JPanel tutorialPanel = new JPanel();
 		tutorialPanel.setLayout(null);
-		tutorialPanel.setPreferredSize(new Dimension(800,800));
+		tutorialPanel.setPreferredSize(new Dimension(1080,650));
 		tutorialTextArea.setText(questions.get(currIndex));
 		tutorialTextArea.setLineWrap(true);  
 		tutorialTextArea.setWrapStyleWord(true); 
 		tutorialTextArea.setEditable(false);
 		tutorialPanel.add(tutorialTextArea);
-		btnTutorialBack.setBounds(30, 800, 97, 25);
-		btnTutorialNext.setBounds(750, 800, 97, 25);
-		btnTutorialEnd.setBounds(390, 800, 97, 25);
+		btnTutorialBack.setBounds(30, 680, 97, 25);
+		btnTutorialNext.setBounds(940, 680, 97, 25);
+		btnTutorialEnd.setBounds(480, 680, 97, 25);
 		
 		tutorialPanel.add(btnTutorialBack);
 		tutorialPanel.add(btnTutorialNext);
 		tutorialPanel.add(btnTutorialEnd);
 		
 		tutorialDialog.setLayout(null);
-		tutorialDialog.setSize(900,900);
+		tutorialDialog.setSize(1080,780);
 		tutorialDialog.add(tutorialTextArea);
 		tutorialDialog.add(btnTutorialBack);
 		tutorialDialog.add(btnTutorialNext);
