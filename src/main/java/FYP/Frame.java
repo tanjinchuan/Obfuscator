@@ -2,7 +2,9 @@ package FYP;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Random;
 import java.util.Scanner;
 import java.awt.*;
 import java.awt.event.*;
@@ -105,18 +107,18 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		  }
 	}
 	
+	
 	//tutorial pop up frame
 	private void showTutorial() {
-		
-		ArrayList<String> testText = new ArrayList<String>();
+		//add questions inside arraylist
+		ArrayList<String> questions = new ArrayList<String>();
 		JTextArea tutorialTextArea = new JTextArea();
 		JDialog tutorialDialog = new JDialog();
-		//JTextArea tutorialTextArea = new JTextArea(50, 110);
 		tutorialTextArea.setSize(900,780);
 		
-		for (int i = 1; i < 101; i++)
+		for (int i = 1; i < 10; i++)
 		{
-			testText.add("Line " + (i) + " jkntewnkj;rewagnerngheroagneor[");
+			questions.add("Line " + (i) + " jkntewnkj;rewagnerngheroagneor[");
 			
 		}
 		
@@ -124,8 +126,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		btnTutorialEnd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				tutorialDialog.setVisible(false);
-				
+				tutorialDialog.dispose();
 			}
 		});
 		
@@ -136,7 +137,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 				
 				if (currIndex > 0) {
 					currIndex--;
-					tutorialTextArea.setText(testText.get(currIndex));
+					tutorialTextArea.setText(questions.get(currIndex));
 				}
 			}
 		});
@@ -145,16 +146,17 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		btnTutorialNext.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				if (currIndex < questions.size() -1) {
 					currIndex++;
-					tutorialTextArea.setText(testText.get(currIndex));
-				
+					tutorialTextArea.setText(questions.get(currIndex));
+				}
 			}
 		});
 		
 		JPanel tutorialPanel = new JPanel();
 		tutorialPanel.setLayout(null);
 		tutorialPanel.setPreferredSize(new Dimension(800,800));
-		tutorialTextArea.setText(testText.get(currIndex));
+		tutorialTextArea.setText(questions.get(currIndex));
 		tutorialTextArea.setLineWrap(true);  
 		tutorialTextArea.setWrapStyleWord(true); 
 		tutorialTextArea.setEditable(false);
@@ -233,10 +235,10 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		
 		JPanel quizPanel = new JPanel();
 		layeredPane.add(quizPanel);
-		changelogPanel.setLayout(null);
+		quizPanel.setLayout(null);
 		
 		//switch to specific starting frame when testing
-		//switchPanel(finalPanel);
+		switchPanel(finalPanel);
 		
 		
 
@@ -362,6 +364,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		btnViewTutorial.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				showTutorial();
+				switchPanel(finalPanel);
 			}
 		});
 		btnViewTutorial.setBounds(163, 180, 131, 63);
@@ -411,6 +414,73 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		progressBar.setValue(0);
 		progressBar.setStringPainted(true);
 		progressBar.setBounds(88, 167, 560, 38);
+		
+		
+		
+		////////////////////////////////////////////////////////////////////////////////////////////////
+		//Quiz panel
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		
+		//add questions to key and answer to value
+		HashMap<String,String> qnPool=new HashMap<String,String>(); 
+		
+		qnPool.put("Answer true or false to the following statement: \nObfuscation is used to make source code as unreadable as possible", "True");
+		
+		Random rand = new Random();
+		int random = rand.nextInt(qnPool.size()) + 0;
+		
+		Object[] values = qnPool.keySet().toArray();
+		String question = values[random].toString();
+		
+		
+		JTextArea quizTextArea = new JTextArea(question);
+		quizTextArea.setEditable(false);
+		quizTextArea.setBounds(12, 13, 758, 249);
+		
+		JRadioButton rdbtnTrue = new JRadioButton("True");
+		rdbtnTrue.setBounds(113, 297, 127, 25);
+		
+		JRadioButton rdbtnFalse = new JRadioButton("False");
+		rdbtnFalse.setBounds(113, 332, 127, 25);
+		
+		JLabel lblStatus = new JLabel();
+		lblStatus.setBounds(460, 399, 207, 25);
+		
+		ButtonGroup rdbtnGroup = new ButtonGroup();
+		rdbtnGroup.add(rdbtnFalse);
+		rdbtnGroup.add(rdbtnTrue);
+		
+		JButton btnQuizNext = new JButton("Next");
+		btnQuizNext.setBounds(640, 399, 97, 25);
+		btnQuizNext.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				String ans = qnPool.get(question);
+				
+				
+				if (rdbtnGroup.getSelection()==null) {
+					lblStatus.setText("Please select an answer");
+				}
+				else if (rdbtnTrue.isSelected() && (rdbtnTrue.getText().toLowerCase().equals(ans.toLowerCase()))) {
+					lblStatus.setText("Correct!");
+				}
+				else {
+					lblStatus.setText("Wrong! The answer is " + ans.toLowerCase());
+				}
+				qnPool.remove(question);
+				
+			}
+		});
+		
+		
+		quizPanel.add(quizTextArea);
+		quizPanel.add(btnQuizNext);
+		quizPanel.add(rdbtnTrue);
+		quizPanel.add(rdbtnFalse);
+		quizPanel.add(lblStatus);
+		
+		
+		
 		
 		
 		
@@ -518,6 +588,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		btnTakeTutorial.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				showTutorial();
+				switchPanel(finalPanel);
 			}
 		});
 		finalPanel.add(btnTakeTutorial);
@@ -525,14 +596,15 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		
 		JButton btnQuiz = new JButton("Take quiz");
 		btnQuiz.setBounds(436, 270, 143, 25);
-		btnTakeTutorial.addActionListener(new ActionListener() {
+		btnQuiz.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				switchPanel(quizPanel);
 			}
 		});
+		finalPanel.add(btnQuiz); 
 		
 		
-		finalPanel.add(btnQuiz);
+		
 		
 		////////////////////////////////////////////////////////////////////////////////////////////////
 		//Changelog panel
@@ -573,6 +645,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		
 		/////////////////////////////////////////////////////////////////////////////////////////////////
 		//for adv options
+		/////////////////////////////////////////////////////////////////////////////////////////////////
 		JComboBox comboBox = new JComboBox();
 		comboBox.setToolTipText("Select one");
 		comboBox.setBounds(176, 144, 87, 22);
