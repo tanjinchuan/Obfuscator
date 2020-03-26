@@ -1,6 +1,7 @@
 package FYP;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Scanner;
 import java.awt.*;
@@ -22,6 +23,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 	private JTextField outputFileTextfield;
 	private String inputFilePath;
 	private String outputFilePath;
+	private int currIndex = 0;
 	/**
 	 * Launch the application.
 	 */
@@ -41,7 +43,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 	}
 	
 	//function for next/back btns
-	public void switchPanel(JPanel panel) {
+	private void switchPanel(JPanel panel) {
 		layeredPane.removeAll();
 		layeredPane.add(panel);
 		layeredPane.repaint();
@@ -49,7 +51,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 	}
 	
 	//check selected file ext	
-	public boolean checkExt(String fileName) {
+	private boolean checkExt(String fileName) {
 		fileName = fileName.toLowerCase();
 		if(fileName.indexOf(".")!=-1) {
 			String s =(fileName.substring(fileName.lastIndexOf(".") + 1));
@@ -66,8 +68,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		}
 	}
 	
-	public boolean checkFileName(String inputFile, String outputFile)
-	{
+	public boolean checkFileName(String inputFile, String outputFile) {
 		if (inputFile.equals(outputFile)) {
 			return true;
 		}
@@ -103,7 +104,84 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 			  e.printStackTrace();
 		  }
 	}
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	//tutorial pop up frame
+	private void showTutorial() {
+		
+		ArrayList<String> testText = new ArrayList<String>();
+		JTextArea tutorialTextArea = new JTextArea();
+		JDialog tutorialDialog = new JDialog();
+		//JTextArea tutorialTextArea = new JTextArea(50, 110);
+		tutorialTextArea.setSize(900,780);
+		
+		for (int i = 1; i < 101; i++)
+		{
+			testText.add("Line " + (i) + " jkntewnkj;rewagnerngheroagneor[");
+			
+		}
+		
+		JButton btnTutorialEnd = new JButton("End tutorial");
+		btnTutorialEnd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				tutorialDialog.setVisible(false);
+				
+			}
+		});
+		
+		JButton btnTutorialBack = new JButton("Back");
+		btnTutorialBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+				if (currIndex > 0) {
+					currIndex--;
+					tutorialTextArea.setText(testText.get(currIndex));
+				}
+			}
+		});
+		
+		JButton btnTutorialNext = new JButton("Next");
+		btnTutorialNext.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+					currIndex++;
+					tutorialTextArea.setText(testText.get(currIndex));
+				
+			}
+		});
+		
+		JPanel tutorialPanel = new JPanel();
+		tutorialPanel.setLayout(null);
+		tutorialPanel.setPreferredSize(new Dimension(800,800));
+		tutorialTextArea.setText(testText.get(currIndex));
+		tutorialTextArea.setLineWrap(true);  
+		tutorialTextArea.setWrapStyleWord(true); 
+		tutorialTextArea.setEditable(false);
+		tutorialPanel.add(tutorialTextArea);
+		btnTutorialBack.setBounds(30, 800, 97, 25);
+		btnTutorialNext.setBounds(750, 800, 97, 25);
+		btnTutorialEnd.setBounds(390, 800, 97, 25);
+		
+		tutorialPanel.add(btnTutorialBack);
+		tutorialPanel.add(btnTutorialNext);
+		tutorialPanel.add(btnTutorialEnd);
+		
+		tutorialDialog.setLayout(null);
+		tutorialDialog.setSize(900,900);
+		tutorialDialog.add(tutorialTextArea);
+		tutorialDialog.add(btnTutorialBack);
+		tutorialDialog.add(btnTutorialNext);
+		tutorialDialog.add(btnTutorialEnd);
+		tutorialDialog.setTitle("Tutorial");
+		tutorialDialog.setLocationRelativeTo(null);
+		tutorialDialog.setVisible(true);
+		
+	}
+	
+	
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -124,10 +202,13 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		JFileChooser fc2 = new JFileChooser();
 		fc2.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		
-
 		JPanel initialPanel = new JPanel();
 		layeredPane.add(initialPanel);
 		initialPanel.setLayout(null);
+		
+		JPanel browsePanel = new JPanel();
+		layeredPane.add(browsePanel);
+		browsePanel.setLayout(null);
 		
 		JPanel sliderOptionPanel = new JPanel();
 		layeredPane.add(sliderOptionPanel);
@@ -150,8 +231,11 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		layeredPane.add(changelogPanel);
 		changelogPanel.setLayout(null);
 		
+		JPanel quizPanel = new JPanel();
+		layeredPane.add(quizPanel);
+		changelogPanel.setLayout(null);
 		
-		//switch to desired frame for testing purposes
+		//switch to specific starting frame when testing
 		//switchPanel(finalPanel);
 		
 		
@@ -178,18 +262,125 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 
 			}
 		});
+		
 		btnNextAdvOptions.setBounds(620, 390, 97, 25);
 		advOptionsPanel.add(btnNextAdvOptions);
 		
-		JButton btnBackSliderPanel = new JButton("Back");
-		btnBackSliderPanel.addActionListener(new ActionListener() {
+		////////////////////////////////////////////////////////////////////////////////////////////
+		//initial panel 
+		///////////////////////////////////////////////////////////////////////////////////////////
+		/*
+		ArrayList<String> testText = new ArrayList<String>();
+		JTextArea tutorialTextArea = new JTextArea();
+		JDialog tutorialDialog = new JDialog();
+		//JTextArea tutorialTextArea = new JTextArea(50, 110);
+		tutorialTextArea.setSize(900,780);
+		
+		for (int i = 1; i < 101; i++)
+		{
+			testText.add("Line " + (i) + " jkntewnkj;rewagnerngheroagneor[");
+			
+		}*/
+		
+		/*
+		JButton btnTutorialEnd = new JButton("End tutorial");
+		btnTutorialEnd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				switchPanel(initialPanel);
+				
+				tutorialDialog.setVisible(false);
+				
 			}
 		});
-		btnBackSliderPanel.setBounds(48, 380, 97, 25);
-		sliderOptionPanel.add(btnBackSliderPanel);
-
+		
+		JButton btnTutorialBack = new JButton("Back");
+		btnTutorialBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+				if (currIndex > 0) {
+					currIndex--;
+					tutorialTextArea.setText(testText.get(currIndex));
+				}
+			}
+		});
+		
+		JButton btnTutorialNext = new JButton("Next");
+		btnTutorialNext.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+					currIndex++;
+					tutorialTextArea.setText(testText.get(currIndex));
+				
+			}
+		});
+		
+		*/
+		
+		/*
+		JButton btnViewTutorial = new JButton("View tutorial");
+		btnViewTutorial.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+				JPanel tutorialPanel = new JPanel();
+				tutorialPanel.setLayout(null);
+				tutorialPanel.setPreferredSize(new Dimension(800,800));
+				tutorialTextArea.setText(testText.get(currIndex));
+				tutorialTextArea.setLineWrap(true);  
+				tutorialTextArea.setWrapStyleWord(true); 
+				tutorialTextArea.setEditable(false);
+				tutorialPanel.add(tutorialTextArea);
+				btnTutorialBack.setBounds(30, 800, 97, 25);
+				btnTutorialNext.setBounds(750, 800, 97, 25);
+				btnTutorialEnd.setBounds(390, 800, 97, 25);
+				
+				tutorialPanel.add(btnTutorialBack);
+				tutorialPanel.add(btnTutorialNext);
+				tutorialPanel.add(btnTutorialEnd);
+				
+				tutorialDialog.setLayout(null);
+				tutorialDialog.setSize(900,900);
+				tutorialDialog.add(tutorialTextArea);
+				tutorialDialog.add(btnTutorialBack);
+				tutorialDialog.add(btnTutorialNext);
+				tutorialDialog.add(btnTutorialEnd);
+				tutorialDialog.setTitle("Tutorial");
+				tutorialDialog.setLocationRelativeTo(null);
+				tutorialDialog.setVisible(true);
+				
+				
+				
+				
+				
+				//JOptionPane.showConfirmDialog(frame, tutorialPanel, "Tutorial", JOptionPane.CLOSED_OPTION , JOptionPane.PLAIN_MESSAGE, null);
+			}
+		});
+		btnViewTutorial.setBounds(163, 180, 131, 63);
+		
+		*/
+		JButton btnViewTutorial = new JButton("View tutorial");
+		btnViewTutorial.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showTutorial();
+			}
+		});
+		btnViewTutorial.setBounds(163, 180, 131, 63);
+		
+		JButton btnObfuscateFile = new JButton("Obfuscate a file");
+		btnObfuscateFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				switchPanel(browsePanel);
+			}
+		});
+		btnObfuscateFile.setBounds(426, 180, 144, 63);
+		
+		initialPanel.add(btnViewTutorial);
+		initialPanel.add(btnObfuscateFile);
+		
+		
+		////////////////////////////////////////////////////////////////////////////////////////////
+		//Slider panel 
+		///////////////////////////////////////////////////////////////////////////////////////////
 		JButton btnAdvancedSettings = new JButton("Advanced settings");
 		btnAdvancedSettings.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -199,6 +390,15 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		btnAdvancedSettings.setBounds(608, 336, 148, 25);
 		sliderOptionPanel.add(btnAdvancedSettings);
 		
+		JButton btnBackSliderPanel = new JButton("Back");
+		btnBackSliderPanel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				switchPanel(browsePanel);
+			}
+		});
+		btnBackSliderPanel.setBounds(48, 380, 97, 25);
+		sliderOptionPanel.add(btnBackSliderPanel);
+		
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		//Progress Bar panel
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -206,6 +406,12 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		JLabel lblProgressBarStatus = new JLabel("Scanning files...");
 		lblProgressBarStatus.setBounds(88, 219, 160, 16);
 		progressBarPanel.add(lblProgressBarStatus);
+		
+		JProgressBar progressBar = new JProgressBar(0, 100);
+		progressBar.setValue(0);
+		progressBar.setStringPainted(true);
+		progressBar.setBounds(88, 167, 560, 38);
+		
 		
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -301,6 +507,33 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 				
 			}
 		});
+		
+		JButton btnAnother = new JButton("Obfuscate another file");
+		btnAnother.setBounds(526, 196, 184, 25);
+		finalPanel.add(btnAnother);
+		
+		JButton btnTakeTutorial = new JButton("Take tutorial");
+		btnTakeTutorial.setBounds(178, 270, 143, 25);
+		
+		btnTakeTutorial.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showTutorial();
+			}
+		});
+		finalPanel.add(btnTakeTutorial);
+		
+		
+		JButton btnQuiz = new JButton("Take quiz");
+		btnQuiz.setBounds(436, 270, 143, 25);
+		btnTakeTutorial.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		
+		finalPanel.add(btnQuiz);
+		
 		////////////////////////////////////////////////////////////////////////////////////////////////
 		//Changelog panel
 		///////////////////////////////////////////////////////////////////////////////////////////////
@@ -320,9 +553,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 				 	changelogtext = changelogtext + "Line " + i +  " daNP:DWUhfiofhneuwneGNOEWGNMROE[HGMNROE[HNRE[OHNREO[HNEIOHNREIOHNREI[R\n";
 				}
 				*/
-				
-				
-				
+
 				//put statistics in changelog
 				changelogtext = obfuscator.getStatistics();
 				System.out.println(outputFilePath);
@@ -335,12 +566,10 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 				JOptionPane.showConfirmDialog(frame, changelogScrollPane, "Changelog", JOptionPane.CLOSED_OPTION , JOptionPane.PLAIN_MESSAGE, null);
 				
 				
-	}
+			}
 		});
 		
-		JButton btnAnother = new JButton("Obfuscate another file");
-		btnAnother.setBounds(526, 196, 184, 25);
-		finalPanel.add(btnAnother);
+		
 		
 		/////////////////////////////////////////////////////////////////////////////////////////////////
 		//for adv options
@@ -382,10 +611,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		chckbxNewCheckBox_7.setBounds(413, 274, 113, 25);
 		advOptionsPanel.add(chckbxNewCheckBox_7);
 		
-		JProgressBar progressBar = new JProgressBar(0, 100);
-		progressBar.setValue(0);
-		progressBar.setStringPainted(true);
-		progressBar.setBounds(88, 167, 560, 38);
+		
 		/*
 		progressBar.addPropertyChangeListener((PropertyChangeListener)this);
 		progressBar.addPropertyChangeListener(new PropertyChangeListener() {
@@ -411,29 +637,29 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		inputTextfield = new JTextField();
 		inputTextfield.setBounds(139, 125, 470, 22);
 		inputTextfield.setEditable(false);
-		initialPanel.add(inputTextfield);
+		browsePanel.add(inputTextfield);
 		inputTextfield.setColumns(10);
 		
 		outputDirTextfield = new JTextField();
 		outputDirTextfield.setEditable(false);
 		outputDirTextfield.setColumns(10);
 		outputDirTextfield.setBounds(139, 217, 470, 22);
-		initialPanel.add(outputDirTextfield);
+		browsePanel.add(outputDirTextfield);
 		
 		btnFinish.setBounds(629, 386, 97, 25);
 		finalPanel.add(btnFinish);
 		
 		JLabel lblInputLabel = new JLabel("Input file");
 		lblInputLabel.setBounds(48, 128, 56, 16);
-		initialPanel.add(lblInputLabel);
+		browsePanel.add(lblInputLabel);
 		
 		JLabel lblOutputDir = new JLabel("Output dir");
 		lblOutputDir.setBounds(48, 220, 59, 16);
-		initialPanel.add(lblOutputDir);
+		browsePanel.add(lblOutputDir);
 		
 		JLabel lblOutputFile = new JLabel("Output file");
 		lblOutputFile.setBounds(48, 260, 59, 16);
-		initialPanel.add(lblOutputFile);
+		browsePanel.add(lblOutputFile);
 		
 		JLabel sliderOptionDescriptionLabel = new JLabel("Description 0");
 		sliderOptionDescriptionLabel.setBounds(92, 243, 562, 40);
@@ -553,18 +779,13 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		
 
 		
-		/*
-		//JSlider changes
-	    public void stateChanged(ChangeEvent e) {
-	        }*/
-		
 		JLabel inputFileTypeLabel = new JLabel("");
 		inputFileTypeLabel.setBounds(139, 151, 470, 16);
-		initialPanel.add(inputFileTypeLabel);
+		browsePanel.add(inputFileTypeLabel);
 		
 		JLabel outputFileTypeLabel = new JLabel("");
 		outputFileTypeLabel.setBounds(139, 275, 470, 16);
-		initialPanel.add(outputFileTypeLabel);
+		browsePanel.add(outputFileTypeLabel);
 		
 		JButton btnNextInitialPanel = new JButton("Next");
 		btnNextInitialPanel.addActionListener(new ActionListener() {
@@ -596,6 +817,9 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 						else if (outputFileTextfield.getText().indexOf(".") > 0 ) 
 						{ //if "." exists
 							JOptionPane.showMessageDialog(frame, "Invalid output file name. Please exclude the file extension", "Warning", JOptionPane.OK_OPTION);
+						}
+						else if (outputFileTextfield.getText().indexOf(" ") > 0 ) {
+							JOptionPane.showMessageDialog(frame, "Invalid output file name.", "Warning", JOptionPane.OK_OPTION);
 						}
 						else
 						{
@@ -633,7 +857,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		
 		btnNextInitialPanel.setBounds(607, 385, 97, 25);
 		btnNextInitialPanel.setEnabled(false);
-		initialPanel.add(btnNextInitialPanel);
+		browsePanel.add(btnNextInitialPanel);
 		
 		//adv default settings btn
 		JButton btnAdvDefaultSettings = new JButton("Save as default settings");
@@ -694,17 +918,20 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 					}
 	            } 
 		        
-		        if ((outputFileTextfield.getText() == "") && (inputTextfield.getText() == "") && (outputDirTextfield.getText() == "") && 
-						 (inputFileTypeLabel.getText() != "")) 
-					{
-		        	
-						btnNextInitialPanel.setEnabled(true);
-					}
+		        
+		        //outputFileTextfield
+		        //inputTextfield
+		        //outputDirTextfield
+		        //inputFileTypeLabel
+		        
+		        if ((outputDirTextfield.getText() != "") && (inputTextfield.getText() != "") && (inputFileTypeLabel.getText() == "")) {
+		        	btnNextInitialPanel.setEnabled(true);
+		        }
 		}
 		});
 		
 		btnInputBrowseInitialPanel.setBounds(644, 124, 97, 25);
-		initialPanel.add(btnInputBrowseInitialPanel);
+		browsePanel.add(btnInputBrowseInitialPanel);
 		
 		//File output chooser function
 		JButton btnOutputBrowseInitialPanel = new JButton("Browse...");
@@ -722,18 +949,17 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		                
 		                outputDirTextfield.setText(file.getAbsolutePath());
 		            } 
-			}
-		        if ((outputFileTextfield.getText() == "") && (inputTextfield.getText() == "") && (outputDirTextfield.getText() == "") && 
-						 (inputFileTypeLabel.getText() != "")) 
-					{
-		        	
-						btnNextInitialPanel.setEnabled(true);
-					}
+		        }
+		        
+		        
+		        if ((outputDirTextfield.getText() != "") && (inputTextfield.getText() != "") && (inputFileTypeLabel.getText() == "")) {
+		        	btnNextInitialPanel.setEnabled(true);
+		        }
 		}
 		});
 				
 				btnOutputBrowseInitialPanel.setBounds(644, 216, 97, 25);
-				initialPanel.add(btnOutputBrowseInitialPanel);
+				browsePanel.add(btnOutputBrowseInitialPanel);
 				
 				outputFileTextfield = new JTextField();
 				outputFileTextfield.setText("Enter output file name (without extension)");
@@ -761,7 +987,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 
 				}
 				}); 
-				initialPanel.add(outputFileTextfield);
+				browsePanel.add(outputFileTextfield);
 		
 	}
 
