@@ -196,16 +196,16 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		tutorialPanel.setLayout(null);
 		tutorialPanel.setPreferredSize(new Dimension(1200, 700));
 
-		btnTutorialBack.setBounds(30, 800, 97, 25);
-		btnTutorialNext.setBounds(750, 800, 97, 25);
-		btnTutorialEnd.setBounds(390, 800, 97, 25);
+		btnTutorialBack.setBounds(30, 710, 97, 25);
+		btnTutorialNext.setBounds(870, 710, 97, 25);
+		btnTutorialEnd.setBounds(440, 710, 97, 25);
 		
 		tutorialPanel.add(btnTutorialBack);
 		tutorialPanel.add(btnTutorialNext);
 		tutorialPanel.add(btnTutorialEnd);
 		
 		tutorialDialog.setLayout(null);
-		tutorialDialog.setSize(1050,900);
+		tutorialDialog.setSize(1050,800);
 		tutorialDialog.add(btnTutorialBack);
 		tutorialDialog.add(btnTutorialNext);
 		tutorialDialog.add(btnTutorialEnd);
@@ -1000,7 +1000,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		}
 
 		JLabel answerLabel = new JLabel();
-		answerLabel.setBounds(450, 399, 100,50);
+		answerLabel.setBounds(450, 387, 100,50);
 		quizPanel.add(answerLabel);
 
 		
@@ -1048,6 +1048,7 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 					Questions question = quiz.quizList.get(quizIndex);
 					int options = question.getOptions();
 					quizTextArea.setText("Question " + (quizIndex+1) + " of " + quiz.quizList.size() + "\n" + question.getQuestion());
+					rdbtnGroup.clearSelection();
 					if (options == 2) {
 						rdbtn3.setVisible(false);
 						rdbtn4.setVisible(false);
