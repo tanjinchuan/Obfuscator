@@ -1,2 +1,5 @@
 src\\lessonImages\\lesson1.jpg
 src\\lessonImages\\lesson2.jpg
+src\\lessonImages\\lesson3.jpg
+src\\lessonImages\\lesson4.jpg
+src\\lessonImages\\lesson5.jpg
