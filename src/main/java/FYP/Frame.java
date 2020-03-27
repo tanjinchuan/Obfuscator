@@ -2,15 +2,21 @@ package FYP;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Random;
 import java.util.Scanner;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.FileWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -26,6 +32,8 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 	private String inputFilePath;
 	private String outputFilePath;
 	private int currIndex = 0;
+	JTextArea quizTextArea = new JTextArea();
+
 	/**
 	 * Launch the application.
 	 */
@@ -107,21 +115,27 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		  }
 	}
 	
-	
+
 	//tutorial pop up frame
 	private void showTutorial() {
-		//add questions inside arraylist
-		ArrayList<String> questions = new ArrayList<String>();
-		JTextArea tutorialTextArea = new JTextArea();
+
+		Lessons lessons = new Lessons();
+		ArrayList<String> tutorials = lessons.getTutorialImages("src\\main\\java\\FYP\\imagesURL.txt");
 		JDialog tutorialDialog = new JDialog();
-		tutorialTextArea.setSize(900,780);
-		
-		for (int i = 1; i < 10; i++)
-		{
-			questions.add("Line " + (i) + " jkntewnkj;rewagnerngheroagneor[");
-			
+
+		JLabel imgLabel = new JLabel();
+
+		//initialize first image
+		File imageFile = new File(tutorials.get(0));
+		URL url = null;
+		try {
+			url = imageFile.toURI().toURL();
+		} catch (MalformedURLException e1) {
+			e1.printStackTrace();
 		}
-		
+		ImageIcon icon = new ImageIcon(url);
+		imgLabel.setIcon(icon);
+		imgLabel.setBounds(0, 0, 1000, 650);
 		JButton btnTutorialEnd = new JButton("End tutorial");
 		btnTutorialEnd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -131,36 +145,57 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		});
 		
 		JButton btnTutorialBack = new JButton("Back");
+		JButton btnTutorialNext = new JButton("Next");
+
 		btnTutorialBack.addActionListener(new ActionListener() {
+			
 			public void actionPerformed(ActionEvent e) {
 				
 				
 				if (currIndex > 0) {
 					currIndex--;
-					tutorialTextArea.setText(questions.get(currIndex));
+					File imageFile = new File(tutorials.get(currIndex));
+					URL url = null;
+					try {
+						url = imageFile.toURI().toURL();
+					} catch (MalformedURLException e1) {
+						e1.printStackTrace();
+					}
+					ImageIcon icon = new ImageIcon(url);
+					imgLabel.setIcon(icon);
+
+					btnTutorialNext.setVisible(true);
 				}
 			}
 		});
 		
-		JButton btnTutorialNext = new JButton("Next");
 		btnTutorialNext.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				if (currIndex < questions.size() -1) {
+				if (currIndex < tutorials.size() -1) {
 					currIndex++;
-					tutorialTextArea.setText(questions.get(currIndex));
+					File imageFile = new File(tutorials.get(currIndex));
+					URL url = null;
+					try {
+						url = imageFile.toURI().toURL();
+					} catch (MalformedURLException e1) {
+						e1.printStackTrace();
+					}
+					ImageIcon icon = new ImageIcon(url);
+					imgLabel.setIcon(icon);
+
+				}
+				if (currIndex == tutorials.size()-1) {
+					btnTutorialNext.setVisible(false);
 				}
 			}
 		});
 		
 		JPanel tutorialPanel = new JPanel();
+		tutorialPanel.add(imgLabel);
 		tutorialPanel.setLayout(null);
-		tutorialPanel.setPreferredSize(new Dimension(800,800));
-		tutorialTextArea.setText(questions.get(currIndex));
-		tutorialTextArea.setLineWrap(true);  
-		tutorialTextArea.setWrapStyleWord(true); 
-		tutorialTextArea.setEditable(false);
-		tutorialPanel.add(tutorialTextArea);
+		tutorialPanel.setPreferredSize(new Dimension(1200, 700));
+
 		btnTutorialBack.setBounds(30, 800, 97, 25);
 		btnTutorialNext.setBounds(750, 800, 97, 25);
 		btnTutorialEnd.setBounds(390, 800, 97, 25);
@@ -170,18 +205,17 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		tutorialPanel.add(btnTutorialEnd);
 		
 		tutorialDialog.setLayout(null);
-		tutorialDialog.setSize(900,900);
-		tutorialDialog.add(tutorialTextArea);
+		tutorialDialog.setSize(1050,900);
 		tutorialDialog.add(btnTutorialBack);
 		tutorialDialog.add(btnTutorialNext);
 		tutorialDialog.add(btnTutorialEnd);
 		tutorialDialog.setTitle("Tutorial");
 		tutorialDialog.setLocationRelativeTo(null);
+		tutorialDialog.add(imgLabel);
+
 		tutorialDialog.setVisible(true);
-		
 	}
-	
-	
+
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
@@ -236,12 +270,9 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		JPanel quizPanel = new JPanel();
 		layeredPane.add(quizPanel);
 		quizPanel.setLayout(null);
-		
 		//switch to specific starting frame when testing
-		switchPanel(finalPanel);
+		//switchPanel(finalPanel);
 		
-		
-
 		////////////////////////////////////////////////////////////////////////////////////////////
 		//Advanced settings panel
 		///////////////////////////////////////////////////////////////////////////////////////////
@@ -258,116 +289,44 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		btnNextAdvOptions.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				switchPanel(progressBarPanel);
 				//obfuscate the file
-				obfuscator.obfuscate(inputTextfield.getText(), outputFilePath, difficulty);
+				try {
 
+					obfuscator.obfuscate(inputTextfield.getText(), outputFilePath, difficulty);
+					switchPanel(progressBarPanel);
+
+				} catch(Exception ex) {
+					switchPanel(initialPanel);
+				}
 			}
 		});
 		
 		btnNextAdvOptions.setBounds(620, 390, 97, 25);
 		advOptionsPanel.add(btnNextAdvOptions);
-		
-		////////////////////////////////////////////////////////////////////////////////////////////
-		//initial panel 
-		///////////////////////////////////////////////////////////////////////////////////////////
-		/*
-		ArrayList<String> testText = new ArrayList<String>();
-		JTextArea tutorialTextArea = new JTextArea();
-		JDialog tutorialDialog = new JDialog();
-		//JTextArea tutorialTextArea = new JTextArea(50, 110);
-		tutorialTextArea.setSize(900,780);
-		
-		for (int i = 1; i < 101; i++)
-		{
-			testText.add("Line " + (i) + " jkntewnkj;rewagnerngheroagneor[");
-			
-		}*/
-		
-		/*
-		JButton btnTutorialEnd = new JButton("End tutorial");
-		btnTutorialEnd.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				tutorialDialog.setVisible(false);
-				
-			}
-		});
-		
-		JButton btnTutorialBack = new JButton("Back");
-		btnTutorialBack.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				
-				if (currIndex > 0) {
-					currIndex--;
-					tutorialTextArea.setText(testText.get(currIndex));
-				}
-			}
-		});
-		
-		JButton btnTutorialNext = new JButton("Next");
-		btnTutorialNext.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-					currIndex++;
-					tutorialTextArea.setText(testText.get(currIndex));
-				
-			}
-		});
-		
-		*/
-		
-		/*
-		JButton btnViewTutorial = new JButton("View tutorial");
-		btnViewTutorial.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				
-				JPanel tutorialPanel = new JPanel();
-				tutorialPanel.setLayout(null);
-				tutorialPanel.setPreferredSize(new Dimension(800,800));
-				tutorialTextArea.setText(testText.get(currIndex));
-				tutorialTextArea.setLineWrap(true);  
-				tutorialTextArea.setWrapStyleWord(true); 
-				tutorialTextArea.setEditable(false);
-				tutorialPanel.add(tutorialTextArea);
-				btnTutorialBack.setBounds(30, 800, 97, 25);
-				btnTutorialNext.setBounds(750, 800, 97, 25);
-				btnTutorialEnd.setBounds(390, 800, 97, 25);
-				
-				tutorialPanel.add(btnTutorialBack);
-				tutorialPanel.add(btnTutorialNext);
-				tutorialPanel.add(btnTutorialEnd);
-				
-				tutorialDialog.setLayout(null);
-				tutorialDialog.setSize(900,900);
-				tutorialDialog.add(tutorialTextArea);
-				tutorialDialog.add(btnTutorialBack);
-				tutorialDialog.add(btnTutorialNext);
-				tutorialDialog.add(btnTutorialEnd);
-				tutorialDialog.setTitle("Tutorial");
-				tutorialDialog.setLocationRelativeTo(null);
-				tutorialDialog.setVisible(true);
-				
-				
-				
-				
-				
-				//JOptionPane.showConfirmDialog(frame, tutorialPanel, "Tutorial", JOptionPane.CLOSED_OPTION , JOptionPane.PLAIN_MESSAGE, null);
-			}
-		});
-		btnViewTutorial.setBounds(163, 180, 131, 63);
-		
-		*/
+	
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		//Initial Panel
+		////////////////////////////////////////////////////////////////////////////////////////////////////
 		JButton btnViewTutorial = new JButton("View tutorial");
 		btnViewTutorial.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				showTutorial();
-				switchPanel(finalPanel);
 			}
 		});
-		btnViewTutorial.setBounds(163, 180, 131, 63);
+		btnViewTutorial.setBounds(120, 180, 131, 63);
+		
+		JButton btnQuiz = new JButton("Take quiz");
+		btnQuiz.setBounds(300, 180, 131, 63);
+		btnQuiz.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				switchPanel(quizPanel);
+				
+				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				
+			}
+		});
+
 		
 		JButton btnObfuscateFile = new JButton("Obfuscate a file");
 		btnObfuscateFile.addActionListener(new ActionListener() {
@@ -375,11 +334,11 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 				switchPanel(browsePanel);
 			}
 		});
-		btnObfuscateFile.setBounds(426, 180, 144, 63);
-		
+		btnObfuscateFile.setBounds(480, 180, 170, 63);
+	
 		initialPanel.add(btnViewTutorial);
 		initialPanel.add(btnObfuscateFile);
-		
+		initialPanel.add(btnQuiz);
 		
 		////////////////////////////////////////////////////////////////////////////////////////////
 		//Slider panel 
@@ -414,71 +373,6 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		progressBar.setValue(0);
 		progressBar.setStringPainted(true);
 		progressBar.setBounds(88, 167, 560, 38);
-		
-		
-		
-		////////////////////////////////////////////////////////////////////////////////////////////////
-		//Quiz panel
-		///////////////////////////////////////////////////////////////////////////////////////////////
-		
-		//add questions to key and answer to value
-		HashMap<String,String> qnPool=new HashMap<String,String>(); 
-		
-		qnPool.put("Answer true or false to the following statement: \nObfuscation is used to make source code as unreadable as possible", "True");
-		
-		Random rand = new Random();
-		int random = rand.nextInt(qnPool.size()) + 0;
-		
-		Object[] values = qnPool.keySet().toArray();
-		String question = values[random].toString();
-		
-		
-		JTextArea quizTextArea = new JTextArea(question);
-		quizTextArea.setEditable(false);
-		quizTextArea.setBounds(12, 13, 758, 249);
-		
-		JRadioButton rdbtnTrue = new JRadioButton("True");
-		rdbtnTrue.setBounds(113, 297, 127, 25);
-		
-		JRadioButton rdbtnFalse = new JRadioButton("False");
-		rdbtnFalse.setBounds(113, 332, 127, 25);
-		
-		JLabel lblStatus = new JLabel();
-		lblStatus.setBounds(460, 399, 207, 25);
-		
-		ButtonGroup rdbtnGroup = new ButtonGroup();
-		rdbtnGroup.add(rdbtnFalse);
-		rdbtnGroup.add(rdbtnTrue);
-		
-		JButton btnQuizNext = new JButton("Next");
-		btnQuizNext.setBounds(640, 399, 97, 25);
-		btnQuizNext.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				String ans = qnPool.get(question);
-				
-				
-				if (rdbtnGroup.getSelection()==null) {
-					lblStatus.setText("Please select an answer");
-				}
-				else if (rdbtnTrue.isSelected() && (rdbtnTrue.getText().toLowerCase().equals(ans.toLowerCase()))) {
-					lblStatus.setText("Correct!");
-				}
-				else {
-					lblStatus.setText("Wrong! The answer is " + ans.toLowerCase());
-				}
-				qnPool.remove(question);
-				
-			}
-		});
-		
-		
-		quizPanel.add(quizTextArea);
-		quizPanel.add(btnQuizNext);
-		quizPanel.add(rdbtnTrue);
-		quizPanel.add(rdbtnFalse);
-		quizPanel.add(lblStatus);
-		
 		
 		
 		
@@ -588,22 +482,11 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		btnTakeTutorial.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				showTutorial();
-				switchPanel(finalPanel);
 			}
 		});
 		finalPanel.add(btnTakeTutorial);
-		
-		
-		JButton btnQuiz = new JButton("Take quiz");
-		btnQuiz.setBounds(436, 270, 143, 25);
-		btnQuiz.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				switchPanel(quizPanel);
-			}
-		});
-		finalPanel.add(btnQuiz); 
-		
-		
+
+	
 		
 		
 		////////////////////////////////////////////////////////////////////////////////////////////////
@@ -780,8 +663,17 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 					
 					//start obsfuscation
 					switchPanel(progressBarPanel);
-					obfuscator.obfuscate(inputFilePath, outputFilePath, difficulty);
+					try {
+
+						obfuscator.obfuscate(inputFilePath, outputFilePath, difficulty);
 					
+					} catch (Exception ex) {
+						
+						switchPanel(browsePanel);
+						JOptionPane.showMessageDialog(frame, "Something wrong with your .java File, please check for syntax error", 
+								inputFilePath, JOptionPane.OK_OPTION);
+						
+					}
 
 					//do delay to switch panel
 					int delay = 500;
@@ -1031,36 +923,151 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		}
 		});
 				
-				btnOutputBrowseInitialPanel.setBounds(644, 216, 97, 25);
-				browsePanel.add(btnOutputBrowseInitialPanel);
+		btnOutputBrowseInitialPanel.setBounds(644, 216, 97, 25);
+		browsePanel.add(btnOutputBrowseInitialPanel);
+		
+		outputFileTextfield = new JTextField();
+		outputFileTextfield.setText("Enter output file name (without extension)");
+		outputFileTextfield.setColumns(10);
+		outputFileTextfield.setBounds(139, 257, 470, 22);
+		outputFileTextfield.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mouseClicked(MouseEvent e){
+				outputFileTextfield.setText("");
+			}
+		});
+		
+		
+		
+		outputFileTextfield.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if ((outputFileTextfield.getText() != "") && (inputTextfield.getText() != "") && (outputDirTextfield.getText() != "") && 
+							(inputFileTypeLabel.getText() == "")) 
+					{
+					
+						btnNextInitialPanel.setEnabled(true);
+					}
 				
-				outputFileTextfield = new JTextField();
-				outputFileTextfield.setText("Enter output file name (without extension)");
-				outputFileTextfield.setColumns(10);
-				outputFileTextfield.setBounds(139, 257, 470, 22);
-				outputFileTextfield.addMouseListener(new MouseAdapter(){
-		            @Override
-		            public void mouseClicked(MouseEvent e){
-						outputFileTextfield.setText("");
-		            }
-		        });
-				
-				
-				
-				outputFileTextfield.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						if ((outputFileTextfield.getText() != "") && (inputTextfield.getText() != "") && (outputDirTextfield.getText() != "") && 
-								 (inputFileTypeLabel.getText() == "")) 
-							{
-				        	
-								btnNextInitialPanel.setEnabled(true);
-							}
-						
 
+		}
+		}); 
+		browsePanel.add(outputFileTextfield);
+
+
+		
+		////////////////////////////////////////////////////////////////////////////////////////////////
+		//Quiz panel
+		///////////////////////////////////////////////////////////////////////////////////////////////		
+		Quiz quiz = new Quiz();
+
+		Collections.shuffle(quiz.quizList);
+
+		Questions firstQuestion = quiz.quizList.get(0);
+		quizTextArea.setText("Question 1 of " + quiz.quizList.size() + "\n" + firstQuestion.getQuestion());
+	
+		quizTextArea.setBounds(8, 31, 758, 249);
+		quizTextArea.setEditable(false);
+
+		JRadioButton rdbtn1 = new JRadioButton("a");
+		rdbtn1.setBounds(113, 297, 127, 25);
+		rdbtn1.setActionCommand("a");
+
+		JRadioButton rdbtn2 = new JRadioButton("b");
+		rdbtn2.setBounds(113, 332, 127, 25);
+		rdbtn2.setActionCommand("b");
+		
+		JRadioButton rdbtn3 = new JRadioButton("c");
+		rdbtn3.setBounds(113, 367, 127, 25);
+		rdbtn3.setActionCommand("c");
+		
+		JRadioButton rdbtn4 = new JRadioButton("d");
+		rdbtn4.setBounds(113, 402, 127, 25);
+		rdbtn4.setActionCommand("d");
+		
+		
+		ButtonGroup rdbtnGroup = new ButtonGroup();
+		rdbtnGroup.add(rdbtn1);
+		rdbtnGroup.add(rdbtn2);
+		rdbtnGroup.add(rdbtn3);
+		rdbtnGroup.add(rdbtn4);
+	
+		int options = firstQuestion.getOptions();
+
+		if (options == 2) {
+			rdbtn3.setVisible(false);
+			rdbtn4.setVisible(false);
+		}
+
+		JLabel answerLabel = new JLabel();
+		answerLabel.setBounds(450, 399, 100,50);
+		quizPanel.add(answerLabel);
+
+		
+		JButton btnQuizSubmit = new JButton("Submit");
+
+		btnQuizSubmit.setBounds(560, 399, 97, 25);
+
+		JButton btnQuizNext = new JButton("Next");
+		btnQuizNext.setBounds(660, 399, 97, 25);
+
+		btnQuizNext.setVisible(false);
+
+		btnQuizSubmit.addActionListener(new ActionListener() {
+			int quizIndex = 0;
+			public void actionPerformed(ActionEvent e) {
+				
+				String answer = rdbtnGroup.getSelection().getActionCommand();
+				boolean check = quiz.checkAnswer(quizIndex, answer);
+				
+				if (check == true) {
+					answerLabel.setText("Correct!");
 				}
-				}); 
-				browsePanel.add(outputFileTextfield);
+				else {
+					answerLabel.setText("Wrong");
+				}
+				btnQuizNext.setVisible(true);
+				btnQuizSubmit.setEnabled(false);
+				answerLabel.setVisible(true);
+				quizIndex++; //increase index in question arraylist
+				
+			}
+		});
+		
+		btnQuizNext.addActionListener(new ActionListener() {
+			int quizIndex = 0;
+			public void actionPerformed(ActionEvent e) {
+				quizIndex++;
+				btnQuizNext.setVisible(false);
+				btnQuizSubmit.setEnabled(true);
+				answerLabel.setVisible(false);
+				if (quizIndex == quiz.quizList.size()) { // if no more questions, close window
+					switchPanel(initialPanel);
+				}
+				else { //else set the next question
+					Questions question = quiz.quizList.get(quizIndex);
+					int options = question.getOptions();
+					quizTextArea.setText("Question " + (quizIndex+1) + " of " + quiz.quizList.size() + "\n" + question.getQuestion());
+					if (options == 2) {
+						rdbtn3.setVisible(false);
+						rdbtn4.setVisible(false);
+					}
+					else {
+						rdbtn3.setVisible(true);
+						rdbtn4.setVisible(true);
+					}
+					
+				}
+			}
+		});
+		quizPanel.add(quizTextArea);
+		quizPanel.add(btnQuizSubmit);
+		quizPanel.add(btnQuizNext);
+		quizPanel.add(rdbtn1);
+		quizPanel.add(rdbtn2);
+		quizPanel.add(rdbtn3);
+		quizPanel.add(rdbtn4);
+
 		
 	}
 
