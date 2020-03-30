@@ -270,8 +270,10 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		JPanel quizPanel = new JPanel();
 		layeredPane.add(quizPanel);
 		quizPanel.setLayout(null);
+		
+		
 		//switch to specific starting frame when testing
-		//switchPanel(finalPanel);
+		switchPanel(advOptionsPanel);
 		
 		////////////////////////////////////////////////////////////////////////////////////////////
 		//Advanced settings panel
@@ -291,7 +293,6 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 
 				//obfuscate the file
 				try {
-
 					obfuscator.obfuscate(inputTextfield.getText(), outputFilePath, difficulty);
 					switchPanel(progressBarPanel);
 
@@ -302,7 +303,10 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		});
 		
 		btnNextAdvOptions.setBounds(620, 390, 97, 25);
+		
 		advOptionsPanel.add(btnNextAdvOptions);
+		
+		
 	
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -387,37 +391,6 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		btnViewOutput.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				/*
-				JOptionPane originalText = new JOptionPane();
-				JDialog dialog = originalText.createDialog(null, "Original");
-				dialog.setPreferredSize(new Dimension(400,400));
-				dialog.setLocationRelativeTo(frame);
-				dialog.pack();
-				dialog.setModal(false);
-				dialog.show();*/
-				
-				/*
-				JTextArea textArea = new JTextArea("Insert your Text here" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n");
-				JScrollPane scrollPane = new JScrollPane(textArea);  
-				textArea.setLineWrap(true);  
-				textArea.setWrapStyleWord(true); 
-				scrollPane.setPreferredSize( new Dimension( 500, 500 ) );
-				JOptionPane originalText = new JOptionPane();
-				JOptionPane.showConfirmDialog(frame, scrollPane, "Original", JOptionPane.CLOSED_OPTION , JOptionPane.PLAIN_MESSAGE, null);
-					
-				JTextArea textArea2 = new JTextArea(text);
-				JScrollPane scrollPane2 = new JScrollPane(textArea);  
-				textArea2.setLineWrap(true);  
-				textArea2.setWrapStyleWord(true); 
-				scrollPane2.setPreferredSize( new Dimension( 500, 500 ) );
-				JOptionPane originalText2 = new JOptionPane();
-				JOptionPane.showConfirmDialog(frame, scrollPane, "Original", JOptionPane.CLOSED_OPTION , JOptionPane.PLAIN_MESSAGE, null);
-				*/
-
-		        /*
-				UIManager.put("OptionPane.minimumSize",new Dimension(800,800)); 
-				JOptionPane.showConfirmDialog(frame, dialog, null, JOptionPane.CLOSED_OPTION , JOptionPane.PLAIN_MESSAGE, null);
-				*/
 				String originalText = "";
 				String obfuscatedText = "";
 			
@@ -446,27 +419,6 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 				
 				UIManager.put("OptionPane.minimumSize",new Dimension(800,800)); 
 				JOptionPane.showConfirmDialog(frame, comparePanel, "Comparing files", JOptionPane.CLOSED_OPTION , JOptionPane.PLAIN_MESSAGE, null);
-				
-				
-				/*
-				//try try
-				originalText = obfuscator.compileCode(inputTextfield.getText());
-				originalTextArea.setText(originalText);
-				obfuscatedText = obfuscator.compileCode(outputFilePath);
-				obfuscatedTextArea.setText(obfuscatedText); 
-				
-				*/
-				
-				
-				/*
-				Object[] scrollPanes = {
-						"Original", originalScrollPane,
-						"Obfuscated", obfuscatedScrollPane,
-				};
-				
-				UIManager.put("OptionPane.minimumSize",new Dimension(800,800)); 
-				JOptionPane.showConfirmDialog(frame, scrollPanes, null, JOptionPane.CLOSED_OPTION , JOptionPane.PLAIN_MESSAGE, null);
-				*/
 				
 				
 			}
@@ -529,43 +481,70 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		/////////////////////////////////////////////////////////////////////////////////////////////////
 		//for adv options
 		/////////////////////////////////////////////////////////////////////////////////////////////////
-		JComboBox comboBox = new JComboBox();
-		comboBox.setToolTipText("Select one");
-		comboBox.setBounds(176, 144, 87, 22);
-		advOptionsPanel.add(comboBox);
+		JLabel lblEliminateUnusedFields = new JLabel("Eliminate unused fields and methods");
+		lblEliminateUnusedFields.setBounds(22, 145, 216, 16);
+		advOptionsPanel.add(lblEliminateUnusedFields);
 		
-		JCheckBox chckbxNewCheckBox = new JCheckBox("Rename variables");
-		chckbxNewCheckBox.setToolTipText("");
-		chckbxNewCheckBox.setBounds(36, 143, 137, 25);
-		advOptionsPanel.add(chckbxNewCheckBox);
+		JLabel lblRenameFieldsAnd = new JLabel("Rename fields and methods");
+		lblRenameFieldsAnd.setBounds(286, 145, 168, 16);
+		advOptionsPanel.add(lblRenameFieldsAnd);
 		
-		JCheckBox chckbxNewCheckBox_1 = new JCheckBox("New check box");
-		chckbxNewCheckBox_1.setBounds(36, 185, 113, 25);
-		advOptionsPanel.add(chckbxNewCheckBox_1);
+		JLabel lblMiscellaneous = new JLabel("Miscellanous");
+		lblMiscellaneous.setBounds(509, 145, 88, 16);
+		advOptionsPanel.add(lblMiscellaneous);
 		
-		JCheckBox chckbxNewCheckBox_2 = new JCheckBox("New check box");
-		chckbxNewCheckBox_2.setBounds(36, 229, 113, 25);
-		advOptionsPanel.add(chckbxNewCheckBox_2);
+		//Eliminate unused fields and methods
+		JCheckBox chckbxUnusedPublic = new JCheckBox("Public");
+		chckbxUnusedPublic.setBounds(22, 170, 113, 25);
+		advOptionsPanel.add(chckbxUnusedPublic);
 		
-		JCheckBox chckbxNewCheckBox_3 = new JCheckBox("New check box");
-		chckbxNewCheckBox_3.setBounds(36, 274, 113, 25);
-		advOptionsPanel.add(chckbxNewCheckBox_3);
+		JCheckBox chckbxUnusedProtected = new JCheckBox("Protected");
+		chckbxUnusedProtected.setBounds(22, 200, 113, 25);
+		advOptionsPanel.add(chckbxUnusedProtected);
 		
-		JCheckBox chckbxNewCheckBox_4 = new JCheckBox("New check box");
-		chckbxNewCheckBox_4.setBounds(413, 143, 113, 25);
-		advOptionsPanel.add(chckbxNewCheckBox_4);
+		JCheckBox chckbxUnusedPackage = new JCheckBox("Package");
+		chckbxUnusedPackage.setBounds(22, 230, 113, 25);
+		advOptionsPanel.add(chckbxUnusedPackage);
 		
-		JCheckBox chckbxNewCheckBox_5 = new JCheckBox("New check box");
-		chckbxNewCheckBox_5.setBounds(413, 185, 113, 25);
-		advOptionsPanel.add(chckbxNewCheckBox_5);
+		JCheckBox chckbxUnusedPrivate = new JCheckBox("Private");
+		chckbxUnusedPrivate.setBounds(22, 260, 113, 25);
+		advOptionsPanel.add(chckbxUnusedPrivate);
 		
-		JCheckBox chckbxNewCheckBox_6 = new JCheckBox("New check box");
-		chckbxNewCheckBox_6.setBounds(413, 229, 113, 25);
-		advOptionsPanel.add(chckbxNewCheckBox_6);
 		
-		JCheckBox chckbxNewCheckBox_7 = new JCheckBox("New check box");
-		chckbxNewCheckBox_7.setBounds(413, 274, 113, 25);
-		advOptionsPanel.add(chckbxNewCheckBox_7);
+		//Rename fields and methods
+		JCheckBox chckbxRenamePublic = new JCheckBox("Public");
+		chckbxRenamePublic.setBounds(286, 170, 113, 25);
+		advOptionsPanel.add(chckbxRenamePublic);
+		
+		JCheckBox chckbxRenameProtected = new JCheckBox("Protected");
+		chckbxRenameProtected.setBounds(286, 200, 113, 25);
+		advOptionsPanel.add(chckbxRenameProtected);
+		
+		JCheckBox chckbxRenamePackage = new JCheckBox("Package");
+		chckbxRenamePackage.setBounds(286, 230, 137, 25);
+		advOptionsPanel.add(chckbxRenamePackage);
+		
+		JCheckBox chckbxRenamePrivate = new JCheckBox("Private");
+		chckbxRenamePrivate.setBounds(286, 260, 113, 25);
+		advOptionsPanel.add(chckbxRenamePrivate);
+		
+		//Misc
+		JCheckBox chckbxRemoveWhitespace = new JCheckBox("Remove white space");
+		chckbxRemoveWhitespace.setBounds(509, 170, 147, 25);
+		advOptionsPanel.add(chckbxRemoveWhitespace);
+		
+		JCheckBox chckbxInsertDummyCode = new JCheckBox("Insert dummy code");
+		chckbxInsertDummyCode.setBounds(509, 200, 147, 25);
+		advOptionsPanel.add(chckbxInsertDummyCode);
+		
+		JCheckBox chckbxRemoveComments = new JCheckBox("Remove comments");
+		chckbxRemoveComments.setBounds(509, 230, 147, 25);
+		advOptionsPanel.add(chckbxRemoveComments);
+		
+		//temp
+		JCheckBox chckbxShiftMethods = new JCheckBox("Shift methods");
+		chckbxShiftMethods.setBounds(509, 260, 113, 25);
+		advOptionsPanel.add(chckbxShiftMethods);
 		
 		
 		/*
@@ -650,52 +629,45 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		//Obfuscation part, after choosing difficulty
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		JButton btnNextSliderPanel = new JButton("Next");
-		btnNextSliderPanel.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//write settings to settings file 
-				File file = new File ("./src/settings/easysettings.txt");
-				try {
-					FileWriter fr = new FileWriter(file);
+		btnNextSliderPanel.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
 					
-					//-------fix
-					fr.write(Integer.toString(slider.getValue()));
-					fr.close();
-					
-					//start obsfuscation
-					switchPanel(progressBarPanel);
-					try {
+				//start obsfuscation
+				switchPanel(progressBarPanel);
+				try 
+				{
 
-						obfuscator.obfuscate(inputFilePath, outputFilePath, difficulty);
+					obfuscator.obfuscate(inputFilePath, outputFilePath, difficulty);
+				
+				} catch (Exception ex) {
 					
-					} catch (Exception ex) {
-						
-						switchPanel(browsePanel);
-						JOptionPane.showMessageDialog(frame, "Something wrong with your .java File, please check for syntax error", 
-								inputFilePath, JOptionPane.OK_OPTION);
-						
-					}
+					switchPanel(browsePanel);
+					JOptionPane.showMessageDialog(frame, "Something wrong with your .java File, please check for syntax error", 
+							inputFilePath, JOptionPane.OK_OPTION);
+					
+				}
 
-					//do delay to switch panel
-					int delay = 500;
-					ActionListener taskPerformer = new ActionListener() {
-						public void actionPerformed(ActionEvent event) {
-							if (progressBar.getValue() < 100) {
-								progressBar.setValue(progressBar.getValue()+5);
-								if (progressBar.getValue() == 100) {
-									switchPanel(finalPanel);
-								}
+				//do delay to switch panel
+				int delay = 500;
+				ActionListener taskPerformer = new ActionListener() {
+					public void actionPerformed(ActionEvent event) {
+						if (progressBar.getValue() < 100) {
+							progressBar.setValue(progressBar.getValue()+5);
+							if (progressBar.getValue() == 100) {
+								switchPanel(finalPanel);
 							}
 						}
+					}
 
-					};
-					new Timer(delay, taskPerformer).start();
-				}
-				catch (IOException e2)
-				{
-					e2.printStackTrace();
-				}
+				};
+				
+				new Timer(delay, taskPerformer).start();
 			}
+				
 		});
+		
 		
 		btnNextSliderPanel.setBounds(608, 380, 148, 25);
 		sliderOptionPanel.add(btnNextSliderPanel);
@@ -707,11 +679,20 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 			public void actionPerformed(ActionEvent e)  {
 				try {
 					File file = new File ("./src/settings/easysettings.txt");
-					if (file.createNewFile()) {
-						/*
-						Process p = Runtime.getRuntime().exec("attrib +H " + file.getPath());
-					   p.waitFor();*/
+					FileWriter fr = new FileWriter(file);
+					
+					if (file.exists()) {
+					  	
+						file.delete();
+						
 					}
+					
+					file.createNewFile();
+					fr.write(Integer.toString(slider.getValue()));
+					fr.flush();
+					fr.close();
+						
+					
 					
 					File file2 = new File ("./src/settings/advsettings.txt");
 					if (file2.exists())
@@ -720,8 +701,8 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 					}
 					
 				}
-				catch (IOException e1){
-					//handle error if file does not exist
+				catch (IOException e1) {
+					
 				}
 			}
 		});
@@ -830,10 +811,109 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 			public void actionPerformed(ActionEvent e) {
 				try {
 					File file = new File ("./src/settings/advsettings.txt");
-					if (file.createNewFile()) {
-						Process p = Runtime.getRuntime().exec("attrib +H " + file.getPath());
-					   p.waitFor();
+					FileWriter fr = new FileWriter(file);
+					
+					if (file.createNewFile() == false) { //if file already exists
+											
+						file.delete();
+						
 					}
+						
+					file.createNewFile();
+					
+						
+					//Eliminate unused fields and methods
+					if (chckbxUnusedPublic.isSelected()) {
+						fr.write("UnusedPublic:\"1\"\n");
+					}
+					else {
+						fr.write("UnusedPublic:\"0\"\n");
+					}
+					
+					
+					if (chckbxUnusedProtected.isSelected()) {
+						fr.write("UnusedProtected:\"1\"\n");
+					}
+					else {
+						fr.write("UnusedProtected:\"0\"\n");
+					}
+					
+					if (chckbxUnusedPackage.isSelected()) {
+						fr.write("UnusedPackage:\"1\"\n");
+					}
+					else {
+						fr.write("UnusedPackage:\"0\"\n");
+					}
+					
+					if (chckbxUnusedPrivate.isSelected()) {
+						fr.write("UnusedPrivate:\"1\"\n");
+					}
+					else {
+						fr.write("UnusedPrivate:\"0\"\n");
+					}
+					
+					
+					//Rename fields and methods
+					if (chckbxRenamePublic.isSelected()) {
+						fr.write("RenamePublic:\"1\"\n");
+					}
+					else {
+						fr.write("RenamePublic:\"0\"\n");
+					}
+					
+					if (chckbxRenameProtected.isSelected()) {
+						fr.write("RenameProtected:\"1\"\n");
+					}
+					else {
+						fr.write("RenameProtected:\"0\"\n");
+					}
+					
+					if (chckbxRenamePackage.isSelected()) {
+						fr.write("RenamePackage:\"1\"\n");
+					}
+					else {
+						fr.write("RenamePackage:\"0\"\n");
+					}
+					
+					if (chckbxRenamePrivate.isSelected()) {
+						fr.write("RenamePrivate:\"1\"\n");
+					}
+					else {
+						fr.write("RenamePrivate:\"0\"\n");
+					}
+					
+					//Misc
+					if (chckbxRemoveWhitespace.isSelected()) {
+						fr.write("RemoveWhitespace:\"1\"\n");
+					}
+					else {
+						fr.write("RemoveWhitespace:\"0\"\n");
+					}
+					
+					if (chckbxInsertDummyCode.isSelected()) {
+						fr.write("InsertDummyCode:\"1\"\n");
+					}
+					else {
+						fr.write("InsertDummyCode:\"0\"\n");
+					}
+					
+					if (chckbxRemoveComments.isSelected()) {
+						fr.write("RemoveComments:\"1\"\n");
+					}
+					else {
+						fr.write("RemoveComments:\"0\"\n");
+					}
+					
+					if (chckbxShiftMethods.isSelected()) {
+						fr.write("ShiftMethods:\"1\"");
+					}
+					else {
+						fr.write("ShiftMethods:\"0\"");
+					}
+					
+					fr.close();
+						
+				
 					
 					File file2 = new File ("./src/settings/easysettings.txt");
 					if (file2.exists())
@@ -843,9 +923,6 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 					
 				}
 				catch (IOException e1){
-					//handle error if file does not exist
-				}
-				catch (InterruptedException e2) {
 					//handle error
 				}
 			}
@@ -954,7 +1031,14 @@ public class Frame implements ChangeListener, PropertyChangeListener{
 		}); 
 		browsePanel.add(outputFileTextfield);
 
-
+		JButton btnBrowsePanelBack = new JButton("Back");
+		btnBrowsePanelBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				switchPanel(initialPanel);
+			}
+		});
+		btnBrowsePanelBack.setBounds(55, 390, 97, 25);
+		browsePanel.add(btnBrowsePanelBack);
 		
 		////////////////////////////////////////////////////////////////////////////////////////////////
 		//Quiz panel
