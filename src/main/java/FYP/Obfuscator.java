@@ -3,6 +3,7 @@ package FYP;
 import java.util.*;
 import java.io.*;
 
+import com.github.javaparser.ParseException;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -21,7 +22,7 @@ public class Obfuscator {
 
     ArrayList<Statistics> statistics = new ArrayList<Statistics>();
 
-    public void obfuscate (String inputFilePath, String outputFilePath, int difficulty) {
+    public void obfuscate (String inputFilePath, String outputFilePath, int difficulty) throws ParseException, FileNotFoundException, IOException{
 
         String code = compileCode(inputFilePath);
         switch(difficulty) {
@@ -30,6 +31,7 @@ public class Obfuscator {
                 code = removeComments(code);
                 code = changeMethodNames(code);
                 code = changeInterfaceNames(code);
+                code = removeWhiteSpaces(code);
                 break;
             }	
             //difficulty 1 is plus variable obfuscation
@@ -40,26 +42,23 @@ public class Obfuscator {
                 code = changeInterfaceNames(code);
                 code = changeVariableNames(code);
                 code = changeParameterNames(code);
+                code = removeWhiteSpaces(code);
                 break;
             }
 
         }
 
-        try {
-            FileWriter fw;
-            if (outputFilePath != ""){
-                fw = new FileWriter(outputFilePath);
     
-            } else {
-                fw = new FileWriter(inputFilePath);
-            }
-    
-            fw.write(code);
-            fw.close();
-        } catch (IOException e){
-            System.out.println(e.getMessage());
+        FileWriter fw;
+        if (outputFilePath != ""){
+            fw = new FileWriter(outputFilePath);
+
+        } else {
+            fw = new FileWriter(inputFilePath);
         }
-        
+
+        fw.write(code);
+        fw.close();
     
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -357,7 +356,7 @@ public class Obfuscator {
         scanner.close();
 
         statistics.add(stats);
-        return newCode;
+        return refactorCode(newCode);
     }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //to use for printing all the stats in the frame.java
@@ -412,18 +411,21 @@ public class Obfuscator {
         return newWord;
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
-    public String compileCode(String inputFilePath){
+    public String compileCode(String inputFilePath) throws ParseException, FileNotFoundException{
         String code = "";
-        try {
-            CompilationUnit cu = StaticJavaParser.parse(new FileInputStream(inputFilePath));
-            code = cu.toString();
-        } catch (FileNotFoundException fe) {
-            System.out.println(fe.toString());
-        } 
+        
+        CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
+        code = cu.toString();
+    
         return code;
 
     }
 
+    public String removeWhiteSpaces(String code) {
+        code = code.replaceAll("\\s", " ");
+        System.out.println("Removing unecessary whitespaces");
+        return code;
+    }
 
 }
 
