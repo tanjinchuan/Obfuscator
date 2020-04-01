@@ -9,6 +9,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import java.awt.event.*;
 
@@ -127,21 +129,25 @@ public class BrowsePanel extends JPanel {
 		});
         this.add(outputFileTextField);
 
-        //to set the next button true if text fields are filled
-        outputFileTextField.addActionListener(new ActionListener() {
+		outputFileTextField.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				if ((outputFileTextField.getText() != "") && (inputTextField.getText() != "") && (outputTextField.getText() != "") && 
-							(inputFileTypeLabel.getText() == "")) 
-					{
-                        setOutputFile(outputFileTextField.getText());
-
-						btnBrowseNextPanel.setEnabled(true);
-					}
-				
-
+			public void changedUpdate(DocumentEvent e) {
+				btnBrowseNextPanel.setEnabled(true);
+				setOutputFile(outputFileTextField.getText());
 			}
-        }); 
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				btnBrowseNextPanel.setEnabled(true);
+				setOutputFile(outputFileTextField.getText());
+			}
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				btnBrowseNextPanel.setEnabled(true);
+				setOutputFile(outputFileTextField.getText());
+			}
+			
+		});
+        
         
         //next button function
 		btnBrowseNextPanel.addActionListener(new ActionListener() {
@@ -254,7 +260,12 @@ public class BrowsePanel extends JPanel {
     //to check file name errors
     public boolean checkFileExists(JFrame frame, String fullPath) {
 
-		//if input file dir and output file dir and file is same name
+		//if output file name empty
+		if (getFileName().equals("")) {
+			JOptionPane.showMessageDialog(frame, "Output file name empty", "Warning", JOptionPane.OK_OPTION);
+			return false;
+		}
+		//i)f input file dir and output file dir and file is same name
 		if (getInput().equals(fullPath)) 
 		{
 			JOptionPane.showMessageDialog(frame, "Input and output file cannot be the same", "Warning", JOptionPane.OK_OPTION);
@@ -275,4 +286,6 @@ public class BrowsePanel extends JPanel {
 		}
 		
 	}
+
+	
 }

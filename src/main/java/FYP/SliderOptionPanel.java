@@ -23,7 +23,18 @@ public class SliderOptionPanel extends JPanel implements ChangeListener, Propert
     private int level = 0;
     
     public SliderOptionPanel(AdvOptionsPanel advOptionsPanel) {
+
         this.setLayout(null);
+
+        //create settings file
+        Settings settings = new Settings();
+        try {
+            settings.readSettingsFile("src\\settings\\advSettings.txt");
+
+        } catch (IOException ie ) {
+            
+        }
+        
 
         JLabel sliderOptionDescriptionLabel = new JLabel();
 		sliderOptionDescriptionLabel.setBounds(92, 243, 562, 40);

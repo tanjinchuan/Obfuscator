@@ -1,0 +1,12 @@
+UnusedPublic:0
+UnusedProtected:0
+UnusedPackage:0
+UnusedPrivate:0
+RenamePublic:0
+RenameProtected:0
+RenamePackage:0
+RenamePrivate:0
+RemoveWhitespace:0
+InsertDummyCode:0
+RemoveComments:0
+ShiftMethods:0
