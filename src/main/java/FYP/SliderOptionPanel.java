@@ -26,14 +26,6 @@ public class SliderOptionPanel extends JPanel implements ChangeListener, Propert
 
         this.setLayout(null);
 
-        //create settings file
-        Settings settings = new Settings();
-        try {
-            settings.readSettingsFile("src\\settings\\advSettings.txt");
-
-        } catch (IOException ie ) {
-            
-        }
         
 
         JLabel sliderOptionDescriptionLabel = new JLabel();
@@ -64,44 +56,6 @@ public class SliderOptionPanel extends JPanel implements ChangeListener, Propert
 			}
         });
      
-        //button to save default settings
-		JButton btnSliderDefaultSettings = new JButton("Save as default settings");
-		btnSliderDefaultSettings.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e)  {
-				try {
-					File file = new File ("./src/settings/easysettings.txt");
-					FileWriter fr = new FileWriter(file);
-					
-					if (file.exists()) {
-					  	
-						file.delete();
-						
-					}
-					
-					file.createNewFile();
-					fr.write(Integer.toString(slider.getValue()));
-					fr.flush();
-					fr.close();
-						
-					
-					
-					File file2 = new File ("./src/settings/advsettings.txt");
-					if (file2.exists())
-					{
-						file2.delete();
-					}
-					
-				}
-				catch (IOException e1) {
-					
-				}
-			}
-		});
-			
-		
-		btnSliderDefaultSettings.setBounds(568, 25, 189, 45);
-		this.add(btnSliderDefaultSettings);
-		
         
         
         //Create the label table 
@@ -115,18 +69,7 @@ public class SliderOptionPanel extends JPanel implements ChangeListener, Propert
 		slider.setBounds(92, 164, 562, 52);
         this.add(slider);
         
-        //adv default settings btn
-		JButton btnAdvDefaultSettings = new JButton("Save as default settings");
-		btnAdvDefaultSettings.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				advOptionsPanel.writeSettings();
-			}
-		});
-		
-		btnAdvDefaultSettings.setBounds(545, 36, 189, 45);
-		advOptionsPanel.add(btnAdvDefaultSettings);
-		
-		
+        
 
     }
 

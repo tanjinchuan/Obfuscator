@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import javax.swing.*;
 
@@ -83,6 +84,8 @@ public class Frame {
 	 */
 	private void initialize() {
 		Obfuscator obfuscator = new Obfuscator();
+		
+
 		LayeredPane layeredPane = new LayeredPane();
 
 		frame = new JFrame("Obsfuscator");
@@ -98,6 +101,7 @@ public class Frame {
 
 		//for advanced settings
 		AdvOptionsPanel advOptionsPanel = new AdvOptionsPanel();
+		advOptionsPanel.createSettingsFile(); //initialize advsettings.txt;
 
 		//add sliderpanel
 		SliderOptionPanel sliderOptionPanel = new SliderOptionPanel(advOptionsPanel);
@@ -147,10 +151,19 @@ public class Frame {
 		////////////////////////////////////////////////////////////////////////////////////////////
 		//Button to go to advanced settings on slider panel 
 		///////////////////////////////////////////////////////////////////////////////////////////
+		//read settings file here, get a hash map to check value after i click into advanced settings panel
+		
+
+		
+
 		JButton btnAdvancedSettings = new JButton("Advanced settings");
 		btnAdvancedSettings.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				layeredPane.switchPanel(advOptionsPanel);
+				
+				advOptionsPanel.readSettingsFile();	
+				advOptionsPanel.setOptions();
+
 			}
 		});
 		btnAdvancedSettings.setBounds(608, 336, 148, 25);
