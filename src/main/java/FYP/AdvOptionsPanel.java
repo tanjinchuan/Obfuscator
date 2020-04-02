@@ -23,15 +23,13 @@ public class AdvOptionsPanel extends JPanel {
 	ArrayList<JCheckBox> checkboxes = new ArrayList<JCheckBox>();
 
 	JLabel lblEliminateUnusedFields = new JLabel("Eliminate unused fields and methods");
-	JLabel lblRenameFieldsAnd = new JLabel("Rename fields and methods");
+	JLabel lblRenameFieldsAnd = new JLabel("Rename methods");
 	JLabel lblMiscellaneous = new JLabel("Miscellanous");
 	JCheckBox chckbxUnusedPublic = new JCheckBox("Public");
 	JCheckBox chckbxUnusedProtected = new JCheckBox("Protected");
-	JCheckBox chckbxUnusedPackage = new JCheckBox("Package");
 	JCheckBox chckbxUnusedPrivate = new JCheckBox("Private");
 	JCheckBox chckbxRenamePublic = new JCheckBox("Public");
 	JCheckBox chckbxRenameProtected = new JCheckBox("Protected");
-	JCheckBox chckbxRenamePackage = new JCheckBox("Package");
 	JCheckBox chckbxRenamePrivate = new JCheckBox("Private");
 	JCheckBox chckbxRemoveWhitespace = new JCheckBox("Remove White Space");
 	JCheckBox chckbxInsertDummyCode = new JCheckBox("Insert Dummy Code");
@@ -61,10 +59,8 @@ public class AdvOptionsPanel extends JPanel {
 		chckbxUnusedProtected.setBounds(22, 200, 113, 25);
 		this.add(chckbxUnusedProtected);
 
-		chckbxUnusedPackage.setBounds(22, 230, 113, 25);
-		this.add(chckbxUnusedPackage);
 
-		chckbxUnusedPrivate.setBounds(22, 260, 113, 25);
+		chckbxUnusedPrivate.setBounds(22, 230, 113, 25);
 		this.add(chckbxUnusedPrivate);
 
 		// Rename fields and methods
@@ -74,10 +70,8 @@ public class AdvOptionsPanel extends JPanel {
 		chckbxRenameProtected.setBounds(286, 200, 113, 25);
 		this.add(chckbxRenameProtected);
 
-		chckbxRenamePackage.setBounds(286, 230, 137, 25);
-		this.add(chckbxRenamePackage);
 
-		chckbxRenamePrivate.setBounds(286, 260, 113, 25);
+		chckbxRenamePrivate.setBounds(286, 230, 113, 25);
 		this.add(chckbxRenamePrivate);
 
 		// Misc
@@ -118,7 +112,7 @@ public class AdvOptionsPanel extends JPanel {
 	}
 
 	//for saving default settings
-	private void getCurrentOptions() {
+	public void getCurrentOptions() {
 		int boxID = 0;
 		
 		for (JCheckBox box: checkboxes) {
@@ -162,7 +156,7 @@ public class AdvOptionsPanel extends JPanel {
 			try {
 				FileWriter fr = new FileWriter(file);
 				for (JCheckBox checkbox: checkboxes) {
-					fr.write(boxID + "_" + checkbox.getText() + "\n");
+					fr.write(boxID + "_" + checkbox.getText() + ":0\n"); //initialze all settings to unselected
 					boxID++;
 				}
 				fr.close();
@@ -215,7 +209,13 @@ public class AdvOptionsPanel extends JPanel {
             System.out.println("Writing to Settings file IO error");
         }
         
-    }
+	}
+
+	
+	
+	public HashMap<String, Integer> getSettings() {
+		return currentSettings;
+	}
     
 
     

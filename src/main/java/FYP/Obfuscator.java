@@ -1,6 +1,8 @@
 package FYP;
 
 import java.util.*;
+
+
 import java.io.*;
 
 import com.github.javaparser.ParseException;
@@ -46,6 +48,8 @@ public class Obfuscator {
                 break;
             }
 
+            
+
         }
 
     
@@ -60,6 +64,96 @@ public class Obfuscator {
         fw.write(code);
         fw.close();
     
+    }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Advance obfuscate
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void advObfuscate(String inputFilePath, String outputFilePath, AdvOptionsPanel advOptionsPanel) throws ParseException, FileNotFoundException, IOException {
+
+        //get the code
+        String code = compileCode(inputFilePath);
+
+
+        advOptionsPanel.getCurrentOptions(); //get the current check box values
+        HashMap<String, Integer> settings = advOptionsPanel.getSettings(); //get the hashmap of values
+        for (String key: settings.keySet()) {
+            
+            int value = settings.get(key);
+            if (value == 1) { //if the box is ticked, do that obfuscation technique
+                switch (key) {
+                    case "0_Public": { //Eliminating unused public methods
+                        //code = eliminatePublic(code);
+                        break;
+                    }
+
+                    case "1_Protected": { //Eliminating unused protected methods
+                        //code = eliminateProtected(code);
+                        break;
+                    }
+
+                    case "2_Private": { //Elminating unused private methods
+                        //code = eliminatePrivate(code);
+                        break;
+                    }
+
+                    case "3_Public": { //Rename public methods
+                        //code = changePublicMethods(code);
+                        break;
+                    }
+
+                    case "4_Protected": { //Rename protected methods
+                        //code = changeProtectedMethods(code);
+                        break;
+                    }
+                    
+                    case "5_Private": { //Rename private methods
+                        //code = changePrivateMethods(code);
+                        break;
+                    }
+
+                    case "6_Remove White Space": { //Removing white spaces from code
+                        //code = removeWhiteSpaces(code);
+                        break;
+                    }
+
+                    case "7_Insert Dummy Code": { //Insert dummy code
+                        //code = insertDummyCode(code);
+                        break;
+                    }
+
+                    case "8_Remove Comments": { //Removing comments from code
+                        //code = removeComments(code);
+                        break;
+                    }
+
+                    case "9_Shift Methods": {
+                        //code = shiftMethods(code);
+                        break;
+                    }
+                }
+
+                
+            }
+
+            //end of advance obfuscation
+            //write to output 
+            FileWriter fw;
+            if (outputFilePath != ""){
+                fw = new FileWriter(outputFilePath);
+
+            } else {
+                fw = new FileWriter(inputFilePath);
+            }
+
+            fw.write(code);
+            fw.close();
+            }
+            
+        
+
+
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //For Methods
@@ -80,13 +174,11 @@ public class Obfuscator {
                 }
                 
                 //put into hash map
-
-            
             }
         }
 
     }
-    //Function to call for changing method names
+    //Function to call for changing method names using basic slider
     public String changeMethodNames (String code)  {
         CompilationUnit cu = StaticJavaParser.parse(code);
         String newCode = "";
@@ -97,7 +189,6 @@ public class Obfuscator {
         VoidVisitor<HashMap<String, String>> methodNameVisitor = new MethodNameVisitor();
         methodNameVisitor.visit(cu, methods);
 
-        
         //initialize method statistics
         Statistics stats = new Statistics();
         stats.setType("Method");
