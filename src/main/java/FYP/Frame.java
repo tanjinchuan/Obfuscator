@@ -154,8 +154,6 @@ public class Frame {
 		//read settings file here, get a hash map to check value after i click into advanced settings panel
 		
 
-		
-
 		JButton btnAdvancedSettings = new JButton("Advanced settings");
 		btnAdvancedSettings.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -236,7 +234,7 @@ public class Frame {
 		
 
 		////////////////////////////////////////////////////////////////////////////////////////////
-		//Back button for advanced settings panel
+		//Back and Next button for advanced settings panel
 		///////////////////////////////////////////////////////////////////////////////////////////
 		JButton btnBackAdvOptions = new JButton("Back");
 		btnBackAdvOptions.addActionListener(new ActionListener() {
@@ -254,11 +252,30 @@ public class Frame {
 
 				//obfuscate the file
 				try {
-					obfuscator.obfuscate(inputFilePath, outputFilePath, sliderOptionPanel.getLevel());
+					//set the file paths
+					inputFilePath = browsePanel.getInput();
+					outputFilePath = browsePanel.getFullOutput();
+					obfuscator.advObfuscate(inputFilePath, outputFilePath, advOptionsPanel);
+					//start obsfuscation
 					layeredPane.switchPanel(progressBarPanel);
+					//do delay to switch panel
+					int delay = 500;
+					ActionListener taskPerformer = new ActionListener() {
+						public void actionPerformed(ActionEvent event) {
+							if (progressBarPanel.progressBar.getValue() < 100) {
+								progressBarPanel.progressBar.setValue(progressBarPanel.progressBar.getValue()+5);
+								if (progressBarPanel.progressBar.getValue() == 100) {
+									layeredPane.switchPanel(finalPanel);
+								}
+							}
+						}
+
+					};
+
+					new Timer(delay, taskPerformer).start();
 
 				} catch(Exception ex) {
-					//layeredPane.switchPanel(initialPanel);
+					ex.printStackTrace();
 				}
 			}
 		});

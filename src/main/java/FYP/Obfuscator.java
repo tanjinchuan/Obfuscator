@@ -31,7 +31,7 @@ public class Obfuscator {
             //difficulty 0 is method obfuscation and comments removal
             case 0: {
                 code = removeComments(code);
-                code = changeMethodNames(code);
+                code = changeMethodNames(code, "All");
                 code = changeInterfaceNames(code);
                 code = removeWhiteSpaces(code);
                 break;
@@ -40,7 +40,7 @@ public class Obfuscator {
             case 1: {
 
                 code = removeComments(code);
-                code = changeMethodNames(code);
+                code = changeMethodNames(code, "All");
                 code = changeInterfaceNames(code);
                 code = changeVariableNames(code);
                 code = changeParameterNames(code);
@@ -99,22 +99,22 @@ public class Obfuscator {
                     }
 
                     case "3_Public": { //Rename public methods
-                        //code = changePublicMethods(code);
+                        code = changeMethodNames(code, "Public");
                         break;
                     }
 
                     case "4_Protected": { //Rename protected methods
-                        //code = changeProtectedMethods(code);
+                        code = changeMethodNames(code, "Protected");
                         break;
                     }
                     
                     case "5_Private": { //Rename private methods
-                        //code = changePrivateMethods(code);
+                        code = changeMethodNames(code, "Private");
                         break;
                     }
 
                     case "6_Remove White Space": { //Removing white spaces from code
-                        //code = removeWhiteSpaces(code);
+                        code = removeWhiteSpaces(code);
                         break;
                     }
 
@@ -124,7 +124,7 @@ public class Obfuscator {
                     }
 
                     case "8_Remove Comments": { //Removing comments from code
-                        //code = removeComments(code);
+                        code = removeComments(code);
                         break;
                     }
 
@@ -150,9 +150,7 @@ public class Obfuscator {
             fw.write(code);
             fw.close();
             }
-            
-        
-
+            System.out.println("ok");
 
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -178,16 +176,114 @@ public class Obfuscator {
         }
 
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+    private class PublicMethodNameVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
+        //to get method names and put into hash map
+        @Override
+        public void visit(MethodDeclaration md, HashMap<String, String> hash) {
+
+            //visit the nodes
+            super.visit(md, hash);
+            if (!md.isPublic() || !md.isAnnotationPresent("Override")){ //prevent changing method names that need the method to stay the same
+                if (!md.getNameAsString().equals("main")){
+                    String method = md.getNameAsString();
+                    String newMethodName = randomWord(); 
+                    hash.put(method, newMethodName);
+
+                }
+                
+                //put into hash map
+            }
+        }
+
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+    private class ProtectedMethodNameVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
+        //to get method names and put into hash map
+        @Override
+        public void visit(MethodDeclaration md, HashMap<String, String> hash) {
+
+            //visit the nodes
+            super.visit(md, hash);
+            if (!md.isProtected() || !md.isAnnotationPresent("Override")){ //prevent changing method names that need the method to stay the same
+                if (!md.getNameAsString().equals("main")){
+                    String method = md.getNameAsString();
+                    String newMethodName = randomWord(); 
+                    hash.put(method, newMethodName);
+
+                }
+                
+                //put into hash map
+            }
+        }
+
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+    private class PrivateMethodNameVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
+        //to get method names and put into hash map
+        @Override
+        public void visit(MethodDeclaration md, HashMap<String, String> hash) {
+
+            //visit the nodes
+            super.visit(md, hash);
+            if (!md.isPrivate() || !md.isAnnotationPresent("Override")){ //prevent changing method names that are
+                if (!md.getNameAsString().equals("main")){
+                    String method = md.getNameAsString();
+                    String newMethodName = randomWord(); 
+                    hash.put(method, newMethodName);
+
+                }
+                
+                //put into hash map
+            }
+        }
+
+    }
+
+    
+
+    
+
+    
     //Function to call for changing method names using basic slider
-    public String changeMethodNames (String code)  {
+    public String changeMethodNames (String code, String methodType)  {
         CompilationUnit cu = StaticJavaParser.parse(code);
         String newCode = "";
         
         //initialize method visitor
         HashMap<String, String> methods = new HashMap<String, String>();
 
-        VoidVisitor<HashMap<String, String>> methodNameVisitor = new MethodNameVisitor();
-        methodNameVisitor.visit(cu, methods);
+        //if null, do all method names
+        if (methodType.equals("All")) {
+
+            VoidVisitor<HashMap<String, String>> methodNameVisitor = new MethodNameVisitor();
+            methodNameVisitor.visit(cu, methods);
+    
+        }
+        //if public
+        else if (methodType.equals("Public")) {
+            
+            VoidVisitor<HashMap<String, String>> methodNameVisitor = new PublicMethodNameVisitor();
+            methodNameVisitor.visit(cu, methods);
+
+        }
+        //if protected
+        else if (methodType.equals("Protected")) {
+            
+            VoidVisitor<HashMap<String, String>> methodNameVisitor = new ProtectedMethodNameVisitor();
+            methodNameVisitor.visit(cu, methods);
+
+        }
+        //if private
+        else if (methodType.equals("Private")) {
+            
+            VoidVisitor<HashMap<String, String>> methodNameVisitor = new PrivateMethodNameVisitor();
+            methodNameVisitor.visit(cu, methods);
+
+        }
 
         //initialize method statistics
         Statistics stats = new Statistics();
