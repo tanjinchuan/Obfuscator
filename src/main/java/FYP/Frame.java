@@ -179,7 +179,7 @@ public class Frame {
 		/////////////////////////////////////////////////////////////////////////////
 		//Button "next" to go to progressbarpanel on slider panel
 		////////////////////////////////////////////////////////////////////////////
-		JButton btnNextSliderPanel = new JButton("Next");
+		JButton btnNextSliderPanel = new JButton("Start Obfuscating");
 		btnNextSliderPanel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -197,7 +197,7 @@ public class Frame {
 					ActionListener taskPerformer = new ActionListener() {
 						public void actionPerformed(ActionEvent event) {
 							if (progressBarPanel.progressBar.getValue() < 100) {
-								progressBarPanel.progressBar.setValue(progressBarPanel.progressBar.getValue()+5);
+								progressBarPanel.progressBar.setValue(progressBarPanel.progressBar.getValue()+15);
 								if (progressBarPanel.progressBar.getValue() == 100) {
 									layeredPane.switchPanel(finalPanel);
 								}
@@ -229,7 +229,7 @@ public class Frame {
 		});
 		
 		
-		btnNextSliderPanel.setBounds(608, 380, 148, 25);
+		btnNextSliderPanel.setBounds(608, 380, 180, 25);
 		sliderOptionPanel.add(btnNextSliderPanel);
 		
 
@@ -246,7 +246,7 @@ public class Frame {
 		advOptionsPanel.add(btnBackAdvOptions);
 		
 		//next button for advanced settings panel
-		JButton btnNextAdvOptions = new JButton("Next");
+		JButton btnNextAdvOptions = new JButton("Start Obfuscating");
 		btnNextAdvOptions.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -263,7 +263,7 @@ public class Frame {
 					ActionListener taskPerformer = new ActionListener() {
 						public void actionPerformed(ActionEvent event) {
 							if (progressBarPanel.progressBar.getValue() < 100) {
-								progressBarPanel.progressBar.setValue(progressBarPanel.progressBar.getValue()+5);
+								progressBarPanel.progressBar.setValue(progressBarPanel.progressBar.getValue()+15);
 								if (progressBarPanel.progressBar.getValue() == 100) {
 									layeredPane.switchPanel(finalPanel);
 								}

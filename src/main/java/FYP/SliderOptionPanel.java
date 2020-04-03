@@ -1,18 +1,13 @@
 package FYP;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Hashtable;
 
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -41,16 +36,16 @@ public class SliderOptionPanel extends JPanel implements ChangeListener, Propert
 		public void stateChanged(ChangeEvent e) {
 			int level = ((JSlider)e.getSource()).getValue();
 			if(level == 0) {
-				sliderOptionDescriptionLabel.setText("Comments removal | Name Obfuscation");
+				sliderOptionDescriptionLabel.setText("Comments Removal | Method Name Change");
 			}
 			else if (level == 1) {
-				sliderOptionDescriptionLabel.setText("Description 1");
+				sliderOptionDescriptionLabel.setText("Comments Removal | Method & Variable Name Change");
 			}
 			else if (level == 2) {
-				sliderOptionDescriptionLabel.setText("Description 2");
+				sliderOptionDescriptionLabel.setText("Comments Removal | ");
 			}
 			else if (level == 3) {
-				sliderOptionDescriptionLabel.setText("Description 3");
+				sliderOptionDescriptionLabel.setText("Flow Obfuscation");
 			}
 			
 			}
@@ -63,7 +58,7 @@ public class SliderOptionPanel extends JPanel implements ChangeListener, Propert
 		labelTable.put(new Integer(0), new JLabel("Weak"));
 		labelTable.put(new Integer(1), new JLabel("Medium"));
 		labelTable.put(new Integer(2), new JLabel("Strong"));
-		labelTable.put(new Integer(3), new JLabel("Cray cray"));
+		labelTable.put(new Integer(3), new JLabel("Extreme"));
 		slider.setLabelTable(labelTable); 
 		slider.setPaintLabels(true);
 		slider.setBounds(92, 164, 562, 52);

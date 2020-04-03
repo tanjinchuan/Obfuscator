@@ -2,9 +2,10 @@
 4_Protected:0
 0_Public:0
 1_Protected:0
-6_Remove White Space:0
+6_Change Variable Names:1
+7_Remove White Space:0
+8_Insert Dummy Code:0
+9_Remove Comments:0
 3_Public:0
-7_Insert Dummy Code:0
+10_Shift Methods:0
 5_Private:1
-9_Shift Methods:0
-8_Remove Comments:0

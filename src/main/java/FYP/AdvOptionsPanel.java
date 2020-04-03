@@ -31,6 +31,8 @@ public class AdvOptionsPanel extends JPanel {
 	JCheckBox chckbxRenamePublic = new JCheckBox("Public");
 	JCheckBox chckbxRenameProtected = new JCheckBox("Protected");
 	JCheckBox chckbxRenamePrivate = new JCheckBox("Private");
+
+	JCheckBox chckbxChangeVariables = new JCheckBox("Change Variable Names");
 	JCheckBox chckbxRemoveWhitespace = new JCheckBox("Remove White Space");
 	JCheckBox chckbxInsertDummyCode = new JCheckBox("Insert Dummy Code");
 	JCheckBox chckbxRemoveComments = new JCheckBox("Remove Comments");
@@ -75,17 +77,21 @@ public class AdvOptionsPanel extends JPanel {
 		this.add(chckbxRenamePrivate);
 
 		// Misc
-		chckbxRemoveWhitespace.setBounds(509, 170, 147, 25);
+		
+		chckbxChangeVariables.setBounds(509, 170, 147, 25);
+		this.add(chckbxChangeVariables);
+
+		chckbxRemoveWhitespace.setBounds(509, 200, 147, 25);
 		this.add(chckbxRemoveWhitespace);
 
-		chckbxInsertDummyCode.setBounds(509, 200, 147, 25);
+		chckbxInsertDummyCode.setBounds(509, 230, 147, 25);
 		this.add(chckbxInsertDummyCode);
 
-		chckbxRemoveComments.setBounds(509, 230, 147, 25);
+		chckbxRemoveComments.setBounds(509, 260, 147, 25);
 		this.add(chckbxRemoveComments);
 
 		// temp
-		chckbxShiftMethods.setBounds(509, 260, 113, 25);
+		chckbxShiftMethods.setBounds(509, 290, 113, 25);
 		this.add(chckbxShiftMethods);
 
 		// adv default settings btn

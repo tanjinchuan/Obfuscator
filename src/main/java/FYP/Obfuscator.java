@@ -113,22 +113,27 @@ public class Obfuscator {
                         break;
                     }
 
-                    case "6_Remove White Space": { //Removing white spaces from code
+                    case "6_Change Variable Names": { //Change variable names
+                        code = changeVariableNames(code);
+                        break;
+                    }
+
+                    case "7_Remove White Space": { //Removing white spaces from code
                         code = removeWhiteSpaces(code);
                         break;
                     }
 
-                    case "7_Insert Dummy Code": { //Insert dummy code
+                    case "8_Insert Dummy Code": { //Insert dummy code
                         //code = insertDummyCode(code);
                         break;
                     }
 
-                    case "8_Remove Comments": { //Removing comments from code
+                    case "9_Remove Comments": { //Removing comments from code
                         code = removeComments(code);
                         break;
                     }
 
-                    case "9_Shift Methods": {
+                    case "10_Shift Methods": {
                         //code = shiftMethods(code);
                         break;
                     }
@@ -185,7 +190,7 @@ public class Obfuscator {
 
             //visit the nodes
             super.visit(md, hash);
-            if (!md.isPublic() || !md.isAnnotationPresent("Override")){ //prevent changing method names that need the method to stay the same
+            if (md.isPublic() && !md.isAnnotationPresent("Override")){ 
                 if (!md.getNameAsString().equals("main")){
                     String method = md.getNameAsString();
                     String newMethodName = randomWord(); 
@@ -207,7 +212,7 @@ public class Obfuscator {
 
             //visit the nodes
             super.visit(md, hash);
-            if (!md.isProtected() || !md.isAnnotationPresent("Override")){ //prevent changing method names that need the method to stay the same
+            if (md.isProtected() && !md.isAnnotationPresent("Override")){ //prevent changing method names that need the method to stay the same
                 if (!md.getNameAsString().equals("main")){
                     String method = md.getNameAsString();
                     String newMethodName = randomWord(); 
@@ -229,7 +234,7 @@ public class Obfuscator {
 
             //visit the nodes
             super.visit(md, hash);
-            if (!md.isPrivate() || !md.isAnnotationPresent("Override")){ //prevent changing method names that are
+            if (md.isPrivate() && !md.isAnnotationPresent("Override")){ //prevent changing method names that are
                 if (!md.getNameAsString().equals("main")){
                     String method = md.getNameAsString();
                     String newMethodName = randomWord(); 
@@ -243,11 +248,6 @@ public class Obfuscator {
 
     }
 
-    
-
-    
-
-    
     //Function to call for changing method names using basic slider
     public String changeMethodNames (String code, String methodType)  {
         CompilationUnit cu = StaticJavaParser.parse(code);
@@ -256,7 +256,7 @@ public class Obfuscator {
         //initialize method visitor
         HashMap<String, String> methods = new HashMap<String, String>();
 
-        //if null, do all method names
+        //if empty, do all method names
         if (methodType.equals("All")) {
 
             VoidVisitor<HashMap<String, String>> methodNameVisitor = new MethodNameVisitor();
