@@ -1,8 +1,12 @@
 package FYP;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -11,7 +15,7 @@ import javax.swing.JPanel;
 
 import java.awt.*;
 import java.awt.event.*;
-
+import java.awt.image.BufferedImage;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -41,22 +45,23 @@ public class InitialPanel extends JPanel {
 	private void showTutorial() {
 
 		Lessons lessons = new Lessons();
-		ArrayList<String> tutorials = lessons.getTutorialImages("src\\main\\java\\FYP\\imagesURL.txt");
+		ArrayList<String> tutorials = lessons.getTutorialImages();
+
 		JDialog tutorialDialog = new JDialog();
 
 		JLabel imgLabel = new JLabel();
 
+
 		//initialize first image
-		File imageFile = new File(tutorials.get(0));
-		URL url = null;
-		try {
-			url = imageFile.toURI().toURL();
-		} catch (MalformedURLException e1) {
-			e1.printStackTrace();
-		}
-		ImageIcon icon = new ImageIcon(url);
-		imgLabel.setIcon(icon);
-		imgLabel.setBounds(0, 0, 1000, 650);
+		
+		
+
+		ImageIcon img = new ImageIcon(this.getClass().getClassLoader().getResource(tutorials.get(0)));
+		
+		imgLabel.setIcon(img);
+		imgLabel.setBounds(0, 0, 1000, 650);	
+	
+
 		JButton btnTutorialEnd = new JButton("End tutorial");
 		btnTutorialEnd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -74,15 +79,9 @@ public class InitialPanel extends JPanel {
 				
 				if (currIndex > 0) {
 					currIndex--;
-					File imageFile = new File(tutorials.get(currIndex));
-					URL url = null;
-					try {
-						url = imageFile.toURI().toURL();
-					} catch (MalformedURLException e1) {
-						e1.printStackTrace();
-					}
-					ImageIcon icon = new ImageIcon(url);
-					imgLabel.setIcon(icon);
+					
+					ImageIcon img = new ImageIcon(this.getClass().getClassLoader().getResource(tutorials.get(currIndex)));
+					imgLabel.setIcon(img);
 
 					btnTutorialNext.setVisible(true);
 				}
@@ -94,15 +93,9 @@ public class InitialPanel extends JPanel {
 				
 				if (currIndex < tutorials.size() -1) {
 					currIndex++;
-					File imageFile = new File(tutorials.get(currIndex));
-					URL url = null;
-					try {
-						url = imageFile.toURI().toURL();
-					} catch (MalformedURLException e1) {
-						e1.printStackTrace();
-					}
-					ImageIcon icon = new ImageIcon(url);
-					imgLabel.setIcon(icon);
+					ImageIcon img = new ImageIcon(this.getClass().getClassLoader().getResource(tutorials.get(currIndex)));
+
+					imgLabel.setIcon(img);
 
 				}
 				if (currIndex == tutorials.size()-1) {

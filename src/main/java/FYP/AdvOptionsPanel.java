@@ -33,10 +33,11 @@ public class AdvOptionsPanel extends JPanel {
 	JCheckBox chckbxRenamePrivate = new JCheckBox("Private");
 
 	JCheckBox chckbxChangeVariables = new JCheckBox("Change Variable Names");
+	JCheckBox chckbxChangeParameters = new JCheckBox("Change Parameter Names");
 	JCheckBox chckbxRemoveWhitespace = new JCheckBox("Remove White Space");
 	JCheckBox chckbxInsertDummyCode = new JCheckBox("Insert Dummy Code");
 	JCheckBox chckbxRemoveComments = new JCheckBox("Remove Comments");
-	JCheckBox chckbxShiftMethods = new JCheckBox("Shift Methods");
+	JCheckBox chckbxShiftMethods = new JCheckBox("Flow Obfuscation");
 
 	public AdvOptionsPanel() {
 
@@ -81,17 +82,20 @@ public class AdvOptionsPanel extends JPanel {
 		chckbxChangeVariables.setBounds(509, 170, 147, 25);
 		this.add(chckbxChangeVariables);
 
-		chckbxRemoveWhitespace.setBounds(509, 200, 147, 25);
+		chckbxChangeParameters.setBounds(509, 200, 147, 25);
+		this.add(chckbxChangeParameters);
+
+		chckbxRemoveWhitespace.setBounds(509, 230, 147, 25);
 		this.add(chckbxRemoveWhitespace);
 
-		chckbxInsertDummyCode.setBounds(509, 230, 147, 25);
+		chckbxInsertDummyCode.setBounds(509, 260, 147, 25);
 		this.add(chckbxInsertDummyCode);
 
-		chckbxRemoveComments.setBounds(509, 260, 147, 25);
+		chckbxRemoveComments.setBounds(509, 290, 147, 25);
 		this.add(chckbxRemoveComments);
 
 		// temp
-		chckbxShiftMethods.setBounds(509, 290, 113, 25);
+		chckbxShiftMethods.setBounds(509, 320, 113, 25);
 		this.add(chckbxShiftMethods);
 
 		// adv default settings btn
@@ -156,7 +160,7 @@ public class AdvOptionsPanel extends JPanel {
 
 	public void createSettingsFile() {
         //once panel initialized, create advsettings.txt
-		File file = new File("src/settings/advsettings.txt");
+		File file = new File("./settings/advsettings.txt");
 		if (file.exists() == false) {
 			int boxID = 0;
 			try {
@@ -166,6 +170,7 @@ public class AdvOptionsPanel extends JPanel {
 					boxID++;
 				}
 				fr.close();
+				System.out.println("Settings file created!");
 				
 			} catch (IOException ie) {
 				System.out.println("Empty string");
@@ -180,7 +185,7 @@ public class AdvOptionsPanel extends JPanel {
 	
 	//read the settings file once go into advanced settings
     public void readSettingsFile() {
-        File file = new File("./src/settings/advSettings.txt");
+        File file = new File("./settings/advSettings.txt");
         if (file.exists() == true) {
             //read into hashmap
             try {
@@ -203,7 +208,7 @@ public class AdvOptionsPanel extends JPanel {
     
     private void writeSettings(HashMap<String, Integer> currentSettings) {
 
-        File settingsFile = new File("./src/settings/advsettings.txt");
+        File settingsFile = new File("./settings/advsettings.txt");
         FileWriter fw;
         try {
             fw = new FileWriter(settingsFile, false);

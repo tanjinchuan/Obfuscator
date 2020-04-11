@@ -1,33 +1,18 @@
 package FYP;
 
-import java.util.Scanner;
 import java.util.ArrayList;
-import java.io.*;
-
-
-
 
 
 class Lessons {
 
-    
-    public ArrayList<String> getTutorialImages(String textFile) {
+    public ArrayList<String> getTutorialImages() {
         ArrayList<String> lessons = new ArrayList<String>();
+        lessons.add("lesson1.jpg");
+        lessons.add("lesson2.jpg");
+        lessons.add("lesson3.jpg");
+        lessons.add("lesson4.jpg");
+        lessons.add("lesson5.jpg");
         
-        File file = new File(textFile);
-
-        try {
-            Scanner scanner = new Scanner(file);
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                    
-                lessons.add(line);  //add the lesson into arraylist
-               
-            }
-            scanner.close();
-        } catch (FileNotFoundException fe) {
-
-        }
         return lessons;
     }
 }

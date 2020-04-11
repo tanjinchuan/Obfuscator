@@ -21,8 +21,6 @@ public class SliderOptionPanel extends JPanel implements ChangeListener, Propert
 
         this.setLayout(null);
 
-        
-
         JLabel sliderOptionDescriptionLabel = new JLabel();
 		sliderOptionDescriptionLabel.setBounds(92, 243, 562, 40);
 		this.add(sliderOptionDescriptionLabel);

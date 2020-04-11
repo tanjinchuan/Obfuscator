@@ -18,7 +18,7 @@ class Statistics {
 
     public void increaseCount(String s) {
         if (counts.get(s) == null) {
-            counts.put(s, 0);
+            counts.put(s, 1);
         }
         else {
             int count = counts.get(s); 

@@ -7,7 +7,6 @@ import java.awt.*;
 import java.awt.event.*;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import javax.swing.*;
 
@@ -61,7 +60,7 @@ public class Frame {
 	//create settings dir and files
 	private void mkdir() {
 		  try {
-			  File folder = new File ("./src/settings");
+			  File folder = new File ("./settings");
 					  
 			  folder.mkdir();
 			  Process p =  Runtime.getRuntime().exec("attrib +H " + folder.getPath());
