@@ -154,6 +154,9 @@ public class Frame {
 		
 
 		JButton btnAdvancedSettings = new JButton("Advanced settings");
+		btnAdvancedSettings.setBounds(550, 336, 200, 25);
+		sliderOptionPanel.add(btnAdvancedSettings);
+
 		btnAdvancedSettings.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				layeredPane.switchPanel(advOptionsPanel);
@@ -163,8 +166,7 @@ public class Frame {
 
 			}
 		});
-		btnAdvancedSettings.setBounds(608, 336, 148, 25);
-		sliderOptionPanel.add(btnAdvancedSettings);
+		
 		
 		JButton btnBackSliderPanel = new JButton("Back");
 		btnBackSliderPanel.addActionListener(new ActionListener() {
@@ -179,6 +181,9 @@ public class Frame {
 		//Button "next" to go to progressbarpanel on slider panel
 		////////////////////////////////////////////////////////////////////////////
 		JButton btnNextSliderPanel = new JButton("Start Obfuscating");
+		btnNextSliderPanel.setBounds(550, 380, 200, 25);
+		sliderOptionPanel.add(btnNextSliderPanel);
+
 		btnNextSliderPanel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -228,8 +233,7 @@ public class Frame {
 		});
 		
 		
-		btnNextSliderPanel.setBounds(608, 380, 180, 25);
-		sliderOptionPanel.add(btnNextSliderPanel);
+		
 		
 
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -246,6 +250,10 @@ public class Frame {
 		
 		//next button for advanced settings panel
 		JButton btnNextAdvOptions = new JButton("Start Obfuscating");
+		btnNextAdvOptions.setBounds(620, 390, 220, 25);
+		advOptionsPanel.add(btnNextAdvOptions);
+
+		
 		btnNextAdvOptions.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -279,10 +287,6 @@ public class Frame {
 			}
 		});
 		
-		btnNextAdvOptions.setBounds(620, 390, 97, 25);
-		
-		advOptionsPanel.add(btnNextAdvOptions);
-
 		
 
 		///////////////////////////////////////////////////////
@@ -299,6 +303,15 @@ public class Frame {
             }
 		});
 		
+		JButton btnAnother = new JButton("Obfuscate another file");
+		btnAnother.setBounds(526, 196, 184, 25);
+		finalPanel.add(btnAnother);
+		btnAnother.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				browsePanel.setTextField(); //set textfield back to empty
+				layeredPane.switchPanel(browsePanel); 
+			}
+		});
 	}
 
 }

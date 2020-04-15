@@ -26,12 +26,13 @@ public class BrowsePanel extends JPanel {
     private String outputDirectory;
     private String outputFile;
     private String outputFilePath;
-
+	JTextField inputTextField = new JTextField();
+	JTextField outputTextField = new JTextField();
+	JTextField outputFileTextField = new JTextField();
+	
     public BrowsePanel(JFrame frame, LayeredPane layeredPane, JPanel initialPanel, JPanel sliderOptionPanel) {
         
-        JTextField inputTextField = new JTextField();
-        JTextField outputTextField = new JTextField();
-        JTextField outputFileTextField = new JTextField();
+        
 
 		inputTextField.setBounds(139, 125, 470, 22);
 		inputTextField.setEditable(false);
@@ -91,7 +92,7 @@ public class BrowsePanel extends JPanel {
 		}
 		});
 		
-		btnInputBrowsePanel.setBounds(644, 124, 97, 25);
+		btnInputBrowsePanel.setBounds(644, 124, 110, 25);
 		this.add(btnInputBrowsePanel);
 		
 		//File output chooser function
@@ -115,18 +116,11 @@ public class BrowsePanel extends JPanel {
 	    	}
 		});
 				
-		btnOutputBrowsePanel.setBounds(644, 216, 97, 25);
+		btnOutputBrowsePanel.setBounds(644, 216, 110, 25);
 		this.add(btnOutputBrowsePanel);
 		
-		outputFileTextField.setText("Enter output file name (without extension)");
-		outputFileTextField.setColumns(10);
-		outputFileTextField.setBounds(139, 257, 470, 22);
-		outputFileTextField.addMouseListener(new MouseAdapter(){
-			@Override
-			public void mouseClicked(MouseEvent e){
-                outputFileTextField.setText("");
-			}
-		});
+		
+		outputFileTextField.setBounds(139, 257, 200, 22);
         this.add(outputFileTextField);
 
 		outputFileTextField.getDocument().addDocumentListener(new DocumentListener() {
@@ -147,6 +141,12 @@ public class BrowsePanel extends JPanel {
 			}
 			
 		});
+
+		//label beside output file name field
+		JLabel lbljava = new JLabel(".java");
+		lbljava.setBounds(340, 240, 50, 50);
+		this.add(lbljava);
+
         
         
         //next button function
@@ -165,9 +165,7 @@ public class BrowsePanel extends JPanel {
 						layeredPane.switchPanel(sliderOptionPanel);
 
                     }
-                    else {
-                        System.out.println("wtf");
-                    }
+                    
 					
 				
                 } else { //check for valid directory
@@ -191,24 +189,36 @@ public class BrowsePanel extends JPanel {
 		btnBrowsePanelBack.setBounds(55, 390, 97, 25);
 		this.add(btnBrowsePanelBack);
 		
-		
+		JLabel lblInput = new JLabel("Input File");
+		lblInput.setBounds(140, 100, 100, 16);
+		this.add(lblInput);
 
-		JLabel lblInputLabel = new JLabel("Input file");
-		lblInputLabel.setBounds(48, 128, 56, 16);
+		JLabel lblInputLabel = new JLabel("Directory");
+		lblInputLabel.setBounds(48, 128, 70, 16);
         this.add(lblInputLabel);
-        
-		JLabel lblOutputDir = new JLabel("Output dir");
-		lblOutputDir.setBounds(48, 220, 59, 16);
+		
+		JLabel lblOutput = new JLabel("Output File");
+		lblOutput.setBounds(140, 192, 100, 16);
+		this.add(lblOutput);
+
+		JLabel lblOutputDir = new JLabel("Directory");
+		lblOutputDir.setBounds(48, 220, 80, 16);
         this.add(lblOutputDir);
         
-		JLabel lblOutputFile = new JLabel("Output file");
-        lblOutputFile.setBounds(48, 260, 59, 16);
+		JLabel lblOutputFile = new JLabel("File Name");
+        lblOutputFile.setBounds(48, 260, 80, 16);
         this.add(lblOutputFile);
 
         this.setLayout(null);
         
 		
-    }
+	}
+	
+	public void setTextField() {
+		inputTextField.setText("");
+		outputTextField.setText("");
+		outputFileTextField.setText("");
+	}
 
     public void setInputPath(String path) {
         this.inputFilePath = path;
@@ -271,16 +281,7 @@ public class BrowsePanel extends JPanel {
 			JOptionPane.showMessageDialog(frame, "Input and output file cannot be the same", "Warning", JOptionPane.OK_OPTION);
 			return false;
 		}
-		//if output file ext  is not valid
-		else if (getFileName().indexOf(".") > 0 ) 
-		{ //if "." exists
-			JOptionPane.showMessageDialog(frame, "Invalid output file name. Please exclude the file extension", "Warning", JOptionPane.OK_OPTION);
-			return false;
-		}
-		else if (getFileName().indexOf(" ") > 0 ) {
-			JOptionPane.showMessageDialog(frame, "Invalid output file name.", "Warning", JOptionPane.OK_OPTION);
-			return false;
-		}
+		
 		else {
 			return true;
 		}

@@ -52,7 +52,7 @@ public class AdvOptionsPanel extends JPanel {
 		lblRenameFieldsAnd.setBounds(286, 145, 168, 16);
 		this.add(lblRenameFieldsAnd);
 
-		lblMiscellaneous.setBounds(509, 145, 88, 16);
+		lblMiscellaneous.setBounds(500, 145, 88, 16);
 		this.add(lblMiscellaneous);
 
 		// Eliminate unused fields and methods
@@ -79,23 +79,23 @@ public class AdvOptionsPanel extends JPanel {
 
 		// Misc
 		
-		chckbxChangeVariables.setBounds(509, 170, 147, 25);
+		chckbxChangeVariables.setBounds(500, 170, 220, 25);
 		this.add(chckbxChangeVariables);
 
-		chckbxChangeParameters.setBounds(509, 200, 147, 25);
+		chckbxChangeParameters.setBounds(500, 200, 220, 25);
 		this.add(chckbxChangeParameters);
 
-		chckbxRemoveWhitespace.setBounds(509, 230, 147, 25);
+		chckbxRemoveWhitespace.setBounds(500, 230, 220, 25);
 		this.add(chckbxRemoveWhitespace);
 
-		chckbxInsertDummyCode.setBounds(509, 260, 147, 25);
+		chckbxInsertDummyCode.setBounds(500, 260, 220, 25);
 		this.add(chckbxInsertDummyCode);
 
-		chckbxRemoveComments.setBounds(509, 290, 147, 25);
+		chckbxRemoveComments.setBounds(500, 290, 220, 25);
 		this.add(chckbxRemoveComments);
 
 		// temp
-		chckbxShiftMethods.setBounds(509, 320, 113, 25);
+		chckbxShiftMethods.setBounds(500, 320, 220, 25);
 		this.add(chckbxShiftMethods);
 
 		// adv default settings btn

@@ -23,9 +23,7 @@ public class FinalPanel extends JPanel {
         
 		this.setLayout(null);
 		
-		JButton btnAnother = new JButton("Obfuscate another file");
-		btnAnother.setBounds(526, 196, 184, 25);
-		this.add(btnAnother);
+		
 		
         
         ////////////////////////////////////////////////////////////////////////////////////////////////
