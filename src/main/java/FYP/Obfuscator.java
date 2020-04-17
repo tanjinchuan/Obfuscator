@@ -1,7 +1,8 @@
 package FYP;
 
 import java.util.*;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.io.*;
 
 import com.github.javaparser.ParseException;
@@ -307,7 +308,14 @@ public class Obfuscator {
 
                 continue;
             }
-            String[] split = line.split("(?=[^A-Za-z0-9])|(?<=[^A-Za-z0-9])");
+
+            List<String> split = new ArrayList<String>();
+            Pattern regex = Pattern.compile("(\"[^\"]*\")|\\W|\\w+");
+            Matcher regexMatcher = regex.matcher(line);
+            while (regexMatcher.find()) {
+                split.add(regexMatcher.group());
+            } 
+            
             // (eg. public void setName(String s) will split into ["public","void",
             // "setName", "(", "String", "s", ")"])
 
@@ -315,23 +323,22 @@ public class Obfuscator {
 
             // loop to check whether each seperated word is the method name, if it is,
             // change to the new method name
-            for (int i = 0; i < split.length; i++) {
-                if (methods.containsKey(split[i])) {
+            for (int i = 0; i < split.size(); i++) {
+                if (methods.containsKey(split.get(i))) {
 
-                    stats.setStats(split[i], methods.get(split[i]));
-                    stats.increaseCount(split[i]); // save the number of times method changed
+                    stats.setStats(split.get(i), methods.get(split.get(i)));
+                    stats.increaseCount(split.get(i)); // save the number of times method changed
                     // save the names to statistics for printing
 
                     // changes the method name to new value name
-                    split[i] = methods.get(split[i]);
-
+                    split.set(i, methods.get(split.get(i)));
                 }
             }
 
             // loop to add the code back into the line
-            for (int i = 0; i < split.length; i++) {
+            for (int i = 0; i < split.size(); i++) {
 
-                newLine = newLine + split[i];
+                newLine = newLine + split.get(i);
 
             }
 
@@ -387,24 +394,32 @@ public class Obfuscator {
                 newCode = newCode + line + "\n";
 
                 continue;
-            }
-            String[] split = line.split("(?=[^A-Za-z0-9])|(?<=[^A-Za-z0-9])");
+            }            
             String newLine = "";
-            for (int i = 0; i < split.length; i++) {
-                if (parameters.containsKey(split[i])) {
+
+            List<String> split = new ArrayList<String>();
+            Pattern regex = Pattern.compile("(\"[^\"]*\")|\\W|\\w+");
+            Matcher regexMatcher = regex.matcher(line);
+            while (regexMatcher.find()) {
+                split.add(regexMatcher.group());
+            } 
+
+            for (int i = 0; i < split.size(); i++) {
+                if (parameters.containsKey(split.get(i))) {
 
                     // save the names for printing later
-                    stats.setStats(split[i], parameters.get(split[i]));
-                    stats.increaseCount(split[i]); // save the number of times method changed
+                    stats.setStats(split.get(i), parameters.get(split.get(i)));
+                    stats.increaseCount(split.get(i)); // save the number of times method changed
 
-                    split[i] = parameters.get(split[i]); // set the variable name to new random word
+                     // set the variable name to new random word
+                    split.set(i, parameters.get(split.get(i)));
                 }
 
             }
 
-            for (int i = 0; i < split.length; i++) {
+            for (int i = 0; i < split.size(); i++) {
                 // put together back the line
-                newLine = newLine + split[i];
+                newLine = newLine + split.get(i);
             }
 
             // put together the code
@@ -455,27 +470,31 @@ public class Obfuscator {
                 newCode = newCode + line + "\n";
 
                 continue;
-            }
-            String[] split = line.split("(?=[^A-Za-z0-9])|(?<=[^A-Za-z0-9])");
+            } 
             String newLine = "";
-            for (int i = 0; i < split.length; i++) {
-                if (variables.containsKey(split[i])) {
+            List<String> split = new ArrayList<String>();
+            Pattern regex = Pattern.compile("(\"[^\"]*\")|\\W|\\w+");
+            Matcher regexMatcher = regex.matcher(line);
+            while (regexMatcher.find()) {
+                split.add(regexMatcher.group());
+            } 
 
-                    // save the names to statistics for printing
-                    stats.setStats(split[i], variables.get(split[i]));
-                    stats.increaseCount(split[i]); // save the number of times method changed
+            for (int i = 0; i < split.size(); i++) {
+                if (variables.containsKey(split.get(i))) {
 
-                    split[i] = variables.get(split[i]); // set the variable name to new random word
+                    // save the names for printing later
+                    stats.setStats(split.get(i), variables.get(split.get(i)));
+                    stats.increaseCount(split.get(i)); // save the number of times method changed
 
+                     // set the variable name to new random word
+                    split.set(i, variables.get(split.get(i)));
                 }
 
             }
 
-            for (int i = 0; i < split.length; i++) {
+            for (int i = 0; i < split.size(); i++) {
                 // put together back the line
-
-                newLine = newLine + split[i];
-
+                newLine = newLine + split.get(i);
             }
 
             // put together the code
@@ -521,25 +540,32 @@ public class Obfuscator {
             if (line.startsWith("import")) {
                 newCode = newCode + line + "\n";
                 continue;
-            }
-            String[] split = line.split("(?=[^A-Za-z0-9])|(?<=[^A-Za-z0-9])");
+            }            
             String newLine = "";
-            for (int i = 0; i < split.length; i++) {
-                if (interfaceNames.containsKey(split[i])) {
 
-                    // save the names to statistics
-                    stats.setStats(split[i], interfaceNames.get(split[i]));
-                    stats.increaseCount(split[i]); // save the number of times method changed
+            List<String> split = new ArrayList<String>();
+            Pattern regex = Pattern.compile("(\"[^\"]*\")|\\W|\\w+");
+            Matcher regexMatcher = regex.matcher(line);
+            while (regexMatcher.find()) {
+                split.add(regexMatcher.group());
+            } 
 
-                    split[i] = interfaceNames.get(split[i]); // set the variable name to new random word
+            for (int i = 0; i < split.size(); i++) {
+                if (interfaceNames.containsKey(split.get(i))) {
 
+                    // save the names for printing later
+                    stats.setStats(split.get(i), interfaceNames.get(split.get(i)));
+                    stats.increaseCount(split.get(i)); // save the number of times method changed
+
+                     // set the variable name to new random word
+                    split.set(i, interfaceNames.get(split.get(i)));
                 }
 
             }
 
-            for (int i = 0; i < split.length; i++) {
+            for (int i = 0; i < split.size(); i++) {
                 // put together back the line
-                newLine = newLine + split[i];
+                newLine = newLine + split.get(i);
             }
 
             // put together the code
