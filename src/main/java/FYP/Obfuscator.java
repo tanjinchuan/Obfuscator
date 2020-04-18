@@ -8,10 +8,12 @@ import java.io.*;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-
+import com.github.javaparser.ast.Modifier.Keyword;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
-
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 
 import com.github.javaparser.ast.body.Parameter;
@@ -76,8 +78,14 @@ public class Obfuscator {
 
         advOptionsPanel.getCurrentOptions(); // get the current check box values
         HashMap<String, Integer> settings = advOptionsPanel.getSettings(); // get the hashmap of values
-        for (String key : settings.keySet()) {
 
+        //do dummy code insertion first if user wants it, as we have to obfuscate the dummy code as well.
+        if (settings.get("9_Insert Dummy Code") == 1) {
+            code = insertDummyCode(code);
+        }
+        
+        for (String key : settings.keySet()) {
+            
             int value = settings.get(key);
             if (value == 1) { // if the box is ticked, do that obfuscation technique
                 switch (key) {
@@ -126,7 +134,6 @@ public class Obfuscator {
                     }
 
                     case "9_Insert Dummy Code": { // Insert dummy code
-                        // code = insertDummyCode(code);
                         break;
                     }
 
@@ -144,11 +151,12 @@ public class Obfuscator {
             }
 
         }
-        if (settings.get("8_Remove White Space") == 1) { // because my methods make the code nice nice, so put at end
-                                                         // for removing white spaces
+
+        //because my methods make the code neat, Removing white spaces must put at end if user wants it
+        if (settings.get("8_Remove White Space") == 1) { 
             code = removeWhiteSpaces(code);
         } else {
-            code = refactorCode(code);
+            code = prettyPrinting(code);
         }
         // end of advance obfuscation
         // write to output
@@ -592,7 +600,7 @@ public class Obfuscator {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // help remove unecessary spaces in code
-    public String refactorCode(String code) {
+    public String prettyPrinting(String code) {
         CompilationUnit cu = StaticJavaParser.parse(code);
         String cleanCode = cu.toString();
         return cleanCode;
@@ -647,14 +655,14 @@ public class Obfuscator {
     }
 
     private String removeWhiteSpaces(String code) {
-        code = refactorCode(code); // make nice nice first
+        code = prettyPrinting(code); // make nice nice first
         code = code.trim().replaceAll("\\s+", " ");
         System.out.println("Removing unecessary whitespaces");
         return code;
     }
 
 
-    /*not done yet
+    // /*not done yet
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         @Override
         public void visit(ClassOrInterfaceDeclaration c, Void arg) {
@@ -674,27 +682,17 @@ public class Obfuscator {
         }  
     }
 
-    public void insertDummyCode(String code, String outputFilePath) {
+    public String insertDummyCode(String code) {
         CompilationUnit cu = StaticJavaParser.parse(code);
 
         VoidVisitorAdapter<?> classvisitor = new ClassVisitor();
         classvisitor.visit(cu, null);
         
 
-        System.out.println("Inserting...");
-        FileWriter fw;
-        try {
-            fw = new FileWriter(outputFilePath);
-            fw.write(cu.toString());
-            fw.close();
-
-            System.out.println("ok");
-
-        } catch (IOException ie) {
-            System.out.println("IO error");
-        }
+        String newCode = cu.toString();
+        return newCode;
     }
-    */
+    
 }
 
 

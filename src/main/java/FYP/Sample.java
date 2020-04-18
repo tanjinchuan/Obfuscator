@@ -26,7 +26,7 @@ public class Sample {
                 
                 List<String> matchList = new ArrayList<String>();
                 Pattern regex = Pattern.compile("(\"[^\"]*\")|\\W|\\w+");
-                Matcher regexMatcher = regex.matcher(code);
+                Matcher regexMatcher = regex.matcher(code2);
                 while (regexMatcher.find()) {
                     matchList.add(regexMatcher.group());
                 } 

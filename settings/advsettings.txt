@@ -8,5 +8,5 @@
 11_Flow Obfuscation:0
 6_Change Variable Names:1
 3_Public:1
-9_Insert Dummy Code:0
+9_Insert Dummy Code:1
 5_Private:1
