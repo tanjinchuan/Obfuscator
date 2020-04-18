@@ -96,28 +96,24 @@ public class Frame {
 		frame.getContentPane().add(layeredPane);
 		
 		InitialPanel initialPanel = new InitialPanel(layeredPane);
-		layeredPane.add(initialPanel);
+		layeredPane.switchPanel(initialPanel);
 
 		//for advanced settings
 		AdvOptionsPanel advOptionsPanel = new AdvOptionsPanel();
 		advOptionsPanel.createSettingsFile(); //initialize advsettings.txt;
 
-		//add sliderpanel
+		//add slider panel
 		SliderOptionPanel sliderOptionPanel = new SliderOptionPanel(advOptionsPanel);
 
-		//add brows panel
+		//add browse panel
 		BrowsePanel browsePanel = new BrowsePanel(frame, layeredPane, initialPanel, sliderOptionPanel);
+
+		//add progress bar panel
+		ProgressBarPanel progressBarPanel = new ProgressBarPanel();
 
 		//add final panel
 		FinalPanel finalPanel = new FinalPanel(frame, obfuscator);
 
-
-		ProgressBarPanel progressBarPanel = new ProgressBarPanel(layeredPane, finalPanel);
-
-		
-		QuizPanel quizPanel = new QuizPanel(layeredPane, initialPanel);
-		
-		
 
 		///////////////////////////////////////////////////////////////////////////////////////////
 		//Button to go to browsefilepanel on initial panel
@@ -125,6 +121,7 @@ public class Frame {
         JButton btnObfuscateFile = new JButton("Obfuscate a file");
 		btnObfuscateFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
 				layeredPane.switchPanel(browsePanel);
 			}
 		});
@@ -134,6 +131,8 @@ public class Frame {
 		btnQuiz.setBounds(300, 180, 131, 63);
 		btnQuiz.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				QuizPanel quizPanel = new QuizPanel(layeredPane, initialPanel);
+
 				layeredPane.switchPanel(quizPanel);
 				
 				
@@ -181,7 +180,8 @@ public class Frame {
 		//Button "next" to go to progressbarpanel on slider panel
 		////////////////////////////////////////////////////////////////////////////
 		JButton btnNextSliderPanel = new JButton("Start Obfuscating");
-		btnNextSliderPanel.setBounds(550, 380, 200, 25);
+		btnNextSliderPanel.setBounds(550, 380, 200
+		, 25);
 		sliderOptionPanel.add(btnNextSliderPanel);
 
 		btnNextSliderPanel.addActionListener(new ActionListener() {
@@ -190,45 +190,19 @@ public class Frame {
 					//set the file paths
 					inputFilePath = browsePanel.getInput();
 					outputFilePath = browsePanel.getFullOutput();
-					
 					obfuscator.obfuscate(inputFilePath, outputFilePath, sliderOptionPanel.getLevel());
-					
-					
 					//start obsfuscation
 					layeredPane.switchPanel(progressBarPanel);
+					
 					//do delay to switch panel
-					int delay = 500;
-					ActionListener taskPerformer = new ActionListener() {
-						public void actionPerformed(ActionEvent event) {
-							if (progressBarPanel.progressBar.getValue() < 100) {
-								progressBarPanel.progressBar.setValue(progressBarPanel.progressBar.getValue()+15);
-								if (progressBarPanel.progressBar.getValue() == 100) {
-									layeredPane.switchPanel(finalPanel);
-								}
-							}
-						}
+					progressBarPanel.update(layeredPane, finalPanel);
+			
 
-					};
+			
 
-					new Timer(delay, taskPerformer).start();
-				} catch (ParseException ex) {
-					
-					layeredPane.switchPanel(browsePanel);
-					JOptionPane.showMessageDialog(frame, "Something wrong with your .java File, please check for syntax error", 
-							inputFilePath, JOptionPane.OK_OPTION);
-					
-				} catch (FileNotFoundException fe) {
-					layeredPane.switchPanel(browsePanel);
-					JOptionPane.showMessageDialog(frame, "File Not Found", 
-							inputFilePath, JOptionPane.OK_OPTION);
-					
-				} catch (IOException ie) {
-					layeredPane.switchPanel(browsePanel);
-					JOptionPane.showMessageDialog(frame, "Blank ", 
-							inputFilePath, JOptionPane.OK_OPTION);
-					
+				} catch(Exception ex) {
+					ex.printStackTrace();
 				}
-
 			}
 		});
 		
@@ -265,22 +239,8 @@ public class Frame {
 					obfuscator.advObfuscate(inputFilePath, outputFilePath, advOptionsPanel);
 					//start obsfuscation
 					layeredPane.switchPanel(progressBarPanel);
-					//do delay to switch panel
-					int delay = 500;
-					ActionListener taskPerformer = new ActionListener() {
-						public void actionPerformed(ActionEvent event) {
-							if (progressBarPanel.progressBar.getValue() < 100) {
-								progressBarPanel.progressBar.setValue(progressBarPanel.progressBar.getValue()+15);
-								if (progressBarPanel.progressBar.getValue() == 100) {
-									layeredPane.switchPanel(finalPanel);
-								}
-							}
-						}
-
-					};
-
-					new Timer(delay, taskPerformer).start();
-
+					progressBarPanel.update(layeredPane, finalPanel);
+					
 				} catch(Exception ex) {
 					ex.printStackTrace();
 				}
@@ -308,9 +268,10 @@ public class Frame {
 		finalPanel.add(btnAnother);
 		btnAnother.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				browsePanel.setTextField(); //set textfield back to empty
-				layeredPane.switchPanel(browsePanel); 
-			}
+				layeredPane.switchPanel(browsePanel);
+				browsePanel.setTextField(); //set textfield to null
+				
+			}	
 		});
 	}
 

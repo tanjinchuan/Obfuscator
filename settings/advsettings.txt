@@ -3,10 +3,10 @@
 7_Change Parameter Names:1
 0_Public:0
 1_Protected:0
-8_Remove White Space:1
+8_Remove White Space:0
 10_Remove Comments:0
 11_Flow Obfuscation:0
 6_Change Variable Names:1
 3_Public:1
-9_Insert Dummy Code:1
+9_Insert Dummy Code:0
 5_Private:1

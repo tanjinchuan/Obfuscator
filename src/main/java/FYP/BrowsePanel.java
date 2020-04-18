@@ -214,6 +214,7 @@ public class BrowsePanel extends JPanel {
 		
 	}
 	
+	//initiate textfields to empty
 	public void setTextField() {
 		inputTextField.setText("");
 		outputTextField.setText("");
