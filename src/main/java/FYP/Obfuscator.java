@@ -70,18 +70,18 @@ public class Obfuscator {
     // Advance obfuscate
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void advObfuscate(String inputFilePath, String outputFilePath, AdvOptionsPanel advOptionsPanel)
+    public void advObfuscate(String inputFilePath, String outputFilePath, AdvSettingsPanel advSettingsPanel)
             throws ParseException, FileNotFoundException, IOException {
 
         // get the code
         String code = compileCode(inputFilePath);
 
-        advOptionsPanel.getCurrentOptions(); // get the current check box values
-        HashMap<String, Integer> settings = advOptionsPanel.getSettings(); // get the hashmap of values
+        advSettingsPanel.getCurrentOptions(); // get the current check box values
+        HashMap<String, Integer> settings = advSettingsPanel.getSettings(); // get the hashmap of values
 
         //do dummy code insertion first if user wants it, as we have to obfuscate the dummy code as well.
-        if (settings.get("9_Insert Dummy Code") == 1) {
-            code = insertDummyCode(code);
+        if (settings.get("7_Insert Dummy Code") == 1) {
+            //code = insertDummyCode(code);
         }
         
         for (String key : settings.keySet()) {
@@ -89,60 +89,52 @@ public class Obfuscator {
             int value = settings.get(key);
             if (value == 1) { // if the box is ticked, do that obfuscation technique
                 switch (key) {
-                    case "0_Public": { // Eliminating unused public methods
-                        // code = eliminatePublic(code);
-                        break;
-                    }
+                    
 
-                    case "1_Protected": { // Eliminating unused protected methods
-                        // code = eliminateProtected(code);
-                        break;
-                    }
-
-                    case "2_Private": { // Elminating unused private methods
-                        // code = eliminatePrivate(code);
-                        break;
-                    }
-
-                    case "3_Public": { // Rename public methods
+                    case "0_Public": { // Rename public methods
                         code = changeMethodNames(code, "Public");
                         break;
                     }
 
-                    case "4_Protected": { // Rename protected methods
+                    case "1_Protected": { // Rename protected methods
                         code = changeMethodNames(code, "Protected");
                         break;
                     }
 
-                    case "5_Private": { // Rename private methods
+                    case "2_Private": { // Rename private methods
                         code = changeMethodNames(code, "Private");
                         break;
                     }
 
-                    case "6_Change Variable Names": { // Change variable names
+                    case "3_Change Class Names": {
+                        code = changeClassName(code);
+                        break;
+                    }
+
+                    case "4_Change Variable Names": { // Change variable names
                         code = changeVariableNames(code);
                         break;
                     }
 
-                    case "7_Change Parameter Names": { // Change parameter names
+                    case "5_Change Parameter Names": { // Change parameter names
                         code = changeParameterNames(code);
                         break;
                     }
 
-                    case "8_Remove White Space": { // Removing white spaces from code
+                    case "6_Remove White Space": { // Removing white spaces from code
                         break;
                     }
 
-                    case "9_Insert Dummy Code": { // Insert dummy code
+                    case "7_Insert Dummy Code": { // Insert dummy code
                         break;
                     }
 
-                    case "10_Remove Comments": { // Removing comments from code
+                    case "8_Remove Comments": { // Removing comments from code
                         code = removeComments(code);
                         break;
                     }
 
-                    case "11_Flow Obfuscation": {
+                    case "9_Flow Obfuscation": {
                         // code = flowObfuscate(code);
                         break;
                     }
@@ -153,7 +145,7 @@ public class Obfuscator {
         }
 
         //because my methods make the code neat, Removing white spaces must put at end if user wants it
-        if (settings.get("8_Remove White Space") == 1) { 
+        if (settings.get("6_Remove White Space") == 1) { 
             code = removeWhiteSpaces(code);
         } else {
             code = prettyPrinting(code);
@@ -267,7 +259,7 @@ public class Obfuscator {
 
     // Function to call for changing method names using basic slider, methodType =
     // e.g "Public"
-    public String changeMethodNames(String code, String methodType) {
+    private String changeMethodNames(String code, String methodType) {
         CompilationUnit cu = StaticJavaParser.parse(code);
         String newCode = "";
 
@@ -379,7 +371,7 @@ public class Obfuscator {
         }
     }
 
-    public String changeParameterNames(String code) {
+    private String changeParameterNames(String code) {
         CompilationUnit cu = StaticJavaParser.parse(code);
         HashMap<String, String> parameters = new HashMap<String, String>();
 
@@ -455,7 +447,7 @@ public class Obfuscator {
         }
     }
 
-    public String changeVariableNames(String code) {
+    private String changeVariableNames(String code) {
         CompilationUnit cu = StaticJavaParser.parse(code);
         HashMap<String, String> variables = new HashMap<String, String>();
 
@@ -528,7 +520,7 @@ public class Obfuscator {
         }
     }
 
-    public String changeInterfaceNames(String code) {
+    private String changeInterfaceNames(String code) {
         CompilationUnit cu = StaticJavaParser.parse(code);
         HashMap<String, String> interfaceNames = new HashMap<String, String>();
 
@@ -586,6 +578,76 @@ public class Obfuscator {
         return newCode;
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //change class name
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private class ClassVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
+        @Override
+        public void visit(ClassOrInterfaceDeclaration c, HashMap<String, String> classes) {
+            super.visit(c, classes);
+            classes.put(c.getNameAsString(), randomWord());
+        }
+    }
+
+    private String changeClassName(String code) {
+        CompilationUnit cu = StaticJavaParser.parse(code);
+        HashMap<String, String> classNames = new HashMap<String, String>();
+
+        VoidVisitorAdapter<HashMap<String, String>> classVisitor = new ClassVisitor();
+
+        classVisitor.visit(cu, classNames);
+        
+        
+        // initialize class name statistics
+        Statistics stats = new Statistics();
+        stats.setType("Class");
+
+        Scanner scanner = new Scanner(code);
+        String newCode = "";
+
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            if (line.startsWith("import")) {
+                newCode = newCode + line + "\n";
+                continue;
+            }            
+            String newLine = "";
+
+            List<String> split = new ArrayList<String>();
+            Pattern regex = Pattern.compile("(\"[^\"]*\")|\\W|\\w+");
+            Matcher regexMatcher = regex.matcher(line);
+            while (regexMatcher.find()) {
+                split.add(regexMatcher.group());
+            } 
+
+            for (int i = 0; i < split.size(); i++) {
+                if (classNames.containsKey(split.get(i))) {
+
+                    // save the names for printing later
+                    stats.setStats(split.get(i), classNames.get(split.get(i)));
+                    stats.increaseCount(split.get(i)); // save the number of times method changed
+
+                     // set the variable name to new random word
+                    split.set(i, classNames.get(split.get(i)));
+                }
+
+            }
+
+            for (int i = 0; i < split.size(); i++) {
+                // put together back the line
+                newLine = newLine + split.get(i);
+            }
+
+            // put together the code
+            newCode = newCode + newLine + "\n";
+        }
+
+        scanner.close();
+
+        statistics.add(stats);
+        return newCode;
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // to use for printing all the stats in the frame.java
     public String getStatistics() {
@@ -600,7 +662,7 @@ public class Obfuscator {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // help remove unecessary spaces in code
-    public String prettyPrinting(String code) {
+    private String prettyPrinting(String code) {
         CompilationUnit cu = StaticJavaParser.parse(code);
         String cleanCode = cu.toString();
         return cleanCode;
@@ -608,7 +670,7 @@ public class Obfuscator {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Remove of comments
-    public String removeComments(String code) {
+    private String removeComments(String code) {
 
         StaticJavaParser.getConfiguration().setAttributeComments(false);
         CompilationUnit cu = StaticJavaParser.parse(code);
@@ -619,7 +681,7 @@ public class Obfuscator {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public String randomWord() {
+    private String randomWord() {
         char[] letters = new char[] { '1', 'I', 'l' };
         Random rand = new Random();
         String newWord = "";
@@ -646,7 +708,7 @@ public class Obfuscator {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public String compileCode(String inputFilePath) throws ParseException, FileNotFoundException {
         String code = "";
-
+        StaticJavaParser.getConfiguration().setLexicalPreservationEnabled(true);
         CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
         code = cu.toString();
 
@@ -654,6 +716,25 @@ public class Obfuscator {
 
     }
 
+    // this is for printing during comparison
+    public String printCode(String inputFilePath) {
+        File file = new File(inputFilePath);
+        String code = "";
+        try {
+            Scanner scanner = new Scanner(file);
+            while (scanner.hasNextLine()) {
+                code = code + scanner.nextLine() + "\n";
+            }
+            scanner.close();
+        } catch (FileNotFoundException fe) {
+
+        }
+
+        return code;
+
+    }
+
+    
     private String removeWhiteSpaces(String code) {
         code = prettyPrinting(code); // make nice nice first
         code = code.trim().replaceAll("\\s+", " ");
@@ -662,36 +743,38 @@ public class Obfuscator {
     }
 
 
-    // /*not done yet
-    private class ClassVisitor extends VoidVisitorAdapter<Void> {
-        @Override
-        public void visit(ClassOrInterfaceDeclaration c, Void arg) {
-            super.visit(c, arg);
-            //add dummy methods here
-            BlockStmt blockStmt = new BlockStmt();
+
+
+    // // /*not done yet
+    // private class ClassVisitor extends VoidVisitorAdapter<Void> {
+    //     @Override
+    //     public void visit(ClassOrInterfaceDeclaration c, Void arg) {
+    //         super.visit(c, arg);
+    //         //add dummy methods here
+    //         BlockStmt blockStmt = new BlockStmt();
             
 			
-            blockStmt.addStatement(new ExpressionStmt(new NameExpr("String firstName = \"John\"")));
+    //         blockStmt.addStatement(new ExpressionStmt(new NameExpr("String firstName = \"John\"")));
             
-            blockStmt.addStatement(new ExpressionStmt(new NameExpr("String secondName = \"Mary\"")));
-            c.addMethod("getNames", Keyword.PRIVATE).setBody(
-                blockStmt
+    //         blockStmt.addStatement(new ExpressionStmt(new NameExpr("String secondName = \"Mary\"")));
+    //         c.addMethod("getNames", Keyword.PRIVATE).setBody(
+    //             blockStmt
                 
-            );
+    //         );
 
-        }  
-    }
+    //     }  
+    // }
 
-    public String insertDummyCode(String code) {
-        CompilationUnit cu = StaticJavaParser.parse(code);
+    // public String insertDummyCode(String code) {
+    //     CompilationUnit cu = StaticJavaParser.parse(code);
 
-        VoidVisitorAdapter<?> classvisitor = new ClassVisitor();
-        classvisitor.visit(cu, null);
+    //     VoidVisitorAdapter<?> classvisitor = new ClassVisitor();
+    //     classvisitor.visit(cu, null);
         
 
-        String newCode = cu.toString();
-        return newCode;
-    }
+    //     String newCode = cu.toString();
+    //     return newCode;
+    // }
     
 }
 

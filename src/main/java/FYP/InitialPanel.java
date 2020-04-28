@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -15,16 +14,14 @@ import javax.swing.JPanel;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.net.MalformedURLException;
-import java.net.URL;
+
 
 
 @SuppressWarnings("serial")
 public class InitialPanel extends JPanel {
     int currIndex = 0;
     
-    public InitialPanel(LayeredPane layeredPane) {
+    public InitialPanel() {
 
         //button to view tutorial
         JButton btnViewTutorial = new JButton("View tutorial");
@@ -44,18 +41,15 @@ public class InitialPanel extends JPanel {
     //tutorial pop up frame
 	private void showTutorial() {
 
-		Lessons lessons = new Lessons();
-		ArrayList<String> tutorials = lessons.getTutorialImages();
+		Tutorials tutorial = new Tutorials();
+		ArrayList<String> tutorials = tutorial.getTutorialImages();
 
 		JDialog tutorialDialog = new JDialog();
 
 		JLabel imgLabel = new JLabel();
 
-
 		//initialize first image
 		
-		
-
 		ImageIcon img = new ImageIcon(this.getClass().getClassLoader().getResource(tutorials.get(0)));
 		
 		imgLabel.setIcon(img);
@@ -111,7 +105,7 @@ public class InitialPanel extends JPanel {
 
 		btnTutorialBack.setBounds(30, 710, 97, 25);
 		btnTutorialNext.setBounds(870, 710, 97, 25);
-		btnTutorialEnd.setBounds(440, 710, 97, 25);
+		btnTutorialEnd.setBounds(440, 710, 150, 25);
 		
 		tutorialPanel.add(btnTutorialBack);
 		tutorialPanel.add(btnTutorialNext);

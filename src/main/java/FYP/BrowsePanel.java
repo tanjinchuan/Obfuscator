@@ -9,8 +9,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import java.awt.event.*;
 
@@ -22,15 +20,16 @@ public class BrowsePanel extends JPanel {
 
     JLabel inputFileTypeLabel = new JLabel("");
 
-    private String inputFilePath;
+	private String inputFilePath;
+	private String outputFilePath;
     private String outputDirectory;
     private String outputFile;
-    private String outputFilePath;
+    
 	JTextField inputTextField = new JTextField();
 	JTextField outputTextField = new JTextField();
 	JTextField outputFileTextField = new JTextField();
 	
-    public BrowsePanel(JFrame frame, LayeredPane layeredPane, JPanel initialPanel, JPanel sliderOptionPanel) {
+    public BrowsePanel(JFrame frame) {
         
         
 
@@ -46,8 +45,7 @@ public class BrowsePanel extends JPanel {
         outputTextField.setBounds(139, 217, 470, 22);
         this.add(outputTextField);
         
-        JButton btnBrowseNextPanel = new JButton("Next");
-		btnBrowseNextPanel.setEnabled(false);
+        
 
 
         JFileChooser fc = new JFileChooser();
@@ -123,24 +121,7 @@ public class BrowsePanel extends JPanel {
 		outputFileTextField.setBounds(139, 257, 200, 22);
         this.add(outputFileTextField);
 
-		outputFileTextField.getDocument().addDocumentListener(new DocumentListener() {
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				btnBrowseNextPanel.setEnabled(true);
-				setOutputFile(outputFileTextField.getText());
-			}
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				btnBrowseNextPanel.setEnabled(true);
-				setOutputFile(outputFileTextField.getText());
-			}
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				btnBrowseNextPanel.setEnabled(true);
-				setOutputFile(outputFileTextField.getText());
-			}
-			
-		});
+		
 
 		//label beside output file name field
 		JLabel lbljava = new JLabel(".java");
@@ -149,59 +130,20 @@ public class BrowsePanel extends JPanel {
 
         
         
-        //next button function
-		btnBrowseNextPanel.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			
-				String outputDir = getOutput();
-                File checkDir = new File(outputDir); // check if output directory valid
-				if (checkDir.exists() == true){
-                    String fullPath = outputDir + "\\" + getFileName() + ".java";
-                    setOutputPath(fullPath);
-                    
-
-					if(checkFileExists(frame, outputFilePath) == true) {
-						//file path correct
-						layeredPane.switchPanel(sliderOptionPanel);
-
-                    }
-                    
-					
-				
-                } else { //check for valid directory
-					JOptionPane.showMessageDialog(frame, "Invalid directory.", "Warning", JOptionPane.OK_OPTION);
-
-				}
-			
-			}
-		});
-        btnBrowseNextPanel.setBounds(607, 385, 97, 25);
-		btnBrowseNextPanel.setEnabled(false);
-        this.add(btnBrowseNextPanel);
-
-        //back button function
-		JButton btnBrowsePanelBack = new JButton("Back");
-		btnBrowsePanelBack.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				layeredPane.switchPanel(initialPanel);
-			}
-		});
-		btnBrowsePanelBack.setBounds(55, 390, 97, 25);
-		this.add(btnBrowsePanelBack);
-		
-		JLabel lblInput = new JLabel("Input File");
-		lblInput.setBounds(140, 100, 100, 16);
+        
+		JLabel lblInput = new JLabel("Select input .java file");
+		lblInput.setBounds(140, 100, 300, 16);
 		this.add(lblInput);
 
-		JLabel lblInputLabel = new JLabel("Directory");
-		lblInputLabel.setBounds(48, 128, 70, 16);
+		JLabel lblInputLabel = new JLabel("File location");
+		lblInputLabel.setBounds(35, 128, 150, 16);
         this.add(lblInputLabel);
 		
-		JLabel lblOutput = new JLabel("Output File");
-		lblOutput.setBounds(140, 192, 100, 16);
+		JLabel lblOutput = new JLabel("Choose output location");
+		lblOutput.setBounds(140, 192, 300, 16);
 		this.add(lblOutput);
 
-		JLabel lblOutputDir = new JLabel("Directory");
+		JLabel lblOutputDir = new JLabel("Save file to");
 		lblOutputDir.setBounds(48, 220, 80, 16);
         this.add(lblOutputDir);
         

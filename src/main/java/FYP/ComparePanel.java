@@ -20,21 +20,12 @@ public class ComparePanel extends JPanel {
     public ComparePanel(JFrame frame, Obfuscator obfuscator, String inputFilePath, String outputFilePath) {
         String originalText = "";
         String obfuscatedText = "";
-        try {
-            originalText = obfuscator.compileCode(inputFilePath);
-            obfuscatedText = obfuscator.compileCode(outputFilePath);
-
-
-        } catch (ParseException pe) {
-            JOptionPane.showMessageDialog(frame, "Something wrong with your .java File, please check for syntax error", 
-                    inputFilePath, JOptionPane.OK_OPTION);
+            originalText = obfuscator.printCode(inputFilePath);
             
-        } catch (FileNotFoundException fe) {
-            JOptionPane.showMessageDialog(frame, "Invalid File Path", inputFilePath, JOptionPane.OK_OPTION);
-            
-        }
+            obfuscatedText = obfuscator.printCode(outputFilePath);
+
         
-        JPanel comparePanel = new JPanel(new GridLayout(1, 2));
+        JPanel comparePanel = new JPanel();
                 
         //Text area for original code
         JTextArea originalTextArea = new JTextArea(originalText); 
@@ -42,15 +33,14 @@ public class ComparePanel extends JPanel {
         originalTextArea.setWrapStyleWord(true); 
         originalTextArea.setEditable(false);
         JScrollPane originalScrollPane = new JScrollPane(originalTextArea); 
-        originalScrollPane.setPreferredSize(new Dimension(500, 500));
+        originalScrollPane.setPreferredSize(new Dimension(500, 600));
         
         //Text area for obfuscated code
         JTextArea obfuscatedTextArea = new JTextArea(obfuscatedText);
         obfuscatedTextArea.setEditable(false);
-        obfuscatedTextArea.setLineWrap(true);  
-        obfuscatedTextArea.setWrapStyleWord(true); 
+        
         JScrollPane obfuscatedScrollPane = new JScrollPane(obfuscatedTextArea);  
-        obfuscatedScrollPane.setPreferredSize(new Dimension(500, 500));
+        obfuscatedScrollPane.setPreferredSize(new Dimension(500, 600));
         
         comparePanel.add(originalScrollPane);
         comparePanel.add(obfuscatedScrollPane);

@@ -1,31 +1,32 @@
 package FYP;
 
 import java.awt.event.*;
-
+import java.util.ArrayList;
 import java.util.Collections;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 
 public class QuizPanel extends JPanel {
     
-	JTextArea quizTextArea = new JTextArea();
 
     public QuizPanel(LayeredPane layeredPane, JPanel initialPanel) {
         this.setLayout(null);
 
-        
+		JTextArea quizTextArea = new JTextArea();
+
         Quiz quiz = new Quiz();
-
+		ArrayList<Questions> quizList = quiz.getQuizList();
 		//shuffle the question array
-		Collections.shuffle(quiz.quizList);
+		Collections.shuffle(quizList);
 
-		Questions firstQuestion = quiz.quizList.get(0);
-		quizTextArea.setText("Question 1 of " + quiz.quizList.size() + "\n" + firstQuestion.getQuestion());
+		Questions firstQuestion = quizList.get(0);
+		quizTextArea.setText("Question 1 of " + quizList.size() + "\n" + firstQuestion.getQuestion());
 	
 		quizTextArea.setBounds(8, 31, 758, 249);
 		quizTextArea.setEditable(false);
@@ -104,13 +105,13 @@ public class QuizPanel extends JPanel {
 				btnQuizNext.setVisible(false);
 				btnQuizSubmit.setEnabled(true);
 				answerLabel.setVisible(false);
-				if (quizIndex == quiz.quizList.size()) { // if no more questions, close window
+				if (quizIndex == quizList.size()) { // if no more questions, close window
 					layeredPane.switchPanel(initialPanel);
 				}
 				else { //else set the next question
-					Questions question = quiz.quizList.get(quizIndex);
+					Questions question = quizList.get(quizIndex);
 					int options = question.getOptions();
-					quizTextArea.setText("Question " + (quizIndex+1) + " of " + quiz.quizList.size() + "\n" + question.getQuestion());
+					quizTextArea.setText("Question " + (quizIndex+1) + " of " + quizList.size() + "\n" + question.getQuestion());
 					rdbtnGroup.clearSelection();
 					if (options == 2) {
 						rdbtn3.setVisible(false);
@@ -132,5 +133,21 @@ public class QuizPanel extends JPanel {
 		this.add(rdbtn3);
 		this.add(rdbtn4);
 
+		//exit quiz button
+		JButton exitButton = new JButton("Exit Quiz");
+		exitButton.setBounds(650, 10, 100, 20);
+		exitButton.setVisible(true);
+		this.add(exitButton);
+
+		exitButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				int input = JOptionPane.showConfirmDialog(null, "Are you sure you want to end the Quiz?", "Select an Option...", JOptionPane.YES_NO_OPTION);
+				if (input == 0) {
+					layeredPane.switchPanel(initialPanel);
+
+				}
+				
+			}
+		});
     }
 }

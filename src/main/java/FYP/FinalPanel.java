@@ -22,9 +22,6 @@ public class FinalPanel extends JPanel {
     public FinalPanel(JFrame frame, Obfuscator obfuscator) {
         
 		this.setLayout(null);
-		
-		
-		
         
         ////////////////////////////////////////////////////////////////////////////////////////////////
 		//Changelog panel button

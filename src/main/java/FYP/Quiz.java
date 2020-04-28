@@ -2,8 +2,9 @@ package FYP;
 
 import java.util.ArrayList;
 
-class Quiz {
-    ArrayList<Questions> quizList = new ArrayList<Questions>();
+public class Quiz {
+    private ArrayList<Questions> quizList = new ArrayList<Questions>();
+
     Questions q1 = new Questions("Which of the following code is used to retrieve method names?\n" +
     "a) MethodNames\n" +
     "b) MethodDeclaration\n" +
@@ -41,5 +42,9 @@ class Quiz {
         else {
             return false;
         }
+    }
+
+    public ArrayList<Questions> getQuizList() {
+        return quizList;
     }
 }
