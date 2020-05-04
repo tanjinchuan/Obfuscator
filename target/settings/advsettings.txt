@@ -1,0 +1,10 @@
+0_Public:0
+1_Protected:0
+2_Private:0
+3_Change Class Names:0
+4_Change Variable Names:0
+5_Change Parameter Names:0
+6_Remove White Space:0
+7_Insert Dummy Code:0
+8_Remove Comments:0
+9_Flow Obfuscation:0

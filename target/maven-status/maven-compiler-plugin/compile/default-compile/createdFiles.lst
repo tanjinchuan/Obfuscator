@@ -6,17 +6,16 @@ FYP\Tutorials.class
 FYP\ProgressBarPanel$1.class
 FYP\Sample.class
 FYP\Obfuscator$VariableNameVisitor.class
-FYP\BrowsePanel$5.class
 FYP\Frame$3.class
 FYP\Obfuscator.class
 FYP\InitialPanel$3.class
 FYP\Obfuscator$PrivateMethodNameVisitor.class
 FYP\QuizPanel.class
+FYP\Frame$12.class
 FYP\BasicSettingsPanel$1.class
 FYP\Frame$5.class
 FYP\BasicSettingsPanel.class
 FYP\ComparePanel.class
-FYP\BrowsePanel$3.class
 FYP\Frame$10.class
 FYP\Questions.class
 FYP\Frame$9.class
@@ -29,6 +28,7 @@ FYP\QuizPanel$1.class
 FYP\QuizPanel$3.class
 FYP\FinalPanel.class
 FYP\BrowsePanel.class
+FYP\Frame$13.class
 FYP\Obfuscator$PublicMethodNameVisitor.class
 FYP\Frame$1.class
 FYP\Obfuscator$ProtectedMethodNameVisitor.class
@@ -43,8 +43,8 @@ FYP\InitialPanel$4.class
 FYP\InitialPanel.class
 FYP\LayeredPane.class
 FYP\Frame.class
-FYP\BrowsePanel$4.class
 FYP\Frame$4.class
+FYP\Frame$11.class
 FYP\Statistics.class
 FYP\Frame$7.class
 FYP\Obfuscator$ClassVisitor.class

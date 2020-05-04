@@ -1,6 +1,9 @@
 package FYP;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -34,13 +37,11 @@ public class BrowsePanel extends JPanel {
         
 
 		inputTextField.setBounds(139, 125, 470, 22);
-		inputTextField.setEditable(false);
         inputTextField.setColumns(10);
         this.add(inputTextField);
 
         
 		
-		outputTextField.setEditable(false);
 		outputTextField.setColumns(10);
         outputTextField.setBounds(139, 217, 470, 22);
         this.add(outputTextField);
@@ -78,8 +79,10 @@ public class BrowsePanel extends JPanel {
                             setInputPath(inputTextField.getText());
 		                }
 		                else {
-		                	inputFileTypeLabel.setText("Invalid file extension");
-		                }
+							//inputFileTypeLabel.setText("Invalid file extension");
+							JOptionPane.showMessageDialog(frame, "Invalid File Extension, Please choose .java file", "Warning", JOptionPane.OK_OPTION);
+							inputTextField.setText(null);
+						}
 		     
 							
 					}
@@ -104,9 +107,16 @@ public class BrowsePanel extends JPanel {
 
 		            if (returnVal == JFileChooser.APPROVE_OPTION) {
 		                File file = fc2.getSelectedFile();
-		                
-                        outputTextField.setText(file.getAbsolutePath());
-                        setOutputDir(outputTextField.getText());
+						
+						if (checkDir(file.getAbsolutePath()) == true){
+							outputTextField.setText(file.getAbsolutePath());
+							setOutputDir(outputTextField.getText());
+						}
+						else {
+							JOptionPane.showMessageDialog(frame, "Invalid directory", "Warning", JOptionPane.OK_OPTION);
+							outputTextField.setText(null);
+						}
+                        
 		            } 
 		        }
 		        
@@ -178,14 +188,14 @@ public class BrowsePanel extends JPanel {
         this.outputFilePath = path;
     }
     public String getInput() {
-        return inputFilePath;
+        return inputTextField.getText();
     }
     public String getOutput() {
-        return outputDirectory;
+        return outputTextField.getText();
     }
 
     public String getFileName() {
-        return outputFile;
+        return outputFileTextField.getText();
     }
 
     public String getFullOutput() {
@@ -208,26 +218,58 @@ public class BrowsePanel extends JPanel {
 		else {
 			return false;
 		}
-    }
-    
-    //to check file name errors
-    public boolean checkFileExists(JFrame frame, String fullPath) {
+	}
+	
+	private boolean checkDir(String directory) {
+		File file = new File(directory);
 
-		//if output file name empty
-		if (getFileName().equals("")) {
-			JOptionPane.showMessageDialog(frame, "Output file name empty", "Warning", JOptionPane.OK_OPTION);
+		if (file.isDirectory() == true) {
+			return true;
+		} 
+		else {
 			return false;
 		}
-		//i)f input file dir and output file dir and file is same name
-		if (getInput().equals(fullPath)) 
-		{
-			JOptionPane.showMessageDialog(frame, "Input and output file cannot be the same", "Warning", JOptionPane.OK_OPTION);
+	}
+
+	private boolean checkFileExists(String directory) {
+		File file = new File(directory);
+		if (file.isFile() == true && checkExt(directory) == true) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+    
+    //to check file name errors
+    public boolean checkFullOutput(JFrame frame, String fullPath) {
+		
+		try {
+			//if input file dir and output file dir and file is same name
+			if (getInput().equals(fullPath)) 
+			{
+				JOptionPane.showMessageDialog(frame, "Input and output file cannot be the same", "Warning", JOptionPane.OK_OPTION);
+				return false;
+			}
+
+			if (getInput() == null | checkFileExists(getInput()) == false) {
+				JOptionPane.showMessageDialog(frame, "Please choose valid input file", "Warning", JOptionPane.OK_OPTION);
+				return false;
+			}
+			
+			if (getOutput() == null | checkDir(getOutput()) == false) {
+				JOptionPane.showMessageDialog(frame, "Please choose valid output location", "Warning", JOptionPane.OK_OPTION);
+				return false;
+			}
+
+		} catch (NullPointerException ne) {
+			JOptionPane.showMessageDialog(frame, "Please choose an valid input/output", "Warning", JOptionPane.OK_OPTION);
 			return false;
 		}
 		
-		else {
-			return true;
-		}
+
+		//if all ok
+		return true;
 		
 	}
 

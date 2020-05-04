@@ -3,6 +3,12 @@ package FYP;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
+
 import java.io.*;
 
 import com.github.javaparser.ParseException;
@@ -12,6 +18,7 @@ import com.github.javaparser.ast.Modifier.Keyword;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -81,7 +88,12 @@ public class Obfuscator {
 
         //do dummy code insertion first if user wants it, as we have to obfuscate the dummy code as well.
         if (settings.get("7_Insert Dummy Code") == 1) {
-            //code = insertDummyCode(code);
+            code = dummyCodeInsertion(code);
+        }
+
+        if (settings.get("9_String Encryption") == 1) {
+            code = encryptCode(code);
+            code = addLibraries(code);
         }
         
         for (String key : settings.keySet()) {
@@ -125,19 +137,11 @@ public class Obfuscator {
                         break;
                     }
 
-                    case "7_Insert Dummy Code": { // Insert dummy code
-                        break;
-                    }
-
                     case "8_Remove Comments": { // Removing comments from code
                         code = removeComments(code);
                         break;
                     }
 
-                    case "9_Flow Obfuscation": {
-                        // code = flowObfuscate(code);
-                        break;
-                    }
                 }
 
             }
@@ -164,6 +168,32 @@ public class Obfuscator {
         fw.close();
         System.out.println("ok");
 
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // For Dummy Code Insertion
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private static class StatementAdder extends VoidVisitorAdapter<Void>{
+        @Override
+        public void visit(BlockStmt bs, Void arg){
+            super.visit(bs,arg);
+
+            int hash = bs.getRange().hashCode();
+
+            //Only even hashes add dummycode
+            if(hash%2 == 0) {
+                bs.addAndGetStatement("System.out.println(\"Dummy Code inserted here\")");
+            }
+        }
+    }
+
+    private String dummyCodeInsertion(String code) {
+        CompilationUnit cu = StaticJavaParser.parse(code);
+
+        VoidVisitorAdapter<?> dummyVisitor = new StatementAdder();
+        dummyVisitor.visit(cu, null);
+        System.out.println(cu);
+        return cu.toString();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -468,7 +498,7 @@ public class Obfuscator {
             String line = scanner.nextLine();
             if (line.startsWith("import")) {
                 newCode = newCode + line + "\n";
-
+                
                 continue;
             } 
             String newLine = "";
@@ -585,6 +615,7 @@ public class Obfuscator {
         @Override
         public void visit(ClassOrInterfaceDeclaration c, HashMap<String, String> classes) {
             super.visit(c, classes);
+            
             classes.put(c.getNameAsString(), randomWord());
         }
     }
@@ -742,39 +773,144 @@ public class Obfuscator {
         return code;
     }
 
-
-
-
-    // // /*not done yet
-    // private class ClassVisitor extends VoidVisitorAdapter<Void> {
-    //     @Override
-    //     public void visit(ClassOrInterfaceDeclaration c, Void arg) {
-    //         super.visit(c, arg);
-    //         //add dummy methods here
-    //         BlockStmt blockStmt = new BlockStmt();
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    //String Literal Visitor
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    private class StringLiteralVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
+        @Override
+        public void visit(StringLiteralExpr ex, HashMap<String, String> hashMap) {
             
-			
-    //         blockStmt.addStatement(new ExpressionStmt(new NameExpr("String firstName = \"John\"")));
+            //create encrypted literal
+            String encrypted = encrypt(ex.toString().substring(1, ex.toString().length()-1));
+            encrypted = "decrypt(\"" + encrypted + "\")"; 
+            hashMap.put(ex.toString(), encrypted);
             
-    //         blockStmt.addStatement(new ExpressionStmt(new NameExpr("String secondName = \"Mary\"")));
-    //         c.addMethod("getNames", Keyword.PRIVATE).setBody(
-    //             blockStmt
-                
-    //         );
+        } 
+    }
 
-    //     }  
-    // }
+    private String encryptCode(String code) {
 
-    // public String insertDummyCode(String code) {
-    //     CompilationUnit cu = StaticJavaParser.parse(code);
+        CompilationUnit cu = StaticJavaParser.parse(code);
+        HashMap<String, String> stringLiterals = new HashMap<String, String>();
 
-    //     VoidVisitorAdapter<?> classvisitor = new ClassVisitor();
-    //     classvisitor.visit(cu, null);
+        VoidVisitorAdapter<HashMap<String, String>> stringVisitor = new StringLiteralVisitor();
+
+        stringVisitor.visit(cu, stringLiterals);
         
+        // initialize class name statistics
+        Statistics stats = new Statistics();
+        stats.setType("String Literals");
 
-    //     String newCode = cu.toString();
-    //     return newCode;
-    // }
+        String newCode = "";
+
+        Scanner scanner = new Scanner(code);
+        
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            if (line.startsWith("import")) {
+
+                newCode = newCode + line + "\n";
+                continue;
+            }            
+            String newLine = "";
+
+            List<String> split = new ArrayList<String>();
+            Pattern regex = Pattern.compile("(\"[^\"]*\")|\\W|\\w+");
+            Matcher regexMatcher = regex.matcher(line);
+            while (regexMatcher.find()) {
+                
+                split.add(regexMatcher.group());
+            } 
+
+
+            for (int i = 0; i < split.size(); i++) {
+                if (stringLiterals.containsKey(split.get(i))) {
+
+                    // save the names for printing later
+                    stats.setStats(split.get(i), stringLiterals.get(split.get(i)));
+                    stats.increaseCount(split.get(i)); // save the number of times method changed
+
+                     // set the variable name to new random word
+                    split.set(i, stringLiterals.get(split.get(i)));
+                }
+
+            }
+
+
+            for (int i = 0; i < split.size(); i++) {
+                // put together back the line
+                newLine = newLine + split.get(i);
+            }
+
+            // put together the code
+            newCode = newCode + newLine + "\n";
+
+        }
+        scanner.close();
+
+        statistics.add(stats);
+        return newCode;
+    }
+
+
+    private String encrypt(String value) {
+        String key = "Bar12345Bar12345";
+        String initVector = "RandomInitVector";
+
+        try {
+            IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));
+            SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
+
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
+
+            byte[] encrypted = cipher.doFinal(value.getBytes());
+           
+            return DatatypeConverter.printBase64Binary(encrypted);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    private String decrypt(String encrypted) {
+        String key = "Bar12345Bar12345";
+        String initVector = "RandomInitVector";
+
+        try {
+            IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));
+            SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
+
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
+
+            // byte[] original = cipher.doFinal(Base64.decodeBase64(encrypted));
+			byte[] original = cipher.doFinal(DatatypeConverter.parseBase64Binary(encrypted));
+
+            return new String(original);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    private String addLibraries(String code) {
+        CompilationUnit cu = StaticJavaParser.parse(code);
+
+        String [] libraries = {
+            "javax.crypto.Cipher", 
+            "javax.crypto.spec.IvParameterSpec",
+            "javax.crypto.spec.SecretKeySpec", 
+            "javax.xml.bind.DatatypeConverter"
+        };
+        
+        for (String s: libraries) {
+            cu.addImport(s);
+        }
+        System.out.println(cu.toString());
+        return cu.toString();
+    }
+
     
 }
 

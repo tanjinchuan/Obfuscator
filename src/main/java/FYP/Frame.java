@@ -40,9 +40,6 @@ public class Frame {
 		});
 	}
 
-	
-	
-	
 	public boolean checkFileName(String inputFile, String outputFile) {
 		if (inputFile.equals(outputFile)) {
 			return true;
@@ -149,25 +146,17 @@ public class Frame {
 		btnBrowseNextPanel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			
-				String outputDir = browsePanel.getOutput();
-                File checkDir = new File(outputDir); // check if output directory valid
-				if (checkDir.exists() == true){
-                    String fullPath = outputDir + "\\" + browsePanel.getFileName() + ".java";
-                    browsePanel.setOutputPath(fullPath);
-                    
-
-					if(browsePanel.checkFileExists(frame, outputFilePath) == true) {
-						//file path correct
-						layeredPane.switchPanel(basicSettingsPanel);
-
-                    }
-                    
-					
+                
+				String fullPath = browsePanel.getOutput() + "\\" + browsePanel.getFileName() + ".java";
+				browsePanel.setOutputPath(fullPath);
 				
-                } else { //check for valid directory
-					JOptionPane.showMessageDialog(frame, "Invalid directory.", "Warning", JOptionPane.OK_OPTION);
+				if(browsePanel.checkFullOutput(frame, fullPath) == true) {
+					//file path correct
+					layeredPane.switchPanel(basicSettingsPanel);
 
 				}
+				
+				
 			
 			}
 		});
@@ -217,7 +206,8 @@ public class Frame {
 				else {
 					btnBrowseNextPanel.setEnabled(true);
 				
-				}				browsePanel.setOutputFile(browsePanel.outputFileTextField.getText());
+				}				
+				browsePanel.setOutputFile(browsePanel.outputFileTextField.getText());
 			}
 
 			
@@ -339,7 +329,7 @@ public class Frame {
 		
 		//obfuscate another file
 		JButton btnAnother = new JButton("Obfuscate another file");
-		btnAnother.setBounds(526, 196, 184, 25);
+		btnAnother.setBounds(526, 196, 230, 25);
 		finalPanel.add(btnAnother);
 		btnAnother.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

@@ -42,7 +42,7 @@ public class AdvSettingsPanel extends JPanel {
 		JCheckBox chckbxRemoveWhitespace = new JCheckBox("Remove White Space");
 		JCheckBox chckbxInsertDummyCode = new JCheckBox("Insert Dummy Code");
 		JCheckBox chckbxRemoveComments = new JCheckBox("Remove Comments");
-		JCheckBox chckbxFlowObfuscation = new JCheckBox("Flow Obfuscation");
+		JCheckBox chckbxFlowObfuscation = new JCheckBox("String Encryption");
 		/////////////////////////////////////////////////////////////////////////////////////////////////
 		// for adv options
 		/////////////////////////////////////////////////////////////////////////////////////////////////

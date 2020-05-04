@@ -3,16 +3,20 @@ package FYP;
 import java.awt.Dimension;
 import java.awt.event.*;
 import java.awt.GridLayout;
-
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 
@@ -30,6 +34,9 @@ public class FinalPanel extends JPanel {
 		JButton btnViewChangelog = new JButton("View changelog");
 		btnViewChangelog.setBounds(310, 196, 143, 25);
 		this.add(btnViewChangelog);
+
+		//changelog panel options
+		Object[] customOptions = {"Ok", "Output Changelog"};
 		btnViewChangelog.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -43,12 +50,34 @@ public class FinalPanel extends JPanel {
 				changelog.setWrapStyleWord(true); 
 				changelog.setEditable(false);
 				JScrollPane changelogScrollPane = new JScrollPane(changelog); 
-				changelogScrollPane.setPreferredSize(new Dimension (800, 800));
-				JOptionPane.showConfirmDialog(frame, changelogScrollPane, "Changelog", JOptionPane.CLOSED_OPTION , JOptionPane.PLAIN_MESSAGE, null);
-				
-				
+				changelogScrollPane.setPreferredSize(new Dimension (1500, 800));
+				int x = JOptionPane.showOptionDialog(frame, changelogScrollPane, "Changelog", JOptionPane.OK_CANCEL_OPTION,  JOptionPane.PLAIN_MESSAGE, null, customOptions, null);
+				System.out.println(x);
+				if (x == 1) {
+					JFileChooser fc = new JFileChooser();
+					fc.setDialogTitle("Specify a place to save Changelog");
+					fc.setFileFilter(new FileNameExtensionFilter("Text Files (*.txt)", "txt"));
+					int user_selection = fc.showSaveDialog(frame);
+
+					if (user_selection == JFileChooser.APPROVE_OPTION) {
+						
+						File changelogFile = new File(fc.getSelectedFile() + ".txt");
+						try {
+
+							FileWriter fw = new FileWriter(changelogFile);
+							fw.write(changelog.getText());
+							fw.close();
+
+						} catch (IOException ie) {
+							System.out.println("IO Error");
+						}
+					}
+				}
 			}
 		});
+
+		//changelog panel output button
+		
         
 
         //exit button on final panel
