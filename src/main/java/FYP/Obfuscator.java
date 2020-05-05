@@ -7,20 +7,21 @@ import java.util.regex.Pattern;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.lang.model.element.Modifier;
 import javax.xml.bind.DatatypeConverter;
 
 import java.io.*;
 
+import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.Modifier.Keyword;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
-import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 
 import com.github.javaparser.ast.body.Parameter;
@@ -91,7 +92,7 @@ public class Obfuscator {
             code = dummyCodeInsertion(code);
         }
 
-        if (settings.get("9_String Encryption") == 1) {
+        if (settings.get("9_String Encoding") == 1) {
             code = encryptCode(code);
             code = addLibraries(code);
         }
@@ -148,6 +149,10 @@ public class Obfuscator {
 
         }
 
+        //add decrypt method here if string encoding is used
+        if (settings.get("9_String Encoding") == 1) {
+            code = addDecryptMethod(code);
+        }
         //because my methods make the code neat, Removing white spaces must put at end if user wants it
         if (settings.get("6_Remove White Space") == 1) { 
             code = removeWhiteSpaces(code);
@@ -778,12 +783,12 @@ public class Obfuscator {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     private class StringLiteralVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
         @Override
-        public void visit(StringLiteralExpr ex, HashMap<String, String> hashMap) {
+        public void visit(StringLiteralExpr ex, HashMap<String, String> hash) {
             
             //create encrypted literal
             String encrypted = encrypt(ex.toString().substring(1, ex.toString().length()-1));
-            encrypted = "decrypt(\"" + encrypted + "\")"; 
-            hashMap.put(ex.toString(), encrypted);
+            encrypted = "_D(\"" + encrypted + "\")"; 
+            hash.put(ex.toString(), encrypted);
             
         } 
     }
@@ -873,26 +878,26 @@ public class Obfuscator {
         return null;
     }
 
-    private String decrypt(String encrypted) {
-        String key = "Bar12345Bar12345";
-        String initVector = "RandomInitVector";
+    // private String decrypt(String encrypted) {
+    //     String key = "Bar12345Bar12345";
+    //     String initVector = "RandomInitVector";
 
-        try {
-            IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));
-            SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
+    //     try {
+    //         IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));
+    //         SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
 
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-            cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
+    //         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+    //         cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
 
-            // byte[] original = cipher.doFinal(Base64.decodeBase64(encrypted));
-			byte[] original = cipher.doFinal(DatatypeConverter.parseBase64Binary(encrypted));
+    //         // byte[] original = cipher.doFinal(Base64.decodeBase64(encrypted));
+	// 		byte[] original = cipher.doFinal(DatatypeConverter.parseBase64Binary(encrypted));
 
-            return new String(original);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return null;
-    }
+    //         return new String(original);
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //     }
+    //     return null;
+    // }
 
     private String addLibraries(String code) {
         CompilationUnit cu = StaticJavaParser.parse(code);
@@ -908,6 +913,40 @@ public class Obfuscator {
             cu.addImport(s);
         }
         System.out.println(cu.toString());
+        return cu.toString();
+    }
+
+    private String addDecryptMethod(String code) {
+        CompilationUnit cu = StaticJavaParser.parse(code);
+        
+        String methodBody = "{String key = \"Bar12345Bar12345\";" + 
+                            "String initVector = \"RandomInitVector\";" + 
+
+                            "try {" + 
+                                "IvParameterSpec iv = new IvParameterSpec(initVector.getBytes(\"UTF-8\"));" +
+                                "SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes(\"UTF-8\"), \"AES\");"+
+
+                                "Cipher cipher = Cipher.getInstance(\"AES/CBC/PKCS5PADDING\");" +
+                                "cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);" + 
+
+                                "byte[] original = cipher.doFinal(DatatypeConverter.parseBase64Binary(encrypted));" +
+
+                                "return new String(original);" +
+                            "} catch (Exception ex) {" +
+                                "ex.printStackTrace();" +
+                            "}" +
+                            "return null;}";
+
+        for (Node childNode: cu.getChildNodes()) {
+            if (childNode instanceof ClassOrInterfaceDeclaration) {
+                ClassOrInterfaceDeclaration classDeclaration = (ClassOrInterfaceDeclaration) childNode;
+                MethodDeclaration method = classDeclaration.addMethod("_D", Keyword.PRIVATE, Keyword.STATIC);
+                method.setType(String.class);
+                method.addParameter(String.class, "encrypted");
+                BlockStmt blockStmt = StaticJavaParser.parseBlock(methodBody);
+                method.setBody(blockStmt);
+            }
+        }
         return cu.toString();
     }
 

@@ -1,9 +1,6 @@
 package FYP;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -22,11 +19,8 @@ public class BrowsePanel extends JPanel {
 
 
     JLabel inputFileTypeLabel = new JLabel("");
-
-	private String inputFilePath;
 	private String outputFilePath;
-    private String outputDirectory;
-    private String outputFile;
+    
     
 	JTextField inputTextField = new JTextField();
 	JTextField outputTextField = new JTextField();

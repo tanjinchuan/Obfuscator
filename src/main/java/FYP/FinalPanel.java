@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -18,7 +19,8 @@ import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 public class FinalPanel extends JPanel {
 
@@ -36,7 +38,7 @@ public class FinalPanel extends JPanel {
 		this.add(btnViewChangelog);
 
 		//changelog panel options
-		Object[] customOptions = {"Ok", "Output Changelog"};
+		Object[] customOptions = {"Ok", "Save Changelog"};
 		btnViewChangelog.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -49,34 +51,51 @@ public class FinalPanel extends JPanel {
 				changelog.setLineWrap(true);  
 				changelog.setWrapStyleWord(true); 
 				changelog.setEditable(false);
+
 				JScrollPane changelogScrollPane = new JScrollPane(changelog); 
 				changelogScrollPane.setPreferredSize(new Dimension (1500, 800));
-				int x = JOptionPane.showOptionDialog(frame, changelogScrollPane, "Changelog", JOptionPane.OK_CANCEL_OPTION,  JOptionPane.PLAIN_MESSAGE, null, customOptions, null);
-				System.out.println(x);
-				if (x == 1) {
-					JFileChooser fc = new JFileChooser();
-					fc.setDialogTitle("Specify a place to save Changelog");
-					fc.setFileFilter(new FileNameExtensionFilter("Text Files (*.txt)", "txt"));
-					int user_selection = fc.showSaveDialog(frame);
+				
+				JOptionPane optionPane = new JOptionPane(changelogScrollPane, JOptionPane.YES_NO_OPTION,  JOptionPane.PLAIN_MESSAGE, null, customOptions, null);
+				
+				JDialog dialog = new JDialog(frame);
+				dialog.add(optionPane);
 
-					if (user_selection == JFileChooser.APPROVE_OPTION) {
+				dialog.setBounds(0, 0, 1500, 800);
+				dialog.setVisible(true);
+				optionPane.addPropertyChangeListener(new PropertyChangeListener() {
+					@Override
+					public void propertyChange(PropertyChangeEvent evt) {
+						if (optionPane.getValue() == customOptions[0]) {
+							dialog.setVisible(false);
+						}
+						else if (optionPane.getValue() == customOptions[1]) {
+							
+							JFileChooser fc = new JFileChooser();
+							fc.setDialogTitle("Specify a place to save Changelog");
+							fc.setFileFilter(new FileNameExtensionFilter("Text Files (*.txt)", "txt"));
+							int user_selection = fc.showSaveDialog(frame);
+
+							if (user_selection == JFileChooser.APPROVE_OPTION) {
+								
+								File changelogFile = new File(fc.getSelectedFile() + ".txt");
+								try {
+
+									FileWriter fw = new FileWriter(changelogFile);
+									fw.write(changelog.getText());
+									fw.close();
+
+								} catch (IOException ie) {
+									System.out.println("IO Error");
+								}
+							}
 						
-						File changelogFile = new File(fc.getSelectedFile() + ".txt");
-						try {
-
-							FileWriter fw = new FileWriter(changelogFile);
-							fw.write(changelog.getText());
-							fw.close();
-
-						} catch (IOException ie) {
-							System.out.println("IO Error");
 						}
 					}
-				}
+				});
+				
 			}
 		});
 
-		//changelog panel output button
 		
         
 

@@ -22,7 +22,7 @@ public class BasicSettingsPanel extends JPanel implements ChangeListener, Proper
         this.setLayout(null);
 
         JLabel sliderOptionDescriptionLabel = new JLabel();
-		sliderOptionDescriptionLabel.setBounds(92, 243, 562, 40);
+		sliderOptionDescriptionLabel.setBounds(92, 243, 562, 100);
 		this.add(sliderOptionDescriptionLabel);
 		
 		//JSlider + description label
@@ -34,16 +34,16 @@ public class BasicSettingsPanel extends JPanel implements ChangeListener, Proper
 		public void stateChanged(ChangeEvent e) {
 			int level = ((JSlider)e.getSource()).getValue();
 			if(level == 0) {
-				sliderOptionDescriptionLabel.setText("Comments Removal | Method Name Change");
+				sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Method & Variable Name Obfuscation");
 			}
 			else if (level == 1) {
-				sliderOptionDescriptionLabel.setText("Comments Removal | Method & Variable Name Change");
+				sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Method & Variable Name Obfuscation<br>Class & Parameter Name Obfuscation");
 			}
 			else if (level == 2) {
-				sliderOptionDescriptionLabel.setText("Comments Removal | ");
+				sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Method & Variable Name Obfuscation<br>Class & Parameter Name Obfuscation><br>String Encoding");
 			}
 			else if (level == 3) {
-				sliderOptionDescriptionLabel.setText("Flow Obfuscation");
+				sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Method & Variable Name Obfuscation<br>Class & Parameter Name Obfuscation<br>String Encoding<br>Dummy Code Insertion");
 			}
 			
 			}

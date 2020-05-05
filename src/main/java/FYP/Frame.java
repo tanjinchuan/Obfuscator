@@ -288,7 +288,7 @@ public class Frame {
 		
 		//next button for advanced settings panel
 		JButton btnNextAdvOptions = new JButton("Start Obfuscating");
-		btnNextAdvOptions.setBounds(620, 390, 220, 25);
+		btnNextAdvOptions.setBounds(560, 390, 200, 25);
 		advSettingsPanel.add(btnNextAdvOptions);
 
 		
