@@ -16,7 +16,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.beans.PropertyChangeEvent;
@@ -33,7 +32,7 @@ public class FinalPanel extends JPanel {
 		//Changelog panel button
 		///////////////////////////////////////////////////////////////////////////////////////////////
 		
-		JButton btnViewChangelog = new JButton("View changelog");
+		JButton btnViewChangelog = new JButton("View Changelog");
 		btnViewChangelog.setBounds(310, 196, 143, 25);
 		this.add(btnViewChangelog);
 

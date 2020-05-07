@@ -7,12 +7,10 @@ import java.util.regex.Pattern;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import javax.lang.model.element.Modifier;
 import javax.xml.bind.DatatypeConverter;
 
 import java.io.*;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -33,23 +31,26 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 public class Obfuscator {
 
     ArrayList<Statistics> statistics = new ArrayList<Statistics>();
+    protected String sourceCode = "";
+    protected String fileName = "";
 
-    public void obfuscate(String inputFilePath, String outputFilePath, int difficulty)
+    public void obfuscate(String inputFilePath, String outputFilePath, int difficulty, String selectedClass)
             throws ParseException, FileNotFoundException, IOException {
-
         String code = compileCode(inputFilePath);
         switch (difficulty) {
-            // difficulty 0 is method obfuscation and comments removal
+            // Weak difficulty
             case 0: {
+                code = changeClassName(code, selectedClass);
                 code = removeComments(code);
                 code = changeMethodNames(code, "All");
                 code = changeInterfaceNames(code);
                 code = removeWhiteSpaces(code);
                 break;
             }
-            // difficulty 1 is plus variable obfuscation
+            // Medium difficulty 
             case 1: {
 
+                code = changeClassName(code, selectedClass);
                 code = removeComments(code);
                 code = changeMethodNames(code, "All");
                 code = changeInterfaceNames(code);
@@ -59,26 +60,72 @@ public class Obfuscator {
                 break;
             }
 
+            //Strong difficulty
+            case 2: {
+                
+                
+                code = changeClassName(code, selectedClass);
+                code = removeComments(code);
+                code = changeMethodNames(code, "All");
+                code = changeInterfaceNames(code);
+                code = changeVariableNames(code);
+                code = changeParameterNames(code);
+                code = removeWhiteSpaces(code);
+                code = stringEncoding(code);
+                
+                break;
+            }
+
+            //Extreme difficulty
+            case 3: {
+                //insert dummy code first
+                code = dummyCodeInsertion(code);
+                
+                code = changeClassName(code, selectedClass);
+                code = removeComments(code);
+                code = changeMethodNames(code, "All");
+                code = changeInterfaceNames(code);
+                code = changeVariableNames(code);
+                code = changeParameterNames(code);
+                code = removeWhiteSpaces(code);
+                code = stringEncoding(code);
+                
+            }
+
+            
+
         }
 
-        FileWriter fw;
-        if (outputFilePath != "") {
-            fw = new FileWriter(outputFilePath);
+        saveObfuscatedCode(code, outputFilePath);
 
-        } else {
-            fw = new FileWriter(inputFilePath);
-        }
 
-        fw.write(code);
-        fw.close();
 
     }
+
+    private void saveObfuscatedCode(String code, String outputFilePath) {
+        FileWriter fw;
+
+        try {
+            fw = new FileWriter(outputFilePath + "\\" + getFileName());
+            System.out.println(outputFilePath);
+            fw.write(code);
+            fw.close();
+        } catch (IOException e) {
+            
+        }
+    }
+
+    public String getFileName() {
+        return this.fileName;
+    }
+
+    
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Advance obfuscate
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void advObfuscate(String inputFilePath, String outputFilePath, AdvSettingsPanel advSettingsPanel)
+    public void advObfuscate(String inputFilePath, String outputFilePath, AdvSettingsPanel advSettingsPanel, String selectedClass)
             throws ParseException, FileNotFoundException, IOException {
 
         // get the code
@@ -93,8 +140,9 @@ public class Obfuscator {
         }
 
         if (settings.get("9_String Encoding") == 1) {
-            code = encryptCode(code);
+            code = stringEncoding(code);
             code = addLibraries(code);
+            code = addDecryptMethod(code);
         }
         
         for (String key : settings.keySet()) {
@@ -120,7 +168,7 @@ public class Obfuscator {
                     }
 
                     case "3_Change Class Names": {
-                        code = changeClassName(code);
+                        code = changeClassName(code, selectedClass);
                         break;
                     }
 
@@ -149,29 +197,16 @@ public class Obfuscator {
 
         }
 
-        //add decrypt method here if string encoding is used
-        if (settings.get("9_String Encoding") == 1) {
-            code = addDecryptMethod(code);
-        }
+        
         //because my methods make the code neat, Removing white spaces must put at end if user wants it
         if (settings.get("6_Remove White Space") == 1) { 
             code = removeWhiteSpaces(code);
         } else {
             code = prettyPrinting(code);
         }
-        // end of advance obfuscation
-        // write to output
-        FileWriter fw;
-        if (outputFilePath != "") {
-            fw = new FileWriter(outputFilePath);
-
-        } else {
-            fw = new FileWriter(inputFilePath);
-        }
-
-        fw.write(code);
-        fw.close();
-        System.out.println("ok");
+        
+        
+        saveObfuscatedCode(code, outputFilePath);
 
     }
 
@@ -197,7 +232,6 @@ public class Obfuscator {
 
         VoidVisitorAdapter<?> dummyVisitor = new StatementAdder();
         dummyVisitor.visit(cu, null);
-        System.out.println(cu);
         return cu.toString();
     }
 
@@ -625,7 +659,7 @@ public class Obfuscator {
         }
     }
 
-    private String changeClassName(String code) {
+    private String changeClassName(String code, String selectedClass) {
         CompilationUnit cu = StaticJavaParser.parse(code);
         HashMap<String, String> classNames = new HashMap<String, String>();
 
@@ -633,7 +667,9 @@ public class Obfuscator {
 
         classVisitor.visit(cu, classNames);
         
-        
+        //set selectedClass as file name
+        this.fileName = classNames.get(selectedClass) + ".java";
+
         // initialize class name statistics
         Statistics stats = new Statistics();
         stats.setType("Class");
@@ -743,14 +779,15 @@ public class Obfuscator {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public String compileCode(String inputFilePath) throws ParseException, FileNotFoundException {
-        String code = "";
         StaticJavaParser.getConfiguration().setLexicalPreservationEnabled(true);
         CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
-        code = cu.toString();
-
-        return code;
+        
+        this.sourceCode = cu.toString();
+        return cu.toString();
 
     }
+
+    
 
     // this is for printing during comparison
     public String printCode(String inputFilePath) {
@@ -793,7 +830,7 @@ public class Obfuscator {
         } 
     }
 
-    private String encryptCode(String code) {
+    private String stringEncoding(String code) {
 
         CompilationUnit cu = StaticJavaParser.parse(code);
         HashMap<String, String> stringLiterals = new HashMap<String, String>();
@@ -878,6 +915,9 @@ public class Obfuscator {
         return null;
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    //this method is to add into the obfuscated file
+    //////////////////////////////////////////////////////////////////////////
     // private String decrypt(String encrypted) {
     //     String key = "Bar12345Bar12345";
     //     String initVector = "RandomInitVector";
@@ -912,7 +952,6 @@ public class Obfuscator {
         for (String s: libraries) {
             cu.addImport(s);
         }
-        System.out.println(cu.toString());
         return cu.toString();
     }
 
@@ -939,15 +978,37 @@ public class Obfuscator {
 
         for (Node childNode: cu.getChildNodes()) {
             if (childNode instanceof ClassOrInterfaceDeclaration) {
+                
                 ClassOrInterfaceDeclaration classDeclaration = (ClassOrInterfaceDeclaration) childNode;
+                
                 MethodDeclaration method = classDeclaration.addMethod("_D", Keyword.PRIVATE, Keyword.STATIC);
                 method.setType(String.class);
                 method.addParameter(String.class, "encrypted");
                 BlockStmt blockStmt = StaticJavaParser.parseBlock(methodBody);
                 method.setBody(blockStmt);
+            
+                
             }
         }
         return cu.toString();
+    }
+
+
+    public String[] getClasses() {
+        ArrayList<String> list = new ArrayList<String>();
+        CompilationUnit cu = StaticJavaParser.parse(this.sourceCode);
+        List<Node> childNodes = cu.getChildNodes();
+        for (Node n: childNodes) {
+            if (n instanceof ClassOrInterfaceDeclaration) {
+                ClassOrInterfaceDeclaration c = (ClassOrInterfaceDeclaration) n ;
+                list.add(c.getNameAsString());
+                System.out.println(c.getNameAsString() + " hello");
+            }
+        }
+
+        //convert to array
+        String[] classNames = list.toArray(new String[list.size()]);
+        return classNames;
     }
 
     

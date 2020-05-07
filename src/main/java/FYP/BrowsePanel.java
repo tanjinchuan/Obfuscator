@@ -18,17 +18,20 @@ import java.awt.event.*;
 public class BrowsePanel extends JPanel {
 
 
-    JLabel inputFileTypeLabel = new JLabel("");
-	private String outputFilePath;
+
+	protected String inputFilePath;
+	protected String outputFilePath;
+    protected String outputDirectory;
+    //protected String outputFile;
     
-    
-	JTextField inputTextField = new JTextField();
-	JTextField outputTextField = new JTextField();
-	JTextField outputFileTextField = new JTextField();
-	
+	protected JTextField inputTextField = new JTextField();
+	protected JTextField outputTextField = new JTextField();
+	//protected JTextField outputFileTextField = new JTextField();
+
     public BrowsePanel(JFrame frame) {
         
-        
+		JLabel inputFileTypeLabel = new JLabel("");
+		
 
 		inputTextField.setBounds(139, 125, 470, 22);
         inputTextField.setColumns(10);
@@ -50,9 +53,9 @@ public class BrowsePanel extends JPanel {
 		inputFileTypeLabel.setBounds(139, 151, 470, 16);
 	    this.add(inputFileTypeLabel);
 		
-		JLabel outputFileTypeLabel = new JLabel("");
-		outputFileTypeLabel.setBounds(139, 275, 470, 16);
-		this.add(outputFileTypeLabel);
+		// JLabel outputFileTypeLabel = new JLabel("");
+		// outputFileTypeLabel.setBounds(139, 275, 470, 16);
+		// this.add(outputFileTypeLabel);
 		
 		//File input chooser function
 		JButton btnInputBrowsePanel = new JButton("Browse...");
@@ -122,15 +125,6 @@ public class BrowsePanel extends JPanel {
 		this.add(btnOutputBrowsePanel);
 		
 		
-		outputFileTextField.setBounds(139, 257, 200, 22);
-        this.add(outputFileTextField);
-
-		
-
-		//label beside output file name field
-		JLabel lbljava = new JLabel(".java");
-		lbljava.setBounds(340, 240, 50, 50);
-		this.add(lbljava);
 
         
         
@@ -151,12 +145,10 @@ public class BrowsePanel extends JPanel {
 		lblOutputDir.setBounds(48, 220, 80, 16);
         this.add(lblOutputDir);
         
-		JLabel lblOutputFile = new JLabel("File Name");
-        lblOutputFile.setBounds(48, 260, 80, 16);
-        this.add(lblOutputFile);
+		
 
+		
         this.setLayout(null);
-        
 		
 	}
 	
@@ -164,7 +156,6 @@ public class BrowsePanel extends JPanel {
 	public void setTextField() {
 		inputTextField.setText("");
 		outputTextField.setText("");
-		outputFileTextField.setText("");
 	}
 
     public void setInputPath(String path) {
@@ -174,9 +165,7 @@ public class BrowsePanel extends JPanel {
         this.outputDirectory = path;
     }
 
-    public void setOutputFile(String file) {
-        this.outputFile = file;
-    }
+ 
 
     public void setOutputPath(String path) {
         this.outputFilePath = path;
@@ -186,10 +175,6 @@ public class BrowsePanel extends JPanel {
     }
     public String getOutput() {
         return outputTextField.getText();
-    }
-
-    public String getFileName() {
-        return outputFileTextField.getText();
     }
 
     public String getFullOutput() {
@@ -214,7 +199,7 @@ public class BrowsePanel extends JPanel {
 		}
 	}
 	
-	private boolean checkDir(String directory) {
+	public boolean checkDir(String directory) {
 		File file = new File(directory);
 
 		if (file.isDirectory() == true) {
@@ -225,7 +210,7 @@ public class BrowsePanel extends JPanel {
 		}
 	}
 
-	private boolean checkFileExists(String directory) {
+	public boolean checkFileExists(String directory) {
 		File file = new File(directory);
 		if (file.isFile() == true && checkExt(directory) == true) {
 			return true;
@@ -234,6 +219,8 @@ public class BrowsePanel extends JPanel {
 			return false;
 		}
 	}
+	
+	
     
     //to check file name errors
     public boolean checkFullOutput(JFrame frame, String fullPath) {

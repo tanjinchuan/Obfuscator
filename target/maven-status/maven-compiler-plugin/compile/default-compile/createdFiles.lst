@@ -14,6 +14,7 @@ FYP\QuizPanel.class
 FYP\Frame$12.class
 FYP\BasicSettingsPanel$1.class
 FYP\Frame$5.class
+FYP\Sample$StringLiteralVisitor.class
 FYP\BasicSettingsPanel.class
 FYP\ComparePanel.class
 FYP\Frame$10.class
@@ -25,13 +26,16 @@ FYP\Frame$2.class
 FYP\FinalPanel$1.class
 FYP\Quiz.class
 FYP\QuizPanel$1.class
+FYP\FinalPanel$1$1.class
 FYP\QuizPanel$3.class
 FYP\FinalPanel.class
 FYP\BrowsePanel.class
 FYP\Frame$13.class
+FYP\Obfuscator$StringLiteralVisitor.class
 FYP\Obfuscator$PublicMethodNameVisitor.class
 FYP\Frame$1.class
 FYP\Obfuscator$ProtectedMethodNameVisitor.class
+FYP\Obfuscator$StatementAdder.class
 FYP\Obfuscator$ParameterNameVisitor.class
 FYP\Frame$8.class
 FYP\Obfuscator$InterfaceVisitor.class
@@ -48,5 +52,6 @@ FYP\Frame$11.class
 FYP\Statistics.class
 FYP\Frame$7.class
 FYP\Obfuscator$ClassVisitor.class
+FYP\Sample$1.class
 FYP\ProgressBarPanel.class
 FYP\BrowsePanel$1.class

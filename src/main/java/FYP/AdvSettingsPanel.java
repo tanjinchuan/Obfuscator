@@ -12,6 +12,7 @@ import java.util.Scanner;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -21,9 +22,8 @@ public class AdvSettingsPanel extends JPanel {
 
 	private HashMap<String, Integer> currentSettings = new HashMap<String, Integer>();
 	private ArrayList<JCheckBox> checkboxes = new ArrayList<JCheckBox>();
+	JComboBox<String> comboBox = new JComboBox<>();
 
-	
-	
 
 	public AdvSettingsPanel() {
 
@@ -42,7 +42,7 @@ public class AdvSettingsPanel extends JPanel {
 		JCheckBox chckbxRemoveWhitespace = new JCheckBox("Remove White Space");
 		JCheckBox chckbxInsertDummyCode = new JCheckBox("Insert Dummy Code");
 		JCheckBox chckbxRemoveComments = new JCheckBox("Remove Comments");
-		JCheckBox chckbxFlowObfuscation = new JCheckBox("String Encryption");
+		JCheckBox chckbxFlowObfuscation = new JCheckBox("String Encoding");
 		/////////////////////////////////////////////////////////////////////////////////////////////////
 		// for adv options
 		/////////////////////////////////////////////////////////////////////////////////////////////////
@@ -111,6 +111,16 @@ public class AdvSettingsPanel extends JPanel {
 			if( comp instanceof JCheckBox) checkboxes.add( (JCheckBox)comp );
 			
 		}
+
+		//JLabel for combobox
+		JLabel comboBoxLabel = new JLabel("Choose main class");
+		comboBoxLabel.setBounds(545, 145, 200, 20);
+		this.add(comboBoxLabel);
+		
+		//JComboBox on advSettingsPanel
+		comboBox.setBounds(545, 170, 200, 20);
+		this.add(comboBox);
+
 	}
 
 	//for saving default settings

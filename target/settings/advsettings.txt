@@ -7,4 +7,4 @@
 6_Remove White Space:0
 7_Insert Dummy Code:0
 8_Remove Comments:0
-9_Flow Obfuscation:0
+9_String Encoding:0

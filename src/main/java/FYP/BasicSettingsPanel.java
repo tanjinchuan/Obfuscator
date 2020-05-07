@@ -2,6 +2,7 @@ package FYP;
 
 import java.util.Hashtable;
 
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -15,8 +16,9 @@ import java.beans.PropertyChangeListener;
 
 public class BasicSettingsPanel extends JPanel implements ChangeListener, PropertyChangeListener{
     
-    private int level = 0;
-    
+    protected int level = 0;
+	JComboBox<String> comboBox = new JComboBox<>();
+
     public BasicSettingsPanel(AdvSettingsPanel advSettingsPanel) {
 
         this.setLayout(null);
@@ -34,16 +36,16 @@ public class BasicSettingsPanel extends JPanel implements ChangeListener, Proper
 		public void stateChanged(ChangeEvent e) {
 			int level = ((JSlider)e.getSource()).getValue();
 			if(level == 0) {
-				sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Method & Variable Name Obfuscation");
+				sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Class & Method Name Obfuscation");
 			}
 			else if (level == 1) {
-				sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Method & Variable Name Obfuscation<br>Class & Parameter Name Obfuscation");
+				sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Class & Method Name Obfuscation<br>Variable & Parameter Name Obfuscation");
 			}
 			else if (level == 2) {
-				sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Method & Variable Name Obfuscation<br>Class & Parameter Name Obfuscation><br>String Encoding");
+				sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Class & Method Name Obfuscation<br>Variable & Parameter Name Obfuscation><br>String Encoding");
 			}
 			else if (level == 3) {
-				sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Method & Variable Name Obfuscation<br>Class & Parameter Name Obfuscation<br>String Encoding<br>Dummy Code Insertion");
+				sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Class & Method Name Obfuscation<br>Variable & Parameter Name Obfuscation<br>String Encoding<br>Dummy Code Insertion");
 			}
 			
 			}
@@ -62,13 +64,24 @@ public class BasicSettingsPanel extends JPanel implements ChangeListener, Proper
 		slider.setBounds(92, 164, 562, 52);
         this.add(slider);
         
-        
+		//JLabel for combobox
+		JLabel comboBoxLabel = new JLabel("Choose main class");
+		comboBoxLabel.setBounds(300, 360, 200, 20);
+		this.add(comboBoxLabel);
+
+		//JComboBox on basicSettingsPanel
+
+		
+		comboBox.setBounds(300, 380, 200, 20);
+		this.add(comboBox);
 
     }
 
     public int getLevel() {
         return level;
-    }
+	}
+	
+
 
     @Override
 	public void stateChanged(ChangeEvent e) {

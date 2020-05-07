@@ -1,7 +1,7 @@
 package FYP;
 
 import java.io.File;
-
+import java.io.FileNotFoundException;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import com.github.javaparser.ParseException;
 
 
 public class Frame {
@@ -40,14 +42,7 @@ public class Frame {
 		});
 	}
 
-	public boolean checkFileName(String inputFile, String outputFile) {
-		if (inputFile.equals(outputFile)) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
+	
 	
 	/**
 	 * Create the application.
@@ -105,6 +100,7 @@ public class Frame {
 		//add browse panel
 		BrowsePanel browsePanel = new BrowsePanel(frame);
 
+		
 		//add progress bar panel
 		ProgressBarPanel progressBarPanel = new ProgressBarPanel();
 
@@ -147,11 +143,44 @@ public class Frame {
 			public void actionPerformed(ActionEvent e) {
 			
                 
-				String fullPath = browsePanel.getOutput() + "\\" + browsePanel.getFileName() + ".java";
-				browsePanel.setOutputPath(fullPath);
+				//String fullPath = browsePanel.getOutput() + "\\" + browsePanel.getFileName() + ".java";
+				//browsePanel.setOutputPath(fullPath);
 				
-				if(browsePanel.checkFullOutput(frame, fullPath) == true) {
-					//file path correct
+				// if(browsePanel.checkFullOutput(frame, fullPath) == true) {
+				// 	//file path correct
+				// 	layeredPane.switchPanel(basicSettingsPanel);
+
+				// }
+				String inputFilePath = browsePanel.getInput();
+				String outputFilePath = browsePanel.getOutput();
+
+				if (browsePanel.checkFileExists(inputFilePath) == false) {
+					JOptionPane.showMessageDialog(frame, "Please choose valid input .java file", "Warning", JOptionPane.OK_OPTION);
+
+				}
+				
+				else if (browsePanel.checkDir(outputFilePath) == false){
+					JOptionPane.showMessageDialog(frame, "Please choose valid output location", "Warning", JOptionPane.OK_OPTION);
+
+				}
+
+				else {
+					//set the source code
+					try {
+
+						obfuscator.compileCode(inputFilePath);
+						
+						String[] array = obfuscator.getClasses();
+
+						DefaultComboBoxModel model = new DefaultComboBoxModel(array);
+						basicSettingsPanel.comboBox.setModel(model);
+						advSettingsPanel.comboBox.setModel (model);
+
+					} catch (FileNotFoundException fe) {
+
+					} catch (ParseException ie) {
+						
+					}
 					layeredPane.switchPanel(basicSettingsPanel);
 
 				}
@@ -175,39 +204,36 @@ public class Frame {
 		browsePanel.add(btnBrowsePanelBack);
 
 		//check if textfield is valid
-		browsePanel.outputFileTextField.getDocument().addDocumentListener(new DocumentListener() {
+		browsePanel.outputTextField.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
 			public void changedUpdate(DocumentEvent e) {
-				if (browsePanel.outputFileTextField.getText().equals("")) {
+				if (browsePanel.getInput().equals("") | browsePanel.getOutput().equals("")) {
 					btnBrowseNextPanel.setEnabled(false);
 				}
 				else {
 					btnBrowseNextPanel.setEnabled(true);
 				
 				}
-				browsePanel.setOutputFile(browsePanel.outputFileTextField.getText());
 			}
 			@Override
 			public void removeUpdate(DocumentEvent e) {
-				if (browsePanel.outputFileTextField.getText().equals("")) {
+				if (browsePanel.getInput().equals("") | browsePanel.getOutput().equals("")) {
 					btnBrowseNextPanel.setEnabled(false);
 				}
 				else {
 					btnBrowseNextPanel.setEnabled(true);
 				
 				}
-				browsePanel.setOutputFile(browsePanel.outputFileTextField.getText());
 			}
 			@Override
 			public void insertUpdate(DocumentEvent e) {
-				if (browsePanel.outputFileTextField.getText().equals("")) {
+				if (browsePanel.getInput().equals("") | browsePanel.getOutput().equals("")) {
 					btnBrowseNextPanel.setEnabled(false);
 				}
 				else {
 					btnBrowseNextPanel.setEnabled(true);
 				
 				}				
-				browsePanel.setOutputFile(browsePanel.outputFileTextField.getText());
 			}
 
 			
@@ -215,7 +241,7 @@ public class Frame {
 		
 		
 		////////////////////////////////////////////////////////////////////////////////////////////
-		//Button to go to advanced settings on slider panel 
+		//Button to go to advanced settings on basicSettings panel 
 		///////////////////////////////////////////////////////////////////////////////////////////
 		//read settings file here, get a hash map to check value after i click into advanced settings panel
 		
@@ -244,8 +270,10 @@ public class Frame {
 		btnBackSliderPanel.setBounds(48, 380, 97, 25);
 		basicSettingsPanel.add(btnBackSliderPanel);
 		
+		
+
 		/////////////////////////////////////////////////////////////////////////////
-		//Button "next" to go to progressbarpanel on slider panel
+		//Button "next" to go to progressbarpanel on basicSettings panel
 		////////////////////////////////////////////////////////////////////////////
 		JButton btnNextSliderPanel = new JButton("Start Obfuscating");
 		btnNextSliderPanel.setBounds(550, 380, 200
@@ -257,13 +285,20 @@ public class Frame {
 				try {
 					//set the file paths
 					inputFilePath = browsePanel.getInput();
-					outputFilePath = browsePanel.getFullOutput();
-					obfuscator.obfuscate(inputFilePath, outputFilePath, basicSettingsPanel.getLevel());
+					outputFilePath = browsePanel.getOutput();
+
+					//get selected main class
+					String selectedClass = String.valueOf(basicSettingsPanel.comboBox.getSelectedItem());
+
+					
+					obfuscator.obfuscate(inputFilePath, outputFilePath, basicSettingsPanel.getLevel(), selectedClass);
 					//start obsfuscation
+			
+					
 					layeredPane.switchPanel(progressBarPanel);
 					
 					//do delay to switch panel
-					progressBarPanel.update(layeredPane, finalPanel);
+					progressBarPanel.update(layeredPane, browsePanel, finalPanel, obfuscator);
 			
 
 			
@@ -299,11 +334,16 @@ public class Frame {
 				try {
 					//set the file paths
 					inputFilePath = browsePanel.getInput();
-					outputFilePath = browsePanel.getFullOutput();
-					obfuscator.advObfuscate(inputFilePath, outputFilePath, advSettingsPanel);
+					outputFilePath = browsePanel.getOutput();
+
+					//get selected main class
+					String selectedClass = String.valueOf(basicSettingsPanel.comboBox.getSelectedItem());
+
+					obfuscator.advObfuscate(inputFilePath, outputFilePath, advSettingsPanel, selectedClass);
 					//start obsfuscation
+					
 					layeredPane.switchPanel(progressBarPanel);
-					progressBarPanel.update(layeredPane, finalPanel);
+					progressBarPanel.update(layeredPane, browsePanel, finalPanel, obfuscator);
 					
 				} catch(Exception ex) {
 					ex.printStackTrace();
@@ -322,6 +362,10 @@ public class Frame {
 		finalPanel.add(btnViewOutput);
 		btnViewOutput.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				//output path = output directory + l1lIll1l.java e.g.
+				outputFilePath = browsePanel.getOutput() + "\\" + obfuscator.getFileName();
+
 				ComparePanel comparePanel = new ComparePanel(frame, obfuscator, inputFilePath, outputFilePath);
 				layeredPane.add(comparePanel);
             }

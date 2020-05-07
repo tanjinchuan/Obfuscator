@@ -2,9 +2,6 @@ package FYP;
 
 
 import java.awt.Dimension;
-import java.awt.GridLayout;
-
-import java.io.FileNotFoundException;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -13,7 +10,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
 
-import com.github.javaparser.ParseException;
 
 public class ComparePanel extends JPanel {
 
