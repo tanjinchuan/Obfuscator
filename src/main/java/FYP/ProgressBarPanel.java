@@ -7,12 +7,14 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.Timer;
 import java.awt.event.*;
-
+import java.awt.Font;
 
 
 public class ProgressBarPanel extends JPanel {
     JProgressBar progressBar = new JProgressBar(0, 100);
 	JLabel lblProgressBarStatus = new JLabel("Scanning files...");
+
+	
 
     public ProgressBarPanel() {
         this.setLayout(null);
@@ -20,9 +22,12 @@ public class ProgressBarPanel extends JPanel {
 		//Progress Bar panel
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		
-		
+		Font font = new Font("Courier", Font.BOLD,16);
+
 		lblProgressBarStatus.setBounds(88, 219, 600, 20);
+		lblProgressBarStatus.setFont(font);
 		this.add(lblProgressBarStatus);
+		
 		
 		progressBar.setStringPainted(true);
         progressBar.setBounds(88, 167, 560, 38);
@@ -31,7 +36,7 @@ public class ProgressBarPanel extends JPanel {
 	}
 
 	public void update(LayeredPane layeredPane, BrowsePanel browsePanel, FinalPanel finalPanel, Obfuscator obfuscator) {
-		int delay = 50;
+		int delay = 65;
 		
 		Timer timer = new Timer(delay, new ActionListener() {
 
@@ -46,7 +51,7 @@ public class ProgressBarPanel extends JPanel {
 					}
 
 					if (progressBar.getValue() > 20) {
-						lblProgressBarStatus.setText("Saving Obfuscated Code to " + browsePanel.getOutput() + "\\" + obfuscator.getFileName() + "...");
+						lblProgressBarStatus.setText("Saving Obfuscated Code as " + obfuscator.getFileName() + " to " + browsePanel.getOutput());
 					}
 				}
 			}
@@ -56,6 +61,11 @@ public class ProgressBarPanel extends JPanel {
 
 		
 		
+	}
+
+
+	public void setDefault() {
+		this.lblProgressBarStatus.setText("Scanning Files...");
 	}
 
 

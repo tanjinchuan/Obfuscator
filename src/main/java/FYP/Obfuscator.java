@@ -26,6 +26,7 @@ import com.github.javaparser.ast.body.Parameter;
 
 import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
+import com.mgnt.utils.StringUnicodeEncoderDecoder;
 
 
 public class Obfuscator {
@@ -47,7 +48,7 @@ public class Obfuscator {
                 code = removeWhiteSpaces(code);
                 break;
             }
-            // Medium difficulty 
+            // Medium difficulty
             case 1: {
 
                 code = changeClassName(code, selectedClass);
@@ -60,10 +61,9 @@ public class Obfuscator {
                 break;
             }
 
-            //Strong difficulty
+            // Strong difficulty
             case 2: {
-                
-                
+
                 code = changeClassName(code, selectedClass);
                 code = removeComments(code);
                 code = changeMethodNames(code, "All");
@@ -71,16 +71,24 @@ public class Obfuscator {
                 code = changeVariableNames(code);
                 code = changeParameterNames(code);
                 code = removeWhiteSpaces(code);
+
+                //add string encoding and libraries and decrypt method
                 code = stringEncoding(code);
-                
+                code = addLibraries(code);
+                code = addDecryptMethod(code);  
+
                 break;
             }
 
-            //Extreme difficulty
+            // Extreme difficulty
             case 3: {
-                //insert dummy code first
+                // insert dummy code first
                 code = dummyCodeInsertion(code);
-                
+                code = stringEncoding(code);
+                code = addLibraries(code);
+                code = addDecryptMethod(code);
+
+
                 code = changeClassName(code, selectedClass);
                 code = removeComments(code);
                 code = changeMethodNames(code, "All");
@@ -88,30 +96,24 @@ public class Obfuscator {
                 code = changeVariableNames(code);
                 code = changeParameterNames(code);
                 code = removeWhiteSpaces(code);
-                code = stringEncoding(code);
-                
-            }
 
-            
+            }
 
         }
 
         saveObfuscatedCode(code, outputFilePath);
 
-
-
     }
 
     private void saveObfuscatedCode(String code, String outputFilePath) {
         FileWriter fw;
-
         try {
             fw = new FileWriter(outputFilePath + "\\" + getFileName());
-            System.out.println(outputFilePath);
+            
             fw.write(code);
             fw.close();
         } catch (IOException e) {
-            
+
         }
     }
 
@@ -119,14 +121,12 @@ public class Obfuscator {
         return this.fileName;
     }
 
-    
-
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Advance obfuscate
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void advObfuscate(String inputFilePath, String outputFilePath, AdvSettingsPanel advSettingsPanel, String selectedClass)
-            throws ParseException, FileNotFoundException, IOException {
+    public void advObfuscate(String inputFilePath, String outputFilePath, AdvSettingsPanel advSettingsPanel,
+            String selectedClass) throws ParseException, FileNotFoundException, IOException {
 
         // get the code
         String code = compileCode(inputFilePath);
@@ -134,23 +134,38 @@ public class Obfuscator {
         advSettingsPanel.getCurrentOptions(); // get the current check box values
         HashMap<String, Integer> settings = advSettingsPanel.getSettings(); // get the hashmap of values
 
-        //do dummy code insertion first if user wants it, as we have to obfuscate the dummy code as well.
-        if (settings.get("7_Insert Dummy Code") == 1) {
+        //if change class names not chosen, the file name will be saved as original source code class name
+        if (settings.get("3_Change Class Names") == 0) {
+            this.fileName = "_" + selectedClass + ".java";
+        }
+
+        // do dummy code insertion first if user wants it, as we have to obfuscate the
+        // dummy code as well.
+        if (settings.get("6_Insert Dummy Code") == 1) {
             code = dummyCodeInsertion(code);
         }
 
-        if (settings.get("9_String Encoding") == 1) {
+        
+
+        // do string encoding first if user wants it
+        if (settings.get("7_String Encoding") == 1) {
             code = stringEncoding(code);
             code = addLibraries(code);
             code = addDecryptMethod(code);
         }
-        
+
+        // do string to unicode before string encoding, if user ticked both encoding and
+        // unicode,
+        // the unicode wil be encrypted too
+        if (settings.get("8_String To Unicode") == 1) {
+            code = stringToUnicode(code);
+        }
+
         for (String key : settings.keySet()) {
-            
+
             int value = settings.get(key);
             if (value == 1) { // if the box is ticked, do that obfuscation technique
                 switch (key) {
-                    
 
                     case "0_Public": { // Rename public methods
                         code = changeMethodNames(code, "Public");
@@ -182,11 +197,7 @@ public class Obfuscator {
                         break;
                     }
 
-                    case "6_Remove White Space": { // Removing white spaces from code
-                        break;
-                    }
-
-                    case "8_Remove Comments": { // Removing comments from code
+                    case "10_Remove Comments": { // Removing comments from code
                         code = removeComments(code);
                         break;
                     }
@@ -197,15 +208,14 @@ public class Obfuscator {
 
         }
 
-        
-        //because my methods make the code neat, Removing white spaces must put at end if user wants it
-        if (settings.get("6_Remove White Space") == 1) { 
+        // because my methods make the code neat, Removing white spaces must put at end
+        // if user wants it
+        if (settings.get("9_Remove White Space") == 1) {
             code = removeWhiteSpaces(code);
         } else {
             code = prettyPrinting(code);
         }
-        
-        
+
         saveObfuscatedCode(code, outputFilePath);
 
     }
@@ -213,15 +223,15 @@ public class Obfuscator {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // For Dummy Code Insertion
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private static class StatementAdder extends VoidVisitorAdapter<Void>{
+    private static class StatementAdder extends VoidVisitorAdapter<Void> {
         @Override
-        public void visit(BlockStmt bs, Void arg){
-            super.visit(bs,arg);
+        public void visit(BlockStmt bs, Void arg) {
+            super.visit(bs, arg);
 
             int hash = bs.getRange().hashCode();
 
-            //Only even hashes add dummycode
-            if(hash%2 == 0) {
+            // Only even hashes add dummycode
+            if (hash % 2 == 0) {
                 bs.addAndGetStatement("System.out.println(\"Dummy Code inserted here\")");
             }
         }
@@ -383,8 +393,8 @@ public class Obfuscator {
             Matcher regexMatcher = regex.matcher(line);
             while (regexMatcher.find()) {
                 split.add(regexMatcher.group());
-            } 
-            
+            }
+
             // (eg. public void setName(String s) will split into ["public","void",
             // "setName", "(", "String", "s", ")"])
 
@@ -463,7 +473,7 @@ public class Obfuscator {
                 newCode = newCode + line + "\n";
 
                 continue;
-            }            
+            }
             String newLine = "";
 
             List<String> split = new ArrayList<String>();
@@ -471,7 +481,7 @@ public class Obfuscator {
             Matcher regexMatcher = regex.matcher(line);
             while (regexMatcher.find()) {
                 split.add(regexMatcher.group());
-            } 
+            }
 
             for (int i = 0; i < split.size(); i++) {
                 if (parameters.containsKey(split.get(i))) {
@@ -480,7 +490,7 @@ public class Obfuscator {
                     stats.setStats(split.get(i), parameters.get(split.get(i)));
                     stats.increaseCount(split.get(i)); // save the number of times method changed
 
-                     // set the variable name to new random word
+                    // set the variable name to new random word
                     split.set(i, parameters.get(split.get(i)));
                 }
 
@@ -537,16 +547,16 @@ public class Obfuscator {
             String line = scanner.nextLine();
             if (line.startsWith("import")) {
                 newCode = newCode + line + "\n";
-                
+
                 continue;
-            } 
+            }
             String newLine = "";
             List<String> split = new ArrayList<String>();
             Pattern regex = Pattern.compile("(\"[^\"]*\")|\\W|\\w+");
             Matcher regexMatcher = regex.matcher(line);
             while (regexMatcher.find()) {
                 split.add(regexMatcher.group());
-            } 
+            }
 
             for (int i = 0; i < split.size(); i++) {
                 if (variables.containsKey(split.get(i))) {
@@ -555,7 +565,7 @@ public class Obfuscator {
                     stats.setStats(split.get(i), variables.get(split.get(i)));
                     stats.increaseCount(split.get(i)); // save the number of times method changed
 
-                     // set the variable name to new random word
+                    // set the variable name to new random word
                     split.set(i, variables.get(split.get(i)));
                 }
 
@@ -609,7 +619,7 @@ public class Obfuscator {
             if (line.startsWith("import")) {
                 newCode = newCode + line + "\n";
                 continue;
-            }            
+            }
             String newLine = "";
 
             List<String> split = new ArrayList<String>();
@@ -617,7 +627,7 @@ public class Obfuscator {
             Matcher regexMatcher = regex.matcher(line);
             while (regexMatcher.find()) {
                 split.add(regexMatcher.group());
-            } 
+            }
 
             for (int i = 0; i < split.size(); i++) {
                 if (interfaceNames.containsKey(split.get(i))) {
@@ -626,7 +636,7 @@ public class Obfuscator {
                     stats.setStats(split.get(i), interfaceNames.get(split.get(i)));
                     stats.increaseCount(split.get(i)); // save the number of times method changed
 
-                     // set the variable name to new random word
+                    // set the variable name to new random word
                     split.set(i, interfaceNames.get(split.get(i)));
                 }
 
@@ -648,13 +658,13 @@ public class Obfuscator {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //change class name
+    // change class name
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     private class ClassVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
         @Override
         public void visit(ClassOrInterfaceDeclaration c, HashMap<String, String> classes) {
             super.visit(c, classes);
-            
+
             classes.put(c.getNameAsString(), randomWord());
         }
     }
@@ -666,8 +676,8 @@ public class Obfuscator {
         VoidVisitorAdapter<HashMap<String, String>> classVisitor = new ClassVisitor();
 
         classVisitor.visit(cu, classNames);
-        
-        //set selectedClass as file name
+
+        // set selectedClass as file name and obfuscate it, to put it as new file name
         this.fileName = classNames.get(selectedClass) + ".java";
 
         // initialize class name statistics
@@ -682,7 +692,7 @@ public class Obfuscator {
             if (line.startsWith("import")) {
                 newCode = newCode + line + "\n";
                 continue;
-            }            
+            }
             String newLine = "";
 
             List<String> split = new ArrayList<String>();
@@ -690,7 +700,7 @@ public class Obfuscator {
             Matcher regexMatcher = regex.matcher(line);
             while (regexMatcher.find()) {
                 split.add(regexMatcher.group());
-            } 
+            }
 
             for (int i = 0; i < split.size(); i++) {
                 if (classNames.containsKey(split.get(i))) {
@@ -699,7 +709,7 @@ public class Obfuscator {
                     stats.setStats(split.get(i), classNames.get(split.get(i)));
                     stats.increaseCount(split.get(i)); // save the number of times method changed
 
-                     // set the variable name to new random word
+                    // set the variable name to new random word
                     split.set(i, classNames.get(split.get(i)));
                 }
 
@@ -781,13 +791,11 @@ public class Obfuscator {
     public String compileCode(String inputFilePath) throws ParseException, FileNotFoundException {
         StaticJavaParser.getConfiguration().setLexicalPreservationEnabled(true);
         CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
-        
+
         this.sourceCode = cu.toString();
         return cu.toString();
 
     }
-
-    
 
     // this is for printing during comparison
     public String printCode(String inputFilePath) {
@@ -807,7 +815,6 @@ public class Obfuscator {
 
     }
 
-    
     private String removeWhiteSpaces(String code) {
         code = prettyPrinting(code); // make nice nice first
         code = code.trim().replaceAll("\\s+", " ");
@@ -816,18 +823,18 @@ public class Obfuscator {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
-    //String Literal Visitor
+    // String Literal Visitor
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    private class StringLiteralVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
+    private class StringLiteralEncodeVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
         @Override
         public void visit(StringLiteralExpr ex, HashMap<String, String> hash) {
-            
-            //create encrypted literal
-            String encrypted = encrypt(ex.toString().substring(1, ex.toString().length()-1));
-            encrypted = "_D(\"" + encrypted + "\")"; 
+
+            // create encrypted literal
+            String encrypted = encrypt(ex.toString().substring(1, ex.toString().length() - 1));
+            encrypted = "_D(\"" + encrypted + "\")";
             hash.put(ex.toString(), encrypted);
-            
-        } 
+
+        }
     }
 
     private String stringEncoding(String code) {
@@ -835,10 +842,10 @@ public class Obfuscator {
         CompilationUnit cu = StaticJavaParser.parse(code);
         HashMap<String, String> stringLiterals = new HashMap<String, String>();
 
-        VoidVisitorAdapter<HashMap<String, String>> stringVisitor = new StringLiteralVisitor();
+        VoidVisitorAdapter<HashMap<String, String>> stringVisitor = new StringLiteralEncodeVisitor();
 
         stringVisitor.visit(cu, stringLiterals);
-        
+
         // initialize class name statistics
         Statistics stats = new Statistics();
         stats.setType("String Literals");
@@ -846,24 +853,23 @@ public class Obfuscator {
         String newCode = "";
 
         Scanner scanner = new Scanner(code);
-        
+
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             if (line.startsWith("import")) {
 
                 newCode = newCode + line + "\n";
                 continue;
-            }            
+            }
             String newLine = "";
 
             List<String> split = new ArrayList<String>();
             Pattern regex = Pattern.compile("(\"[^\"]*\")|\\W|\\w+");
             Matcher regexMatcher = regex.matcher(line);
             while (regexMatcher.find()) {
-                
-                split.add(regexMatcher.group());
-            } 
 
+                split.add(regexMatcher.group());
+            }
 
             for (int i = 0; i < split.size(); i++) {
                 if (stringLiterals.containsKey(split.get(i))) {
@@ -872,12 +878,11 @@ public class Obfuscator {
                     stats.setStats(split.get(i), stringLiterals.get(split.get(i)));
                     stats.increaseCount(split.get(i)); // save the number of times method changed
 
-                     // set the variable name to new random word
+                    // set the variable name to new random word
                     split.set(i, stringLiterals.get(split.get(i)));
                 }
 
             }
-
 
             for (int i = 0; i < split.size(); i++) {
                 // put together back the line
@@ -894,7 +899,6 @@ public class Obfuscator {
         return newCode;
     }
 
-
     private String encrypt(String value) {
         String key = "Bar12345Bar12345";
         String initVector = "RandomInitVector";
@@ -907,7 +911,7 @@ public class Obfuscator {
             cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
 
             byte[] encrypted = cipher.doFinal(value.getBytes());
-           
+
             return DatatypeConverter.printBase64Binary(encrypted);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -916,40 +920,37 @@ public class Obfuscator {
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    //this method is to add into the obfuscated file
+    // this method is to add into the obfuscated file
     //////////////////////////////////////////////////////////////////////////
     // private String decrypt(String encrypted) {
-    //     String key = "Bar12345Bar12345";
-    //     String initVector = "RandomInitVector";
+    // String key = "Bar12345Bar12345";
+    // String initVector = "RandomInitVector";
 
-    //     try {
-    //         IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));
-    //         SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
+    // try {
+    // IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));
+    // SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
 
-    //         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-    //         cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
+    // Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+    // cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
 
-    //         // byte[] original = cipher.doFinal(Base64.decodeBase64(encrypted));
-	// 		byte[] original = cipher.doFinal(DatatypeConverter.parseBase64Binary(encrypted));
+    // // byte[] original = cipher.doFinal(Base64.decodeBase64(encrypted));
+    // byte[] original =
+    // cipher.doFinal(DatatypeConverter.parseBase64Binary(encrypted));
 
-    //         return new String(original);
-    //     } catch (Exception ex) {
-    //         ex.printStackTrace();
-    //     }
-    //     return null;
+    // return new String(original);
+    // } catch (Exception ex) {
+    // ex.printStackTrace();
+    // }
+    // return null;
     // }
 
     private String addLibraries(String code) {
         CompilationUnit cu = StaticJavaParser.parse(code);
 
-        String [] libraries = {
-            "javax.crypto.Cipher", 
-            "javax.crypto.spec.IvParameterSpec",
-            "javax.crypto.spec.SecretKeySpec", 
-            "javax.xml.bind.DatatypeConverter"
-        };
-        
-        for (String s: libraries) {
+        String[] libraries = { "javax.crypto.Cipher", "javax.crypto.spec.IvParameterSpec",
+                "javax.crypto.spec.SecretKeySpec", "javax.xml.bind.DatatypeConverter" };
+
+        for (String s : libraries) {
             cu.addImport(s);
         }
         return cu.toString();
@@ -957,61 +958,137 @@ public class Obfuscator {
 
     private String addDecryptMethod(String code) {
         CompilationUnit cu = StaticJavaParser.parse(code);
-        
-        String methodBody = "{String key = \"Bar12345Bar12345\";" + 
-                            "String initVector = \"RandomInitVector\";" + 
 
-                            "try {" + 
-                                "IvParameterSpec iv = new IvParameterSpec(initVector.getBytes(\"UTF-8\"));" +
-                                "SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes(\"UTF-8\"), \"AES\");"+
+        String methodBody = "{String key = \"Bar12345Bar12345\";" + "String initVector = \"RandomInitVector\";" +
 
-                                "Cipher cipher = Cipher.getInstance(\"AES/CBC/PKCS5PADDING\");" +
-                                "cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);" + 
+                "try {" + "IvParameterSpec iv = new IvParameterSpec(initVector.getBytes(\"UTF-8\"));"
+                + "SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes(\"UTF-8\"), \"AES\");" +
 
-                                "byte[] original = cipher.doFinal(DatatypeConverter.parseBase64Binary(encrypted));" +
+                "Cipher cipher = Cipher.getInstance(\"AES/CBC/PKCS5PADDING\");"
+                + "cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);" +
 
-                                "return new String(original);" +
-                            "} catch (Exception ex) {" +
-                                "ex.printStackTrace();" +
-                            "}" +
-                            "return null;}";
+                "byte[] original = cipher.doFinal(DatatypeConverter.parseBase64Binary(encrypted));" +
 
-        for (Node childNode: cu.getChildNodes()) {
+                "return new String(original);" + "} catch (Exception ex) {" + "ex.printStackTrace();" + "}"
+                + "return null;}";
+
+        for (Node childNode : cu.getChildNodes()) {
             if (childNode instanceof ClassOrInterfaceDeclaration) {
-                
+
                 ClassOrInterfaceDeclaration classDeclaration = (ClassOrInterfaceDeclaration) childNode;
-                
+
                 MethodDeclaration method = classDeclaration.addMethod("_D", Keyword.PRIVATE, Keyword.STATIC);
                 method.setType(String.class);
                 method.addParameter(String.class, "encrypted");
                 BlockStmt blockStmt = StaticJavaParser.parseBlock(methodBody);
                 method.setBody(blockStmt);
-            
-                
+
             }
         }
         return cu.toString();
     }
 
-
+    // for combo box to display classes of parsed java file
     public String[] getClasses() {
         ArrayList<String> list = new ArrayList<String>();
         CompilationUnit cu = StaticJavaParser.parse(this.sourceCode);
         List<Node> childNodes = cu.getChildNodes();
-        for (Node n: childNodes) {
+        for (Node n : childNodes) {
             if (n instanceof ClassOrInterfaceDeclaration) {
-                ClassOrInterfaceDeclaration c = (ClassOrInterfaceDeclaration) n ;
+                ClassOrInterfaceDeclaration c = (ClassOrInterfaceDeclaration) n;
                 list.add(c.getNameAsString());
                 System.out.println(c.getNameAsString() + " hello");
             }
         }
 
-        //convert to array
+        // convert to array
         String[] classNames = list.toArray(new String[list.size()]);
         return classNames;
     }
 
+    private class StringLiteralToUnicodeVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
+        @Override
+        public void visit(StringLiteralExpr ex, HashMap<String, String> hash) {
+
+            String stringLiteral = ex.toString();
+
+            //remove double quotes (e.g. "FooBar" to FooBar) 
+            if (stringLiteral.length() > 0) {
+
+                stringLiteral = stringLiteral.substring(1, stringLiteral.length() - 1);
+                String unicode = StringUnicodeEncoderDecoder.encodeStringToUnicodeSequence(stringLiteral);
+                unicode = "\"" + unicode + "\"";
+                hash.put(ex.toString(), unicode);
     
+            }
+            
+            
+            
+        }
+    }
+
+    private String stringToUnicode(String code) {
+        CompilationUnit cu = StaticJavaParser.parse(code);
+        VoidVisitor<HashMap<String, String>> stringLiteralToUnicodeVisitor = new StringLiteralToUnicodeVisitor();
+
+        HashMap<String, String> stringLiterals = new HashMap<String, String>();
+
+        stringLiteralToUnicodeVisitor.visit(cu, stringLiterals);
+
+        
+        // initialize class name statistics
+        Statistics stats = new Statistics();
+        stats.setType("String Literals");
+
+        String newCode = "";
+
+        Scanner scanner = new Scanner(code);
+
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            if (line.startsWith("import")) {
+
+                newCode = newCode + line + "\n";
+                continue;
+            }
+            String newLine = "";
+
+            List<String> split = new ArrayList<String>();
+            Pattern regex = Pattern.compile("(\"[^\"]*\")|\\W|\\w+");
+            Matcher regexMatcher = regex.matcher(line);
+            while (regexMatcher.find()) {
+
+                split.add(regexMatcher.group());
+            }
+
+            for (int i = 0; i < split.size(); i++) {
+                if (stringLiterals.containsKey(split.get(i))) {
+
+                    // save the names for printing later
+                    stats.setStats(split.get(i), stringLiterals.get(split.get(i)));
+                    stats.increaseCount(split.get(i)); // save the number of times method changed
+
+                    // set the variable name to new random word
+                    split.set(i, stringLiterals.get(split.get(i)));
+                }
+
+            }
+
+            for (int i = 0; i < split.size(); i++) {
+                // put together back the line
+                newLine = newLine + split.get(i);
+            }
+
+            // put together the code
+            newCode = newCode + newLine + "\n";
+
+        }
+        scanner.close();
+
+        statistics.add(stats);
+        return newCode;
+    }
+
 }
 
 

@@ -80,7 +80,7 @@ public class Frame {
 		
 
 		frame = new JFrame("Obsfuscator");
-		frame.setBounds(100, 100, 800, 500);
+		frame.setBounds(100, 100, 1024, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocationRelativeTo(null);
 		frame.setResizable(false);
@@ -247,7 +247,7 @@ public class Frame {
 		
 
 		JButton btnAdvancedSettings = new JButton("Advanced settings");
-		btnAdvancedSettings.setBounds(550, 336, 200, 25);
+		btnAdvancedSettings.setBounds(700, 310, 180, 25);
 		basicSettingsPanel.add(btnAdvancedSettings);
 
 		btnAdvancedSettings.addActionListener(new ActionListener() {
@@ -276,8 +276,7 @@ public class Frame {
 		//Button "next" to go to progressbarpanel on basicSettings panel
 		////////////////////////////////////////////////////////////////////////////
 		JButton btnNextSliderPanel = new JButton("Start Obfuscating");
-		btnNextSliderPanel.setBounds(550, 380, 200
-		, 25);
+		btnNextSliderPanel.setBounds(700, 350, 180, 80);
 		basicSettingsPanel.add(btnNextSliderPanel);
 
 		btnNextSliderPanel.addActionListener(new ActionListener() {
@@ -323,7 +322,7 @@ public class Frame {
 		
 		//next button for advanced settings panel
 		JButton btnNextAdvOptions = new JButton("Start Obfuscating");
-		btnNextAdvOptions.setBounds(560, 390, 200, 25);
+		btnNextAdvOptions.setBounds(700, 350, 180, 80);
 		advSettingsPanel.add(btnNextAdvOptions);
 
 		
@@ -381,6 +380,7 @@ public class Frame {
 				layeredPane.switchPanel(browsePanel); //switch back to browsepanel
 				browsePanel.setTextField(); //set textfield to null
 				obfuscator.statistics = new ArrayList<Statistics>(); //reset statistics
+				progressBarPanel.setDefault();
 			}	
 		});
 	}

@@ -2,6 +2,8 @@ package FYP;
 
 import java.awt.Component;
 import java.awt.event.*;
+import java.awt.Font;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -29,9 +31,12 @@ public class AdvSettingsPanel extends JPanel {
 
 		this.setLayout(null);
 
-		JLabel lblRenameFieldsAnd = new JLabel("Rename methods");
-		JLabel lblMiscellaneous = new JLabel("Miscellanous");
-	
+		JLabel lblRenameMethods = new JLabel("Rename Methods");
+		JLabel lblRenameIdentifiers = new JLabel("Rename Identifiers");
+		JLabel lblMiscellaneous = new JLabel("Misceallanous");
+		JLabel lblFlow = new JLabel("Flow Obfuscation");
+		JLabel lblEncrypt = new JLabel("String Encoding");
+		
 		JCheckBox chckbxRenamePublic = new JCheckBox("Public");
 		JCheckBox chckbxRenameProtected = new JCheckBox("Protected");
 		JCheckBox chckbxRenamePrivate = new JCheckBox("Private");
@@ -42,53 +47,75 @@ public class AdvSettingsPanel extends JPanel {
 		JCheckBox chckbxRemoveWhitespace = new JCheckBox("Remove White Space");
 		JCheckBox chckbxInsertDummyCode = new JCheckBox("Insert Dummy Code");
 		JCheckBox chckbxRemoveComments = new JCheckBox("Remove Comments");
-		JCheckBox chckbxFlowObfuscation = new JCheckBox("String Encoding");
+		JCheckBox chckbxStringEncoding = new JCheckBox("String Encoding");
+		JCheckBox chckbxUnicode = new JCheckBox("String To Unicode");
+		
 		/////////////////////////////////////////////////////////////////////////////////////////////////
 		// for adv options
 		/////////////////////////////////////////////////////////////////////////////////////////////////
 		
+		Font lblFont = new Font("Helvetica", Font.BOLD, 16);
 
-		lblRenameFieldsAnd.setBounds(22, 145, 168, 16);
-		this.add(lblRenameFieldsAnd);
+		lblRenameMethods.setBounds(22, 140, 200, 20);
+		lblRenameMethods.setFont(lblFont);
+		this.add(lblRenameMethods);
 
-		lblMiscellaneous.setBounds(286, 145, 88, 16);
+		lblRenameIdentifiers.setBounds(200, 140, 200, 20);
+		lblRenameIdentifiers.setFont(lblFont);
+		this.add(lblRenameIdentifiers);
+
+		lblFlow.setBounds(422, 140, 150, 20);
+		lblFlow.setFont(lblFont);
+		this.add(lblFlow);
+
+		lblEncrypt.setBounds(622, 140, 200, 20);
+		lblEncrypt.setFont(lblFont);
+		this.add(lblEncrypt);
+
+		lblMiscellaneous.setBounds(822, 140, 200, 20);
+		lblMiscellaneous.setFont(lblFont);
 		this.add(lblMiscellaneous);
-
 		
-
-		// Rename fields and methods
-		chckbxRenamePublic.setBounds(22, 170, 113, 25);
+		// Rename Methods
+		chckbxRenamePublic.setBounds(22, 170, 150, 25);
 		this.add(chckbxRenamePublic);
 
-		chckbxRenameProtected.setBounds(22, 200, 113, 25);
+		chckbxRenameProtected.setBounds(22, 195, 150, 25);
 		this.add(chckbxRenameProtected);
 
-		chckbxRenamePrivate.setBounds(22, 230, 113, 25);
+		chckbxRenamePrivate.setBounds(22, 220, 150, 25);
 		this.add(chckbxRenamePrivate);
 
-		// Misc
-		
-		chckbxChangeClassName.setBounds(286, 170, 220, 25);
+		//Rename Identifiers
+		chckbxChangeClassName.setBounds(200, 170, 220, 25);
 		this.add(chckbxChangeClassName);
 
-		chckbxChangeVariables.setBounds(286, 200, 220, 25);
+		chckbxChangeVariables.setBounds(200, 195, 220, 25);
 		this.add(chckbxChangeVariables);
 
-		chckbxChangeParameters.setBounds(286, 230, 220, 25);
+		chckbxChangeParameters.setBounds(200, 220, 220, 25);
 		this.add(chckbxChangeParameters);
 
-		chckbxRemoveWhitespace.setBounds(286, 260, 220, 25);
-		this.add(chckbxRemoveWhitespace);
-
-		chckbxInsertDummyCode.setBounds(286, 290, 220, 25);
+		
+		//Flow
+		chckbxInsertDummyCode.setBounds(422, 170, 200, 25);
 		this.add(chckbxInsertDummyCode);
 
-		chckbxRemoveComments.setBounds(286, 320, 220, 25);
-		this.add(chckbxRemoveComments);
 
-		// temp
-		chckbxFlowObfuscation.setBounds(286, 350, 220, 25);
-		this.add(chckbxFlowObfuscation);
+		// Encrypt
+		chckbxStringEncoding.setBounds(622, 170, 200, 25);
+		this.add(chckbxStringEncoding);
+
+		chckbxUnicode.setBounds(622, 195, 200, 25);
+		this.add(chckbxUnicode);
+
+		// Misc
+		chckbxRemoveWhitespace.setBounds(822, 170, 220, 25);
+		this.add(chckbxRemoveWhitespace);
+
+
+		chckbxRemoveComments.setBounds(822, 195, 220, 25);
+		this.add(chckbxRemoveComments);
 
 		// adv default settings btn
 		JButton btnAdvDefaultSettings = new JButton("Save as default settings");
@@ -102,7 +129,7 @@ public class AdvSettingsPanel extends JPanel {
 			}
 		});
 
-		btnAdvDefaultSettings.setBounds(545, 36, 189, 45);
+		btnAdvDefaultSettings.setBounds(700, 36, 189, 45);
 		this.add(btnAdvDefaultSettings);
 
 
@@ -114,11 +141,12 @@ public class AdvSettingsPanel extends JPanel {
 
 		//JLabel for combobox
 		JLabel comboBoxLabel = new JLabel("Choose main class");
-		comboBoxLabel.setBounds(545, 145, 200, 20);
+		comboBoxLabel.setBounds(300, 280, 200, 20);
+		comboBoxLabel.setFont(lblFont);
 		this.add(comboBoxLabel);
 		
 		//JComboBox on advSettingsPanel
-		comboBox.setBounds(545, 170, 200, 20);
+		comboBox.setBounds(300, 300, 200, 20);
 		this.add(comboBox);
 
 	}
@@ -224,8 +252,6 @@ public class AdvSettingsPanel extends JPanel {
         
 	}
 
-	
-	
 	public HashMap<String, Integer> getSettings() {
 		return currentSettings;
 	}
