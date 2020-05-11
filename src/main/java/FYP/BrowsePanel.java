@@ -33,14 +33,14 @@ public class BrowsePanel extends JPanel {
 		JLabel inputFileTypeLabel = new JLabel("");
 		
 
-		inputTextField.setBounds(139, 125, 470, 22);
+		inputTextField.setBounds(200, 155, 470, 22);
         inputTextField.setColumns(10);
         this.add(inputTextField);
 
         
 		
 		outputTextField.setColumns(10);
-        outputTextField.setBounds(139, 217, 470, 22);
+        outputTextField.setBounds(200, 247, 470, 22);
         this.add(outputTextField);
         
         
@@ -50,7 +50,7 @@ public class BrowsePanel extends JPanel {
 		JFileChooser fc2 = new JFileChooser();
 		fc2.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		
-		inputFileTypeLabel.setBounds(139, 151, 470, 16);
+		inputFileTypeLabel.setBounds(200, 181, 470, 16);
 	    this.add(inputFileTypeLabel);
 		
 		// JLabel outputFileTypeLabel = new JLabel("");
@@ -90,7 +90,7 @@ public class BrowsePanel extends JPanel {
 		}
 		});
 		
-		btnInputBrowsePanel.setBounds(644, 124, 110, 25);
+		btnInputBrowsePanel.setBounds(705, 154, 110, 25);
 		this.add(btnInputBrowsePanel);
 		
 		//File output chooser function
@@ -121,7 +121,7 @@ public class BrowsePanel extends JPanel {
 	    	}
 		});
 				
-		btnOutputBrowsePanel.setBounds(644, 216, 110, 25);
+		btnOutputBrowsePanel.setBounds(705, 246, 110, 25);
 		this.add(btnOutputBrowsePanel);
 		
 		
@@ -130,19 +130,19 @@ public class BrowsePanel extends JPanel {
         
         
 		JLabel lblInput = new JLabel("Select input .java file");
-		lblInput.setBounds(140, 100, 300, 16);
+		lblInput.setBounds(200, 130, 300, 16);
 		this.add(lblInput);
 
 		JLabel lblInputLabel = new JLabel("File location");
-		lblInputLabel.setBounds(35, 128, 150, 16);
+		lblInputLabel.setBounds(95, 158, 150, 16);
         this.add(lblInputLabel);
 		
 		JLabel lblOutput = new JLabel("Choose output location");
-		lblOutput.setBounds(140, 192, 300, 16);
+		lblOutput.setBounds(200, 212, 300, 16);
 		this.add(lblOutput);
 
 		JLabel lblOutputDir = new JLabel("Save file to");
-		lblOutputDir.setBounds(48, 220, 80, 16);
+		lblOutputDir.setBounds(100, 250, 80, 16);
         this.add(lblOutputDir);
         
 		

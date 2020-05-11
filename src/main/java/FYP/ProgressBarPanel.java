@@ -24,13 +24,13 @@ public class ProgressBarPanel extends JPanel {
 		
 		Font font = new Font("Courier", Font.BOLD,16);
 
-		lblProgressBarStatus.setBounds(88, 219, 600, 20);
+		lblProgressBarStatus.setBounds(200, 219, 600, 20);
 		lblProgressBarStatus.setFont(font);
 		this.add(lblProgressBarStatus);
 		
 		
 		progressBar.setStringPainted(true);
-        progressBar.setBounds(88, 167, 560, 38);
+        progressBar.setBounds(200, 167, 560, 38);
 		this.add(progressBar);
 		
 	}

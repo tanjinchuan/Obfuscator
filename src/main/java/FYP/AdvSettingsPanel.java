@@ -3,6 +3,7 @@ package FYP;
 import java.awt.Component;
 import java.awt.event.*;
 import java.awt.Font;
+import java.awt.Color;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,12 +13,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.border.LineBorder;
 
 @SuppressWarnings("serial")
 public class AdvSettingsPanel extends JPanel {
@@ -56,25 +60,60 @@ public class AdvSettingsPanel extends JPanel {
 		
 		Font lblFont = new Font("Helvetica", Font.BOLD, 16);
 
+		//Icons
+		ImageIcon infoImg = new ImageIcon(this.getClass().getClassLoader().getResource("infoIcon.png"));
+		
+		//labels
+		UIManager.put("ToolTip.background", Color.CYAN);
+		UIManager.put("ToolTip.border",new LineBorder(Color.BLACK,1));
+
+
 		lblRenameMethods.setBounds(22, 140, 200, 20);
 		lblRenameMethods.setFont(lblFont);
 		this.add(lblRenameMethods);
+
+		JLabel methodToolTip = new JLabel(infoImg);
+		methodToolTip.setBounds(160, 140, 20, 20);
+		this.add(methodToolTip);
+		methodToolTip.setToolTipText("<html>Obfuscates method names, select desired modifiers<br><br>*Will not change \"main\" method<br>*Will not change overriden methods</html>");
+		
 
 		lblRenameIdentifiers.setBounds(200, 140, 200, 20);
 		lblRenameIdentifiers.setFont(lblFont);
 		this.add(lblRenameIdentifiers);
 
+		JLabel identifierToolTip = new JLabel(infoImg);
+		identifierToolTip.setBounds(350, 140, 20, 20);
+		this.add(identifierToolTip);
+		identifierToolTip.setToolTipText("<html>Obfuscates identifiers, Variables and Parameters<html>");
+
 		lblFlow.setBounds(422, 140, 150, 20);
 		lblFlow.setFont(lblFont);
 		this.add(lblFlow);
+
+		JLabel flowToolTip = new JLabel(infoImg);
+		flowToolTip.setBounds(560, 140, 20, 20);
+		this.add(flowToolTip);
+		flowToolTip.setToolTipText("<html>Obfuscates flow of the code by inserting dummy code<br><br>*Will not affect the original functionality of the source code</html>");
 
 		lblEncrypt.setBounds(622, 140, 200, 20);
 		lblEncrypt.setFont(lblFont);
 		this.add(lblEncrypt);
 
+		JLabel encryptToolTip = new JLabel(infoImg);
+		encryptToolTip.setBounds(750, 140, 20, 20);
+		this.add(encryptToolTip);
+		encryptToolTip.setToolTipText("<html>Obfuscates String literals to prevent information gathering</html>");
+
 		lblMiscellaneous.setBounds(822, 140, 200, 20);
 		lblMiscellaneous.setFont(lblFont);
 		this.add(lblMiscellaneous);
+
+		JLabel miscToolTip = new JLabel(infoImg);
+		miscToolTip.setBounds(940, 140, 20, 20);
+		miscToolTip.setToolTipText("<html>Remove comments removes all comments from source code<br>Remove white spaces removes empty lines and wraps the code together</html>");
+		this.add(miscToolTip);
+
 		
 		// Rename Methods
 		chckbxRenamePublic.setBounds(22, 170, 150, 25);
@@ -129,7 +168,7 @@ public class AdvSettingsPanel extends JPanel {
 			}
 		});
 
-		btnAdvDefaultSettings.setBounds(700, 36, 189, 45);
+		btnAdvDefaultSettings.setBounds(700, 36, 200, 45);
 		this.add(btnAdvDefaultSettings);
 
 

@@ -29,6 +29,7 @@ public class Frame {
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 
 				try {
@@ -48,12 +49,12 @@ public class Frame {
 	 * Create the application.
 	 */
 	public Frame(){
-		mkdir();
+		makedir();
 		initialize();
 	}
 	
 	//create settings dir and files
-	private void mkdir() {
+	private void makedir() {
 		  try {
 			  File folder = new File ("./settings");
 					  
@@ -113,16 +114,18 @@ public class Frame {
 		///////////////////////////////////////////////////////////////////////////////////////////
         JButton btnObfuscateFile = new JButton("Obfuscate a file");
 		btnObfuscateFile.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				
 				layeredPane.switchPanel(browsePanel);
 			}
 		});
-		btnObfuscateFile.setBounds(480, 180, 170, 63);
+		btnObfuscateFile.setBounds(630, 180, 170, 63);
 
 		JButton btnQuiz = new JButton("Take quiz");
-		btnQuiz.setBounds(300, 180, 131, 63);
+		btnQuiz.setBounds(380, 180, 131, 63);
 		btnQuiz.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				QuizPanel quizPanel = new QuizPanel(layeredPane, initialPanel);
 
@@ -139,7 +142,12 @@ public class Frame {
 		////////////////////////////////////////////////////////////////////////////////////////////
 		JButton btnBrowseNextPanel = new JButton("Next");
 		btnBrowseNextPanel.setEnabled(false);
+		btnBrowseNextPanel.setBounds(700, 360, 100, 60);
+		btnBrowseNextPanel.setEnabled(false);
+		browsePanel.add(btnBrowseNextPanel);
+		
 		btnBrowseNextPanel.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 			
                 
@@ -189,18 +197,18 @@ public class Frame {
 			
 			}
 		});
-        btnBrowseNextPanel.setBounds(607, 385, 97, 25);
-		btnBrowseNextPanel.setEnabled(false);
-        browsePanel.add(btnBrowseNextPanel);
+        
 
         //Button to go back to initial Panel on browse panel
 		JButton btnBrowsePanelBack = new JButton("Back");
+		
 		btnBrowsePanelBack.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				layeredPane.switchPanel(initialPanel);
 			}
 		});
-		btnBrowsePanelBack.setBounds(55, 390, 97, 25);
+		btnBrowsePanelBack.setBounds(48, 360, 100, 60);
 		browsePanel.add(btnBrowsePanelBack);
 
 		//check if textfield is valid
@@ -251,6 +259,7 @@ public class Frame {
 		basicSettingsPanel.add(btnAdvancedSettings);
 
 		btnAdvancedSettings.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				layeredPane.switchPanel(advSettingsPanel);
 				
@@ -263,11 +272,12 @@ public class Frame {
 		
 		JButton btnBackSliderPanel = new JButton("Back");
 		btnBackSliderPanel.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				layeredPane.switchPanel(browsePanel);
 			}
 		});
-		btnBackSliderPanel.setBounds(48, 380, 97, 25);
+		btnBackSliderPanel.setBounds(48, 360, 100, 60);
 		basicSettingsPanel.add(btnBackSliderPanel);
 		
 		
@@ -280,6 +290,7 @@ public class Frame {
 		basicSettingsPanel.add(btnNextSliderPanel);
 
 		btnNextSliderPanel.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
 					//set the file paths
@@ -313,11 +324,12 @@ public class Frame {
 		///////////////////////////////////////////////////////////////////////////////////////////
 		JButton btnBackAdvOptions = new JButton("Back");
 		btnBackAdvOptions.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				layeredPane.switchPanel(basicSettingsPanel);
 			}
 		});
-		btnBackAdvOptions.setBounds(55, 390, 97, 25);
+		btnBackAdvOptions.setBounds(48, 360, 100, 60);
 		advSettingsPanel.add(btnBackAdvOptions);
 		
 		//next button for advanced settings panel
@@ -327,6 +339,7 @@ public class Frame {
 
 		
 		btnNextAdvOptions.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 
 				//obfuscate the file
@@ -357,11 +370,11 @@ public class Frame {
 		//////////////////////////////////////////////////////
 		
 		JButton btnViewOutput = new JButton("View output file");
-		btnViewOutput.setBounds(59, 196, 143, 25);
+		btnViewOutput.setBounds(130, 196, 180, 60);
 		finalPanel.add(btnViewOutput);
 		btnViewOutput.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
-				
 				//output path = output directory + l1lIll1l.java e.g.
 				outputFilePath = browsePanel.getOutput() + "\\" + obfuscator.getFileName();
 
@@ -372,9 +385,10 @@ public class Frame {
 		
 		//obfuscate another file
 		JButton btnAnother = new JButton("Obfuscate another file");
-		btnAnother.setBounds(526, 196, 230, 25);
+		btnAnother.setBounds(630, 196, 220, 65);
 		finalPanel.add(btnAnother);
 		btnAnother.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				//reset everything
 				layeredPane.switchPanel(browsePanel); //switch back to browsepanel

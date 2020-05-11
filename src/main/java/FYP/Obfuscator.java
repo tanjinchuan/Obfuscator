@@ -382,7 +382,7 @@ public class Obfuscator {
 
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            if (line.startsWith("import")) {
+            if (line.startsWith("import") | line.startsWith("package")) {
                 newCode = newCode + line + "\n";
 
                 continue;
@@ -469,7 +469,7 @@ public class Obfuscator {
         // loop each line of code in file
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            if (line.startsWith("import")) {
+            if (line.startsWith("import") | line.startsWith("package")) {
                 newCode = newCode + line + "\n";
 
                 continue;
@@ -545,7 +545,7 @@ public class Obfuscator {
         // loop each line of code in file
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            if (line.startsWith("import")) {
+            if (line.startsWith("import") | line.startsWith("package")) {
                 newCode = newCode + line + "\n";
 
                 continue;
@@ -616,7 +616,7 @@ public class Obfuscator {
 
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            if (line.startsWith("import")) {
+            if (line.startsWith("import") | line.startsWith("package")) {
                 newCode = newCode + line + "\n";
                 continue;
             }
@@ -689,7 +689,7 @@ public class Obfuscator {
 
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            if (line.startsWith("import")) {
+            if (line.startsWith("import") | line.startsWith("package")) {
                 newCode = newCode + line + "\n";
                 continue;
             }
@@ -856,7 +856,7 @@ public class Obfuscator {
 
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            if (line.startsWith("import")) {
+            if (line.startsWith("import") | line.startsWith("package")) {
 
                 newCode = newCode + line + "\n";
                 continue;
@@ -913,6 +913,7 @@ public class Obfuscator {
             byte[] encrypted = cipher.doFinal(value.getBytes());
 
             return DatatypeConverter.printBase64Binary(encrypted);
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1046,7 +1047,7 @@ public class Obfuscator {
 
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            if (line.startsWith("import")) {
+            if (line.startsWith("import") | line.startsWith("package")) {
 
                 newCode = newCode + line + "\n";
                 continue;

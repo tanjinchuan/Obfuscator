@@ -50,8 +50,14 @@
   <build>
     <resources>
       <resource>
-        <directory>src/lessonImages</directory>
-        
+        <directory>
+          src/icons
+        </directory>
+      </resource>
+      <resource>
+        <directory>
+            src/lessonImages
+        </directory>
       </resource>
     </resources>
     <plugins>

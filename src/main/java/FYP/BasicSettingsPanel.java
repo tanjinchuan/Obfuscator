@@ -3,7 +3,6 @@ package FYP;
 import java.util.Hashtable;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Color;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -113,14 +112,14 @@ public class BasicSettingsPanel extends JPanel implements ChangeListener, Proper
         
 		//JLabel for combobox
 		JLabel comboBoxLabel = new JLabel("Choose main class");
-		comboBoxLabel.setBounds(300, 360, 200, 20);
+		comboBoxLabel.setBounds(200, 240, 200, 20);
 		comboBoxLabel.setFont(lblFont);
 		this.add(comboBoxLabel);
 
 		//JComboBox on basicSettingsPanel
 
 		
-		comboBox.setBounds(300, 380, 200, 20);
+		comboBox.setBounds(200, 260, 200, 20);
 		this.add(comboBox);
 
     }

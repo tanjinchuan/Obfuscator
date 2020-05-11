@@ -33,7 +33,7 @@ public class FinalPanel extends JPanel {
 		///////////////////////////////////////////////////////////////////////////////////////////////
 		
 		JButton btnViewChangelog = new JButton("View Changelog");
-		btnViewChangelog.setBounds(310, 196, 143, 25);
+		btnViewChangelog.setBounds(380, 196, 180, 60);
 		this.add(btnViewChangelog);
 
 		//changelog panel options
