@@ -30,7 +30,7 @@ public class InitialPanel extends JPanel {
 				showTutorial();
 			}
 		});
-		btnViewTutorial.setBounds(130, 180, 131, 63);
+		btnViewTutorial.setBounds(200, 180, 131, 63);
         
         
         this.add(btnViewTutorial);

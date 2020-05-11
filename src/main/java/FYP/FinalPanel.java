@@ -107,7 +107,7 @@ public class FinalPanel extends JPanel {
 			}
 		});
 		
-		btnFinish.setBounds(629, 386, 97, 25);
+		btnFinish.setBounds(430, 330, 100, 50);
 		this.add(btnFinish);
 	
     }

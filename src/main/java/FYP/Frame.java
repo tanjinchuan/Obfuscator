@@ -107,6 +107,9 @@ public class Frame {
 
 		//add final panel
 		FinalPanel finalPanel = new FinalPanel(frame, obfuscator);
+		
+		//testing
+		layeredPane.switchPanel(initialPanel);
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////
@@ -120,10 +123,10 @@ public class Frame {
 				layeredPane.switchPanel(browsePanel);
 			}
 		});
-		btnObfuscateFile.setBounds(630, 180, 170, 63);
+		btnObfuscateFile.setBounds(600, 180, 170, 63);
 
 		JButton btnQuiz = new JButton("Take quiz");
-		btnQuiz.setBounds(380, 180, 131, 63);
+		btnQuiz.setBounds(400, 180, 131, 63);
 		btnQuiz.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -142,7 +145,7 @@ public class Frame {
 		////////////////////////////////////////////////////////////////////////////////////////////
 		JButton btnBrowseNextPanel = new JButton("Next");
 		btnBrowseNextPanel.setEnabled(false);
-		btnBrowseNextPanel.setBounds(700, 360, 100, 60);
+		btnBrowseNextPanel.setBounds(800, 360, 100, 60);
 		btnBrowseNextPanel.setEnabled(false);
 		browsePanel.add(btnBrowseNextPanel);
 		
@@ -255,7 +258,7 @@ public class Frame {
 		
 
 		JButton btnAdvancedSettings = new JButton("Advanced settings");
-		btnAdvancedSettings.setBounds(700, 310, 180, 25);
+		btnAdvancedSettings.setBounds(800, 310, 180, 25);
 		basicSettingsPanel.add(btnAdvancedSettings);
 
 		btnAdvancedSettings.addActionListener(new ActionListener() {
@@ -286,7 +289,7 @@ public class Frame {
 		//Button "next" to go to progressbarpanel on basicSettings panel
 		////////////////////////////////////////////////////////////////////////////
 		JButton btnNextSliderPanel = new JButton("Start Obfuscating");
-		btnNextSliderPanel.setBounds(700, 350, 180, 80);
+		btnNextSliderPanel.setBounds(800, 350, 180, 80);
 		basicSettingsPanel.add(btnNextSliderPanel);
 
 		btnNextSliderPanel.addActionListener(new ActionListener() {
@@ -334,7 +337,7 @@ public class Frame {
 		
 		//next button for advanced settings panel
 		JButton btnNextAdvOptions = new JButton("Start Obfuscating");
-		btnNextAdvOptions.setBounds(700, 350, 180, 80);
+		btnNextAdvOptions.setBounds(800, 350, 180, 80);
 		advSettingsPanel.add(btnNextAdvOptions);
 
 		

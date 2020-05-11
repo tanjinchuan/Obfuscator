@@ -168,7 +168,7 @@ public class AdvSettingsPanel extends JPanel {
 			}
 		});
 
-		btnAdvDefaultSettings.setBounds(700, 36, 200, 45);
+		btnAdvDefaultSettings.setBounds(800, 36, 180, 45);
 		this.add(btnAdvDefaultSettings);
 
 
@@ -180,12 +180,12 @@ public class AdvSettingsPanel extends JPanel {
 
 		//JLabel for combobox
 		JLabel comboBoxLabel = new JLabel("Choose main class");
-		comboBoxLabel.setBounds(300, 280, 200, 20);
+		comboBoxLabel.setBounds(422, 275, 200, 20);
 		comboBoxLabel.setFont(lblFont);
 		this.add(comboBoxLabel);
 		
 		//JComboBox on advSettingsPanel
-		comboBox.setBounds(300, 300, 200, 20);
+		comboBox.setBounds(422, 300, 200, 20);
 		this.add(comboBox);
 
 	}
@@ -247,7 +247,7 @@ public class AdvSettingsPanel extends JPanel {
 			
         } 
         else {
-            System.out.println("Settings File found");
+            System.out.println("");
         }
         
 	}

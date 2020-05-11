@@ -112,14 +112,14 @@ public class BasicSettingsPanel extends JPanel implements ChangeListener, Proper
         
 		//JLabel for combobox
 		JLabel comboBoxLabel = new JLabel("Choose main class");
-		comboBoxLabel.setBounds(200, 240, 200, 20);
+		comboBoxLabel.setBounds(290, 235, 200, 20);
 		comboBoxLabel.setFont(lblFont);
 		this.add(comboBoxLabel);
 
 		//JComboBox on basicSettingsPanel
 
 		
-		comboBox.setBounds(200, 260, 200, 20);
+		comboBox.setBounds(290, 260, 200, 20);
 		this.add(comboBox);
 
     }

@@ -33,14 +33,16 @@ public class BrowsePanel extends JPanel {
 		JLabel inputFileTypeLabel = new JLabel("");
 		
 
-		inputTextField.setBounds(200, 155, 470, 22);
+		inputTextField.setBounds(200, 155, 600, 22);
+		inputTextField.setEditable(false);
         inputTextField.setColumns(10);
         this.add(inputTextField);
 
         
 		
 		outputTextField.setColumns(10);
-        outputTextField.setBounds(200, 247, 470, 22);
+        outputTextField.setBounds(200, 247, 600, 22);
+        outputTextField.setEditable(false);
         this.add(outputTextField);
         
         
@@ -90,7 +92,7 @@ public class BrowsePanel extends JPanel {
 		}
 		});
 		
-		btnInputBrowsePanel.setBounds(705, 154, 110, 25);
+		btnInputBrowsePanel.setBounds(810, 154, 110, 25);
 		this.add(btnInputBrowsePanel);
 		
 		//File output chooser function
@@ -121,7 +123,7 @@ public class BrowsePanel extends JPanel {
 	    	}
 		});
 				
-		btnOutputBrowsePanel.setBounds(705, 246, 110, 25);
+		btnOutputBrowsePanel.setBounds(810, 246, 110, 25);
 		this.add(btnOutputBrowsePanel);
 		
 		
