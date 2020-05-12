@@ -158,6 +158,7 @@ public class AdvSettingsPanel extends JPanel {
 
 		// adv default settings btn
 		JButton btnAdvDefaultSettings = new JButton("Save as default settings");
+		
 		btnAdvDefaultSettings.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				getCurrentOptions();
@@ -168,7 +169,7 @@ public class AdvSettingsPanel extends JPanel {
 			}
 		});
 
-		btnAdvDefaultSettings.setBounds(800, 36, 180, 45);
+		btnAdvDefaultSettings.setBounds(800, 36, 200, 45);
 		this.add(btnAdvDefaultSettings);
 
 

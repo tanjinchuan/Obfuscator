@@ -24,6 +24,28 @@ public class Frame {
 	Obfuscator obfuscator = new Obfuscator();
 	LayeredPane layeredPane = new LayeredPane();
 
+	BrowsePanel browsePanel = new BrowsePanel(frame);
+
+	
+	InitialPanel initialPanel = new InitialPanel(this, layeredPane);
+
+	
+	//for advanced settings
+	AdvSettingsPanel advSettingsPanel = new AdvSettingsPanel();
+
+	//add slider panel
+	BasicSettingsPanel basicSettingsPanel = new BasicSettingsPanel(advSettingsPanel);
+
+
+	
+	//add progress bar panel
+	ProgressBarPanel progressBarPanel = new ProgressBarPanel();
+
+	//add final panel
+	FinalPanel finalPanel = new FinalPanel(frame, obfuscator);
+	
+
+	protected int highscore;
 	/**
 	 * Launch the application.
 	 */
@@ -88,57 +110,14 @@ public class Frame {
 		frame.getContentPane().setLayout(null);
 		frame.getContentPane().add(layeredPane);
 		
-		InitialPanel initialPanel = new InitialPanel();
-		layeredPane.switchPanel(initialPanel);
-
-		//for advanced settings
-		AdvSettingsPanel advSettingsPanel = new AdvSettingsPanel();
-		advSettingsPanel.createSettingsFile(); //initialize advsettings.txt;
-
-		//add slider panel
-		BasicSettingsPanel basicSettingsPanel = new BasicSettingsPanel(advSettingsPanel);
-
-		//add browse panel
-		BrowsePanel browsePanel = new BrowsePanel(frame);
-
-		
-		//add progress bar panel
-		ProgressBarPanel progressBarPanel = new ProgressBarPanel();
-
-		//add final panel
-		FinalPanel finalPanel = new FinalPanel(frame, obfuscator);
 		
 		//testing
 		layeredPane.switchPanel(initialPanel);
 
+		advSettingsPanel.createSettingsFile(); //initialize advsettings.txt;
 
-		///////////////////////////////////////////////////////////////////////////////////////////
-		//Button to go to browsefilepanel on initial panel
-		///////////////////////////////////////////////////////////////////////////////////////////
-        JButton btnObfuscateFile = new JButton("Obfuscate a file");
-		btnObfuscateFile.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				layeredPane.switchPanel(browsePanel);
-			}
-		});
-		btnObfuscateFile.setBounds(600, 180, 170, 63);
 
-		JButton btnQuiz = new JButton("Take quiz");
-		btnQuiz.setBounds(400, 180, 131, 63);
-		btnQuiz.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				QuizPanel quizPanel = new QuizPanel(layeredPane, initialPanel);
-
-				layeredPane.switchPanel(quizPanel);
-			}
-		});
-
-		initialPanel.add(btnQuiz);
-		initialPanel.add(btnObfuscateFile);
-
+		
 		
 		////////////////////////////////////////////////////////////////////////////////////////////
 		//Button to go to Slider Panel on BrowsePanel
@@ -164,7 +143,6 @@ public class Frame {
 				// }
 				String inputFilePath = browsePanel.getInput();
 				String outputFilePath = browsePanel.getOutput();
-
 				if (browsePanel.checkFileExists(inputFilePath) == false) {
 					JOptionPane.showMessageDialog(frame, "Please choose valid input .java file", "Warning", JOptionPane.OK_OPTION);
 
@@ -401,4 +379,10 @@ public class Frame {
 			}	
 		});
 	}
+
+	
+
+	
+
+	
 }

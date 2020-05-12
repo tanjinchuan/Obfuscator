@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -22,8 +23,9 @@ public class InitialPanel extends JPanel {
     
 	int currIndex;
 	
-    public InitialPanel() {
+    public InitialPanel(Frame frame, LayeredPane layeredPane) {
 
+		InitialPanel initialPanel = this;
         //button to view tutorial
         JButton btnViewTutorial = new JButton("View tutorial");
 		btnViewTutorial.addActionListener(new ActionListener() {
@@ -36,10 +38,41 @@ public class InitialPanel extends JPanel {
         
         this.add(btnViewTutorial);
         this.setLayout(null);
-    }
+    
 
+	
+		///////////////////////////////////////////////////////////////////////////////////////////
+		//Button to go to browsefilepanel on initial panel
+		///////////////////////////////////////////////////////////////////////////////////////////
+        JButton btnObfuscateFile = new JButton("Obfuscate a file");
+		btnObfuscateFile.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				layeredPane.switchPanel(frame.browsePanel);
+			}
+		});
+		btnObfuscateFile.setBounds(600, 180, 170, 63);
 
-    //tutorial pop up frame
+		JButton btnQuiz = new JButton("Take quiz");
+		btnQuiz.setBounds(400, 180, 131, 63);
+		btnQuiz.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				QuizPanel quizPanel = new QuizPanel(frame, layeredPane, initialPanel);
+
+				layeredPane.switchPanel(quizPanel);
+
+			}
+		
+		});
+
+		this.add(btnQuiz);
+		this.add(btnObfuscateFile);
+
+	}
+
+	//tutorial pop up frame
 	private void showTutorial() {
 		
 		currIndex = 0;
@@ -124,6 +157,6 @@ public class InitialPanel extends JPanel {
 		tutorialDialog.add(imgLabel);
 
 		tutorialDialog.setVisible(true);
+	
 	}
-
 }

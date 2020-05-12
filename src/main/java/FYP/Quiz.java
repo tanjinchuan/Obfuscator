@@ -23,10 +23,12 @@ public class Quiz {
 
 
     public Quiz() {
-        quizList.add(q1);
-        quizList.add(q2);
-        quizList.add(q3);
+        this.quizList.add(q1);
+        this.quizList.add(q2);
+        this.quizList.add(q3);
     }
+
+    
 
     public String getQuestion(int index) {
         String question = quizList.get(index).getQuestion();
@@ -47,4 +49,6 @@ public class Quiz {
     public ArrayList<Questions> getQuizList() {
         return quizList;
     }
+
+    
 }
