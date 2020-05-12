@@ -28,7 +28,7 @@ public class QuizPanel extends JPanel {
 		Questions firstQuestion = quizList.get(0);
 		quizTextArea.setText("Question 1 of " + quizList.size() + "\n" + firstQuestion.getQuestion());
 	
-		quizTextArea.setBounds(8, 31, 758, 249);
+		quizTextArea.setBounds(8, 40, 1000, 249);
 		quizTextArea.setEditable(false);
 
 		JRadioButton rdbtn1 = new JRadioButton("a");
@@ -62,16 +62,16 @@ public class QuizPanel extends JPanel {
 		}
 
 		JLabel answerLabel = new JLabel();
-		answerLabel.setBounds(450, 387, 100,50);
+		answerLabel.setBounds(690, 387, 100,50);
 		this.add(answerLabel);
 
 		
 		JButton btnQuizSubmit = new JButton("Submit");
 
-		btnQuizSubmit.setBounds(560, 399, 97, 25);
+		btnQuizSubmit.setBounds(800, 399, 97, 25);
 
 		JButton btnQuizNext = new JButton("Next");
-		btnQuizNext.setBounds(660, 399, 97, 25);
+		btnQuizNext.setBounds(900, 399, 97, 25);
 
 		btnQuizNext.setVisible(false);
 
@@ -135,7 +135,7 @@ public class QuizPanel extends JPanel {
 
 		//exit quiz button
 		JButton exitButton = new JButton("Exit Quiz");
-		exitButton.setBounds(650, 10, 100, 20);
+		exitButton.setBounds(900, 10, 100, 25);
 		exitButton.setVisible(true);
 		this.add(exitButton);
 

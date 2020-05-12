@@ -19,8 +19,9 @@ import java.awt.event.*;
 
 @SuppressWarnings("serial")
 public class InitialPanel extends JPanel {
-    int currIndex = 0;
     
+	int currIndex;
+	
     public InitialPanel() {
 
         //button to view tutorial
@@ -40,6 +41,8 @@ public class InitialPanel extends JPanel {
 
     //tutorial pop up frame
 	private void showTutorial() {
+		
+		currIndex = 0;
 
 		Tutorials tutorial = new Tutorials();
 		ArrayList<String> tutorials = tutorial.getTutorialImages();
