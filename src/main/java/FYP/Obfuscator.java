@@ -125,14 +125,12 @@ public class Obfuscator {
     // Advance obfuscate
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void advObfuscate(String inputFilePath, String outputFilePath, AdvSettingsPanel advSettingsPanel,
+    public void advObfuscate(String inputFilePath, String outputFilePath, HashMap<String, Integer> settings,
             String selectedClass) throws ParseException, FileNotFoundException, IOException {
 
         // get the code
         String code = compileCode(inputFilePath);
 
-        advSettingsPanel.getCurrentOptions(); // get the current check box values
-        HashMap<String, Integer> settings = advSettingsPanel.getSettings(); // get the hashmap of values
 
         //if change class names not chosen, the file name will be saved as original source code class name
         if (settings.get("3_Change Class Names") == 0) {

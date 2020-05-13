@@ -2,12 +2,14 @@ package FYP;
 
 import java.awt.Dimension;
 import java.awt.event.*;
-import java.awt.GridLayout;
+import java.awt.Color;
+
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -18,13 +20,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 public class FinalPanel extends JPanel {
 
 
-    public FinalPanel(JFrame frame, Obfuscator obfuscator) {
+	public FinalPanel(Frame frameClass, JFrame frame, LayeredPane layeredPane, Obfuscator obfuscator) {
         
 		this.setLayout(null);
         
@@ -33,6 +36,7 @@ public class FinalPanel extends JPanel {
 		///////////////////////////////////////////////////////////////////////////////////////////////
 		
 		JButton btnViewChangelog = new JButton("View Changelog");
+		btnViewChangelog.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
 		btnViewChangelog.setBounds(380, 196, 180, 60);
 		this.add(btnViewChangelog);
 
@@ -61,45 +65,94 @@ public class FinalPanel extends JPanel {
 
 				dialog.setBounds(0, 0, 1500, 800);
 				dialog.setVisible(true);
+				
+
 				optionPane.addPropertyChangeListener(new PropertyChangeListener() {
 					@Override
 					public void propertyChange(PropertyChangeEvent evt) {
 						if (optionPane.getValue() == customOptions[0]) {
+							
 							dialog.setVisible(false);
 						}
-						else if (optionPane.getValue() == customOptions[1]) {
-							
+
+						else if (optionPane.getValue() == customOptions[1]){
+							optionPane.setValue(JOptionPane.UNINITIALIZED_VALUE);
 							JFileChooser fc = new JFileChooser();
 							fc.setDialogTitle("Specify a place to save Changelog");
 							fc.setFileFilter(new FileNameExtensionFilter("Text Files (*.txt)", "txt"));
+							
+							
 							int user_selection = fc.showSaveDialog(frame);
-
 							if (user_selection == JFileChooser.APPROVE_OPTION) {
-								
+									
 								File changelogFile = new File(fc.getSelectedFile() + ".txt");
 								try {
 
 									FileWriter fw = new FileWriter(changelogFile);
 									fw.write(changelog.getText());
 									fw.close();
+									
+									
+								
 
 								} catch (IOException ie) {
 									System.out.println("IO Error");
 								}
 							}
-						
 						}
 					}
+
+					
 				});
 				
 			}
 		});
 
 		
+
+		///////////////////////////////////////////////////////
+		//Final Panel view output file button
+		//////////////////////////////////////////////////////
+		
+		JButton btnViewOutput = new JButton("View output file");
+		btnViewOutput.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+		btnViewOutput.setBounds(130, 196, 180, 60);
+		this.add(btnViewOutput);
+		btnViewOutput.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//output path = output directory + l1lIll1l.java e.g.
+				frameClass.outputFilePath = frameClass.browsePanel.getOutput() + "\\" + obfuscator.getFileName();
+
+				ComparePanel comparePanel = new ComparePanel(frame, obfuscator, frameClass.inputFilePath, frameClass.outputFilePath);
+				layeredPane.add(comparePanel);
+            }
+		});
+		
+		//obfuscate another file
+		JButton btnAnother = new JButton("Obfuscate another file");
+		btnAnother.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+
+		btnAnother.setBounds(630, 196, 220, 65);
+		this.add(btnAnother);
+		btnAnother.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//reset everything
+				layeredPane.switchPanel(frameClass.browsePanel); //switch back to browsepanel
+				frameClass.browsePanel.setTextField(); //set textfield to null
+				obfuscator.statistics = new ArrayList<Statistics>(); //reset statistics
+				frameClass.progressBarPanel.setDefault();
+			}	
+		});
+
+		
         
 
         //exit button on final panel
-        JButton btnFinish = new JButton("Finish");
+		JButton btnFinish = new JButton("Finish");
+		btnFinish.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+
 		btnFinish.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				//dump all files and close

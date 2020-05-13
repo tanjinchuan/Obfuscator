@@ -4,16 +4,11 @@ import java.awt.event.*;
 import java.awt.Color;
 import java.awt.Font;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
-import javax.swing.ButtonGroup;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextArea;
+
 
 public class EndQuizPanel extends JPanel {
     
@@ -64,7 +59,9 @@ public class EndQuizPanel extends JPanel {
         this.add(scoreLabel);
 
         JButton backBtn = new JButton("Back To Home");
-        backBtn.setBounds(800, 400, 200, 25);
+        backBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+
+        backBtn.setBounds(800, 400, 150, 25);
         this.add(backBtn);
 
         backBtn.addActionListener(new ActionListener() {
@@ -79,7 +76,8 @@ public class EndQuizPanel extends JPanel {
 		//Retake quiz button on endquizpanel
 		////////////////////////////////////////////////////////////////
 		JButton retakeQuizBtn = new JButton("Retake Quiz");
-        retakeQuizBtn.setBounds(60, 400, 200, 25);
+        retakeQuizBtn.setBounds(60, 400, 150, 25);
+        retakeQuizBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
         this.add(retakeQuizBtn);
 
         retakeQuizBtn.addActionListener(new ActionListener() {

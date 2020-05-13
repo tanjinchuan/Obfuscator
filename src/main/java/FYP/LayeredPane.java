@@ -13,7 +13,7 @@ public class LayeredPane extends JLayeredPane {
     public LayeredPane() {
         
         this.setBounds(0, 0, 1024, 500);
-		this.setLayout(new CardLayout(0, 0));
+        this.setLayout(new CardLayout(0, 0));
     }
 
     public void addPanel(JPanel panel) {

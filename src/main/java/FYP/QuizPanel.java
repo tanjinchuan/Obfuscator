@@ -1,13 +1,15 @@
 package FYP;
 
 import java.awt.event.*;
+import java.awt.Color;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
+
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -71,6 +73,7 @@ public class QuizPanel extends JPanel {
 		}
 
 		JButton btnQuizSubmit = new JButton("Submit");
+		btnQuizSubmit.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
 		btnQuizSubmit.setBounds(800, 399, 97, 25);
 
 		
@@ -138,6 +141,8 @@ public class QuizPanel extends JPanel {
 
 		//exit quiz button
 		JButton exitButton = new JButton("Exit Quiz");
+		exitButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+
 		exitButton.setBounds(900, 10, 100, 25);
 		exitButton.setVisible(true);
 		this.add(exitButton);

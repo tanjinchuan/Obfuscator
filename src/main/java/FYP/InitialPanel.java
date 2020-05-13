@@ -1,33 +1,30 @@
 package FYP;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import java.awt.*;
 import java.awt.event.*;
 
-
-
 @SuppressWarnings("serial")
 public class InitialPanel extends JPanel {
-    
-	int currIndex;
-	
-    public InitialPanel(Frame frame, LayeredPane layeredPane) {
 
+	int currIndex;
+
+	public InitialPanel(Frame frame, LayeredPane layeredPane) {
+		
 		InitialPanel initialPanel = this;
-        //button to view tutorial
-        JButton btnViewTutorial = new JButton("View tutorial");
+		// button to view tutorial
+		JButton btnViewTutorial = new JButton("View tutorial");
+		btnViewTutorial.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+		
 		btnViewTutorial.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				showTutorial();
@@ -44,7 +41,9 @@ public class InitialPanel extends JPanel {
 		///////////////////////////////////////////////////////////////////////////////////////////
 		//Button to go to browsefilepanel on initial panel
 		///////////////////////////////////////////////////////////////////////////////////////////
-        JButton btnObfuscateFile = new JButton("Obfuscate a file");
+		JButton btnObfuscateFile = new JButton("Obfuscate a file");
+		btnObfuscateFile.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+
 		btnObfuscateFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -55,6 +54,8 @@ public class InitialPanel extends JPanel {
 		btnObfuscateFile.setBounds(600, 180, 170, 63);
 
 		JButton btnQuiz = new JButton("Take quiz");
+		btnQuiz.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+
 		btnQuiz.setBounds(400, 180, 131, 63);
 		btnQuiz.addActionListener(new ActionListener() {
 			@Override

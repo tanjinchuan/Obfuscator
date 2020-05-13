@@ -4,17 +4,11 @@ import java.awt.event.*;
 import java.awt.Font;
 import java.awt.Color;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
-import javax.swing.ButtonGroup;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextArea;
 
 public class AnswerPanel extends JPanel {
 
@@ -24,7 +18,9 @@ public class AnswerPanel extends JPanel {
         this.setLayout(null);
 
         JButton continueBtn = new JButton("Continue");
-        continueBtn.setBounds(800, 350, 200, 25);
+        continueBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+
+        continueBtn.setBounds(800, 399, 97, 25);
         this.add(continueBtn);
 
         continueBtn.addActionListener(new ActionListener() {
@@ -36,7 +32,9 @@ public class AnswerPanel extends JPanel {
         });
 
         JButton endQuiz = new JButton("End Quiz");
-        endQuiz.setBounds(800, 300, 200, 25);
+        endQuiz.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+
+        endQuiz.setBounds(800, 350, 100, 25);
         this.add(endQuiz);
         endQuiz.setVisible(false);    
 
@@ -75,16 +73,25 @@ public class AnswerPanel extends JPanel {
             
         this.add(responseLabel);
         
-        if (answer == true) {
+
+		//Icons
+        ImageIcon sadIcon = new ImageIcon(this.getClass().getClassLoader().getResource("sadIcon.png"));
+        ImageIcon happyIcon = new ImageIcon(this.getClass().getClassLoader().getResource("happyIcon.png"));
+        
+        JLabel imgLabel = new JLabel();
+        imgLabel.setBounds(530, 120, 100, 100);
+        this.add(imgLabel);
+
+		if (answer == true) {
             responseLabel.setText("Correct!");
             responseLabel.setForeground(Color.GREEN);
-            
+            imgLabel.setIcon(happyIcon);
 
         }
         else {
             responseLabel.setText("Wrong!");
             responseLabel.setForeground(Color.RED);
-
+            imgLabel.setIcon(sadIcon);
         }
 
         

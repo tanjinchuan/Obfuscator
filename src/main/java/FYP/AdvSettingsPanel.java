@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -20,8 +21,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.UIManager;
-import javax.swing.border.LineBorder;
 
 @SuppressWarnings("serial")
 public class AdvSettingsPanel extends JPanel {
@@ -31,7 +30,7 @@ public class AdvSettingsPanel extends JPanel {
 	JComboBox<String> comboBox = new JComboBox<>();
 
 
-	public AdvSettingsPanel() {
+	public AdvSettingsPanel(Frame frameClass, Obfuscator obfuscator, LayeredPane layeredPane) {
 
 		this.setLayout(null);
 
@@ -63,10 +62,65 @@ public class AdvSettingsPanel extends JPanel {
 		//Icons
 		ImageIcon infoImg = new ImageIcon(this.getClass().getClassLoader().getResource("infoIcon.png"));
 		
-		//labels
-		UIManager.put("ToolTip.background", Color.CYAN);
-		UIManager.put("ToolTip.border",new LineBorder(Color.BLACK,1));
 
+		////////////////////////////////////////////////////////////////////////////////////////////
+		//Back and Next button for advanced settings panel
+		///////////////////////////////////////////////////////////////////////////////////////////
+		JButton btnBackAdvOptions = new JButton("Back");
+		btnBackAdvOptions.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+
+		btnBackAdvOptions.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				layeredPane.switchPanel(frameClass.basicSettingsPanel);
+			}
+		});
+		btnBackAdvOptions.setBounds(48, 360, 100, 60);
+		this.add(btnBackAdvOptions);
+
+		//JLabel for combobox
+		JLabel comboBoxLabel = new JLabel("Choose main class");
+		comboBoxLabel.setBounds(422, 275, 200, 20);
+		comboBoxLabel.setFont(lblFont);
+		this.add(comboBoxLabel);
+		
+		//JComboBox on advSettingsPanel
+		comboBox.setBounds(422, 300, 200, 20);
+		this.add(comboBox);
+		
+		//next button for advanced settings panel
+		JButton btnNextAdvOptions = new JButton("Start Obfuscating");
+		btnNextAdvOptions.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+		btnNextAdvOptions.setBounds(800, 350, 180, 80);
+		this.add(btnNextAdvOptions);
+
+		
+		btnNextAdvOptions.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				//obfuscate the file
+				try {
+					//set the file paths
+					frameClass.inputFilePath = frameClass.browsePanel.getInput();
+					frameClass.outputFilePath = frameClass.browsePanel.getOutput();
+
+					//get selected main class
+					String selectedClass = String.valueOf(comboBox.getSelectedItem());
+
+					obfuscator.advObfuscate(frameClass.inputFilePath, frameClass.outputFilePath, getSettings(), selectedClass);
+					//start obsfuscation
+					
+					layeredPane.switchPanel(frameClass.progressBarPanel);
+					frameClass.progressBarPanel.update(layeredPane, frameClass.browsePanel, frameClass.finalPanel, obfuscator);
+					
+				} catch(Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
+		
+		
 
 		lblRenameMethods.setBounds(22, 140, 200, 20);
 		lblRenameMethods.setFont(lblFont);
@@ -158,7 +212,10 @@ public class AdvSettingsPanel extends JPanel {
 
 		// adv default settings btn
 		JButton btnAdvDefaultSettings = new JButton("Save as default settings");
-		
+		btnAdvDefaultSettings.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+		btnAdvDefaultSettings.setBounds(800, 36, 200, 45);
+		this.add(btnAdvDefaultSettings);
+
 		btnAdvDefaultSettings.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				getCurrentOptions();
@@ -169,8 +226,7 @@ public class AdvSettingsPanel extends JPanel {
 			}
 		});
 
-		btnAdvDefaultSettings.setBounds(800, 36, 200, 45);
-		this.add(btnAdvDefaultSettings);
+		
 
 
 		//add the checkboxes into collection
@@ -179,15 +235,7 @@ public class AdvSettingsPanel extends JPanel {
 			
 		}
 
-		//JLabel for combobox
-		JLabel comboBoxLabel = new JLabel("Choose main class");
-		comboBoxLabel.setBounds(422, 275, 200, 20);
-		comboBoxLabel.setFont(lblFont);
-		this.add(comboBoxLabel);
 		
-		//JComboBox on advSettingsPanel
-		comboBox.setBounds(422, 300, 200, 20);
-		this.add(comboBox);
 
 	}
 
@@ -209,6 +257,7 @@ public class AdvSettingsPanel extends JPanel {
 			currentSettings.put(boxName, check_state);
 		}
 	}
+
 		
 	//use to set the options from settings file
 	public void setOptions() {
@@ -225,6 +274,12 @@ public class AdvSettingsPanel extends JPanel {
 			boxID++;
 		}
 	
+	}
+
+	
+	public HashMap<String, Integer> getSettings() {
+		getCurrentOptions();
+		return currentSettings;
 	}
 
 
@@ -292,9 +347,7 @@ public class AdvSettingsPanel extends JPanel {
         
 	}
 
-	public HashMap<String, Integer> getSettings() {
-		return currentSettings;
-	}
+	
     
 
     

@@ -3,7 +3,11 @@ package FYP;
 import java.util.Hashtable;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -21,7 +25,7 @@ public class BasicSettingsPanel extends JPanel implements ChangeListener, Proper
     protected int level = 0;
 	JComboBox<String> comboBox = new JComboBox<>();
 
-    public BasicSettingsPanel(AdvSettingsPanel advSettingsPanel) {
+    public BasicSettingsPanel(Frame frameClass, Obfuscator obfuscator, LayeredPane layeredPane) {
 
         this.setLayout(null);
 
@@ -121,6 +125,85 @@ public class BasicSettingsPanel extends JPanel implements ChangeListener, Proper
 		
 		comboBox.setBounds(290, 260, 200, 20);
 		this.add(comboBox);
+
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		//Button to go to advanced settings on basicSettings panel 
+		///////////////////////////////////////////////////////////////////////////////////////////
+		//read settings file here, get a hash map to check value after i click into advanced settings panel
+		
+
+		JButton btnAdvancedSettings = new JButton("Advanced settings");
+		btnAdvancedSettings.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+
+		btnAdvancedSettings.setBounds(800, 310, 180, 25);
+		this.add(btnAdvancedSettings);
+
+		btnAdvancedSettings.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				layeredPane.switchPanel(frameClass.advSettingsPanel);
+				
+				frameClass.advSettingsPanel.readSettingsFile();	
+				frameClass.advSettingsPanel.setOptions();
+
+			}
+		});
+		
+		
+		JButton btnBackSliderPanel = new JButton("Back");
+		btnBackSliderPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+
+		btnBackSliderPanel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				layeredPane.switchPanel(frameClass.browsePanel);
+			}
+		});
+		btnBackSliderPanel.setBounds(48, 360, 100, 60);
+		this.add(btnBackSliderPanel);
+		
+		
+
+		/////////////////////////////////////////////////////////////////////////////
+		//Button "next" to go to progressbarpanel on basicSettings panel
+		////////////////////////////////////////////////////////////////////////////
+		JButton btnNextSliderPanel = new JButton("Start Obfuscating");
+		btnNextSliderPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+
+		btnNextSliderPanel.setBounds(800, 350, 180, 80);
+		this.add(btnNextSliderPanel);
+
+		btnNextSliderPanel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					//set the file paths
+					frameClass.inputFilePath = frameClass.browsePanel.getInput();
+					frameClass.outputFilePath = frameClass.browsePanel.getOutput();
+
+					//get selected main class
+					String selectedClass = String.valueOf(comboBox.getSelectedItem());
+
+					
+					obfuscator.obfuscate(frameClass.inputFilePath, frameClass.outputFilePath, getLevel(), selectedClass);
+					//start obsfuscation
+			
+					
+					layeredPane.switchPanel(frameClass.progressBarPanel);
+					
+					//do delay to switch panel
+					frameClass.progressBarPanel.update(layeredPane, frameClass.browsePanel, frameClass.finalPanel, obfuscator);
+			
+
+			
+
+				} catch(Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
+		
 
     }
 

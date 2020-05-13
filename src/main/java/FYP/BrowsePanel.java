@@ -1,7 +1,11 @@
 package FYP;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.awt.Color;
 
+import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -9,6 +13,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+import com.github.javaparser.ParseException;
 
 import java.awt.event.*;
 
@@ -26,12 +34,13 @@ public class BrowsePanel extends JPanel {
     
 	protected JTextField inputTextField = new JTextField();
 	protected JTextField outputTextField = new JTextField();
-	//protected JTextField outputFileTextField = new JTextField();
 
-    public BrowsePanel(JFrame frame) {
+    public BrowsePanel(JFrame frame, Frame frameClass, Obfuscator obfuscator, LayeredPane layeredPane) {
         
 		JLabel inputFileTypeLabel = new JLabel("");
 		
+		inputTextField.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+		outputTextField.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
 
 		inputTextField.setBounds(200, 155, 600, 22);
 		inputTextField.setEditable(false);
@@ -61,6 +70,9 @@ public class BrowsePanel extends JPanel {
 		
 		//File input chooser function
 		JButton btnInputBrowsePanel = new JButton("Browse...");
+		btnInputBrowsePanel.setBounds(810, 154, 110, 25);
+		btnInputBrowsePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+
 		btnInputBrowsePanel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -92,11 +104,15 @@ public class BrowsePanel extends JPanel {
 		}
 		});
 		
-		btnInputBrowsePanel.setBounds(810, 154, 110, 25);
+
 		this.add(btnInputBrowsePanel);
 		
 		//File output chooser function
 		JButton btnOutputBrowsePanel = new JButton("Browse...");
+		btnOutputBrowsePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+		btnOutputBrowsePanel.setBounds(810, 246, 110, 25);
+		this.add(btnOutputBrowsePanel);
+
 		btnOutputBrowsePanel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 								
@@ -123,12 +139,123 @@ public class BrowsePanel extends JPanel {
 	    	}
 		});
 				
-		btnOutputBrowsePanel.setBounds(810, 246, 110, 25);
-		this.add(btnOutputBrowsePanel);
-		
-		
+		////////////////////////////////////////////////////////////////////////////////////////////
+		//Button to go to Slider Panel on BrowsePanel
+		////////////////////////////////////////////////////////////////////////////////////////////
+		JButton btnBrowseNextPanel = new JButton("Next");
+		btnBrowseNextPanel.setEnabled(false);
+		btnBrowseNextPanel.setBounds(800, 360, 100, 60);
+		btnBrowseNextPanel.setEnabled(false);
+		btnBrowseNextPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 0, true));
 
+		this.add(btnBrowseNextPanel);
+		
+		btnBrowseNextPanel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			
+                
+				String inputFilePath = getInput();
+				String outputFilePath = getOutput();
+				if (checkFileExists(inputFilePath) == false) {
+					JOptionPane.showMessageDialog(frame, "Please choose valid input .java file", "Warning", JOptionPane.OK_OPTION);
+
+				}
+				
+				else if (checkDir(outputFilePath) == false){
+					JOptionPane.showMessageDialog(frame, "Please choose valid output location", "Warning", JOptionPane.OK_OPTION);
+
+				}
+
+				else {
+					//set the source code
+					try {
+
+						obfuscator.compileCode(inputFilePath);
+						
+						String[] array = obfuscator.getClasses();
+
+						DefaultComboBoxModel model = new DefaultComboBoxModel(array);
+						frameClass.basicSettingsPanel.comboBox.setModel(model);
+						frameClass.advSettingsPanel.comboBox.setModel (model);
+
+					} catch (FileNotFoundException fe) {
+
+					} catch (ParseException ie) {
+						
+					}
+					layeredPane.switchPanel(frameClass.basicSettingsPanel);
+
+				}
+				
+				
+			
+			}
+		});
         
+
+        //Button to go back to initial Panel on browse panel
+		JButton btnBrowsePanelBack = new JButton("Back");
+		btnBrowsePanelBack.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+
+		
+		btnBrowsePanelBack.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				layeredPane.switchPanel(frameClass.initialPanel);
+			}
+		});
+		btnBrowsePanelBack.setBounds(48, 360, 100, 60);
+		this.add(btnBrowsePanelBack);
+
+		//check if textfield is valid
+		outputTextField.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				if (getInput().equals("") | getOutput().equals("")) {
+					btnBrowseNextPanel.setEnabled(false);
+					btnBrowseNextPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 0, true));
+
+				}
+				else {
+					btnBrowseNextPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+					btnBrowseNextPanel.setEnabled(true);
+				
+				}
+			}
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				if (getInput().equals("") | getOutput().equals("")) {
+					btnBrowseNextPanel.setEnabled(false);
+					btnBrowseNextPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 0, true));
+
+				}
+				else {
+					btnBrowseNextPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+
+					btnBrowseNextPanel.setEnabled(true);
+				
+				}
+			}
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				if (getInput().equals("") | getOutput().equals("")) {
+					btnBrowseNextPanel.setEnabled(false);
+					btnBrowseNextPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 0, true));
+
+				}
+				else {
+					btnBrowseNextPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+
+					btnBrowseNextPanel.setEnabled(true);
+				
+				}				
+			}
+
+			
+		});
+		
+		
         
         
 		JLabel lblInput = new JLabel("Select input .java file");
