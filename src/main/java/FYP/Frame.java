@@ -112,7 +112,8 @@ public class Frame {
 		//testing
 		layeredPane.switchPanel(initialPanel);
 
-		advSettingsPanel.createSettingsFile(); //initialize advsettings.txt;
+		//initialize advsettings.txt;
+		advSettingsPanel.createSettingsFile();
 
 		
 		

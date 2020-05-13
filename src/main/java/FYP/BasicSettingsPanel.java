@@ -19,7 +19,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 @SuppressWarnings("serial")
-
 public class BasicSettingsPanel extends JPanel implements ChangeListener, PropertyChangeListener{
     
     protected int level = 0;

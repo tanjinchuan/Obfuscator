@@ -58,7 +58,7 @@ public class AnswerPanel extends JPanel {
         
         Font lblFont = new Font("Helvetica", Font.BOLD, 26);
 
-        JLabel highscoreLabel = new JLabel("Highscore: " + Integer.toString(highscore));
+        JLabel highscoreLabel = new JLabel("Highscore: " + frame.highscore);
         highscoreLabel.setBounds(50, 20, 100, 100);
         this.add(highscoreLabel);
 

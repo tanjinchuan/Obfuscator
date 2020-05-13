@@ -1,13 +1,13 @@
 package FYP;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
 
 import java.io.*;
 
@@ -15,11 +15,13 @@ import com.github.javaparser.ParseException;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.Modifier.Keyword;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 
 import com.github.javaparser.ast.body.Parameter;
@@ -221,16 +223,84 @@ public class Obfuscator {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // For Dummy Code Insertion
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private static class StatementAdder extends VoidVisitorAdapter<Void> {
+    public static class StatementAdder extends VoidVisitorAdapter<HashMap<String, String>>{
+        int count = 0;
+
+        //creates a random variable declaration
+        public String randomVariableDeclarator(int count){
+
+            //Create Variable name with count
+            String varName = "dummyCode" + count;
+            String dataType = "";
+            String initialize = "";
+            int bound = 0;
+
+            //Randomize a Data Type e.g. int, float etc
+            Random rand = new Random();
+            int ranNum = rand.nextInt(8);
+
+            //Get initializer and DataType to String
+            switch(ranNum){
+                //Just in case
+                default:
+                case 0:
+                    dataType = "boolean";
+                    initialize = String.valueOf(rand.nextBoolean());
+                    break;
+                case 1:
+                    dataType = "byte";
+                    bound = rand.nextInt(255) - 128;
+                    initialize = String.valueOf(bound);
+                    break;
+                case 2:
+                    dataType = "char";
+                    char c = (char)(rand.nextInt(26) + 'a');
+                    initialize = "'" + String.valueOf(c) + "'";
+                    break;
+                case 3:
+                    dataType = "short";
+                    bound = rand.nextInt(65535) - 32768;
+                    initialize = String.valueOf(bound);
+                    break;
+                case 4:
+                    dataType = "int";
+                    initialize = String.valueOf(rand.nextInt());
+                    break;
+                case 5:
+                    dataType = "long";
+                    initialize = String.valueOf(rand.nextLong()) + "L";
+                    break;
+                case 6:
+                    dataType = "float";
+                    initialize = String.valueOf(rand.nextFloat()) + "f";
+                    break;
+                case 7:
+                    dataType = "double";
+                    initialize = String.valueOf(rand.nextDouble()) + "d";
+                    break;
+            }
+
+            String varDeclare = dataType + " " + varName + "= " + initialize + ";";
+            return varDeclare;
+
+
+        }
+
         @Override
-        public void visit(BlockStmt bs, Void arg) {
-            super.visit(bs, arg);
+        public void visit(BlockStmt bs, HashMap<String, String> hashMap){
+            super.visit(bs, hashMap);
 
-            int hash = bs.getRange().hashCode();
+            AtomicInteger hash = new AtomicInteger(bs.getRange().hashCode());
 
-            // Only even hashes add dummycode
-            if (hash % 2 == 0) {
-                bs.addAndGetStatement("System.out.println(\"Dummy Code inserted here\")");
+            //Only even hashes add dummycode
+            if(hash.get() %2 == 0){
+                //add Variables
+                NodeList<Statement> meep = bs.getStatements();
+                meep.add(0, StaticJavaParser.parseStatement(randomVariableDeclarator(count)));
+                bs.setStatements(meep);
+                hashMap.put(meep.get(0).toString(), ""); 
+
+                count++;
             }
         }
     }
@@ -238,8 +308,26 @@ public class Obfuscator {
     private String dummyCodeInsertion(String code) {
         CompilationUnit cu = StaticJavaParser.parse(code);
 
-        VoidVisitorAdapter<?> dummyVisitor = new StatementAdder();
-        dummyVisitor.visit(cu, null);
+        VoidVisitorAdapter<HashMap<String, String>> dummyVisitor = new StatementAdder();
+
+        HashMap<String, String> hashMap = new HashMap<String, String>();
+        
+        // initialize dummy statistics
+        Statistics stats = new Statistics();
+        stats.setType("Dummy Code");
+
+        dummyVisitor.visit(cu, hashMap);
+
+        
+
+
+        for (String s: hashMap.keySet()) {
+            
+            stats.setStats(s, "");
+        }
+
+        statistics.add(stats);
+
         return cu.toString();
     }
 
@@ -787,7 +875,7 @@ public class Obfuscator {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public String compileCode(String inputFilePath) throws ParseException, FileNotFoundException {
-        StaticJavaParser.getConfiguration().setLexicalPreservationEnabled(true);
+
         CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
 
         this.sourceCode = cu.toString();
@@ -910,7 +998,7 @@ public class Obfuscator {
 
             byte[] encrypted = cipher.doFinal(value.getBytes());
 
-            return DatatypeConverter.printBase64Binary(encrypted);
+            return Base64.getEncoder().encodeToString(encrypted);
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -918,36 +1006,12 @@ public class Obfuscator {
         return null;
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // this method is to add into the obfuscated file
-    //////////////////////////////////////////////////////////////////////////
-    // private String decrypt(String encrypted) {
-    // String key = "Bar12345Bar12345";
-    // String initVector = "RandomInitVector";
-
-    // try {
-    // IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));
-    // SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
-
-    // Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-    // cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
-
-    // // byte[] original = cipher.doFinal(Base64.decodeBase64(encrypted));
-    // byte[] original =
-    // cipher.doFinal(DatatypeConverter.parseBase64Binary(encrypted));
-
-    // return new String(original);
-    // } catch (Exception ex) {
-    // ex.printStackTrace();
-    // }
-    // return null;
-    // }
 
     private String addLibraries(String code) {
         CompilationUnit cu = StaticJavaParser.parse(code);
 
         String[] libraries = { "javax.crypto.Cipher", "javax.crypto.spec.IvParameterSpec",
-                "javax.crypto.spec.SecretKeySpec", "javax.xml.bind.DatatypeConverter" };
+                "javax.crypto.spec.SecretKeySpec", "java.util.Base64"};
 
         for (String s : libraries) {
             cu.addImport(s);
@@ -966,7 +1030,7 @@ public class Obfuscator {
                 "Cipher cipher = Cipher.getInstance(\"AES/CBC/PKCS5PADDING\");"
                 + "cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);" +
 
-                "byte[] original = cipher.doFinal(DatatypeConverter.parseBase64Binary(encrypted));" +
+                "byte[] original = cipher.doFinal(Base64.getDecoder().decode(encrypted));" +
 
                 "return new String(original);" + "} catch (Exception ex) {" + "ex.printStackTrace();" + "}"
                 + "return null;}";
@@ -976,7 +1040,7 @@ public class Obfuscator {
 
                 ClassOrInterfaceDeclaration classDeclaration = (ClassOrInterfaceDeclaration) childNode;
 
-                MethodDeclaration method = classDeclaration.addMethod("_D", Keyword.PRIVATE, Keyword.STATIC);
+                MethodDeclaration method = classDeclaration.addMethod("_D", Keyword.PUBLIC, Keyword.STATIC);
                 method.setType(String.class);
                 method.addParameter(String.class, "encrypted");
                 BlockStmt blockStmt = StaticJavaParser.parseBlock(methodBody);
