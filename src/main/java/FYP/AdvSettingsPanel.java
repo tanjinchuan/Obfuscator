@@ -34,6 +34,19 @@ public class AdvSettingsPanel extends JPanel {
 
 		this.setLayout(null);
 
+		//add help label
+		JButton helpButton = new JButton("Help");
+		helpButton.setBounds(50, 50, 100, 25);
+		helpButton.setVisible(true);
+		this.add(helpButton);
+		helpButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				Help help = new Help();
+				help.showFrame();
+			}
+		});
+
 		JLabel lblRenameMethods = new JLabel("Rename Methods");
 		JLabel lblRenameIdentifiers = new JLabel("Rename Identifiers");
 		JLabel lblMiscellaneous = new JLabel("Misceallanous");
@@ -186,7 +199,7 @@ public class AdvSettingsPanel extends JPanel {
 		chckbxChangeVariables.setBounds(200, 195, 220, 25);
 		this.add(chckbxChangeVariables);
 
-		chckbxChangeParameters.setBounds(200, 220, 220, 25);
+		chckbxChangeParameters.setBounds(200, 220, 230, 25);
 		this.add(chckbxChangeParameters);
 
 		

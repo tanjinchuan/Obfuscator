@@ -15,8 +15,12 @@ public class EndQuizPanel extends JPanel {
 	protected JLabel highscoreLabel = new JLabel("Highscore: -");
     
     public EndQuizPanel(Frame frame, LayeredPane layeredPane, int score) {
+
+        
         this.setLayout(null);
         this.setBackground(Color.WHITE);
+
+        
 
 		Font lblFont = new Font("Helvetica", Font.BOLD, 26);
         Font scoreFont = new Font("Helvetica", Font.PLAIN, 16);

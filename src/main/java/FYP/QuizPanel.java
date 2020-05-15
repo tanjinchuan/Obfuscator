@@ -1,8 +1,6 @@
 package FYP;
 
 import java.awt.event.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.awt.Color;
 import java.awt.Component;
 
@@ -11,7 +9,6 @@ import java.util.Collections;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.ButtonModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -40,9 +37,8 @@ public class QuizPanel extends JPanel {
 		Questions firstQuestion = quizList.get(0);
 		quizTextArea.setText("Question 1 of " + quizList.size() + "\n" + firstQuestion.getQuestion());
 
-		quizTextArea.setBounds(8, 40, 1000, 249);
+		quizTextArea.setBounds(5, 40, 1024, 249);
 		quizTextArea.setEditable(false);
-		quizTextArea.setOpaque(false);
 
 		JLabel highscoreLabel = new JLabel("Highscore: " + frame.highscore);
 		highscoreLabel.setBounds(50, 10, 100, 25);
@@ -141,25 +137,23 @@ public class QuizPanel extends JPanel {
 		this.add(rdbtn3);
 		this.add(rdbtn4);
 
-		for(Component r: this.getComponents()) {
-
+		for (Component r: getComponents()) {
 			if (r instanceof JRadioButton) {
-				System.out.println("hi");
-				r.addPropertyChangeListener(new PropertyChangeListener(){
+				JRadioButton radio = (JRadioButton)r;
+				radio.addItemListener(new ItemListener() {
 					@Override
-					public void propertyChange(PropertyChangeEvent evt) {
-						
-
+					public void itemStateChanged(ItemEvent e) {
 						if (rdbtnGroup.getSelection() != null) {
-							btnQuizSubmit.setEnabled(true);	
-						}
+							btnQuizSubmit.setEnabled(true);
+						}				
 						else {
 							btnQuizSubmit.setEnabled(false);
 						}
 					}
+					
 				});
 			}
-		}
+		}	
 		//exit quiz button
 		JButton exitButton = new JButton("Exit Quiz");
 		exitButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));

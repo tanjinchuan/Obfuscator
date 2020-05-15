@@ -19,14 +19,27 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 @SuppressWarnings("serial")
-public class BasicSettingsPanel extends JPanel implements ChangeListener, PropertyChangeListener{
+public class BasicSettingsPanel extends JPanel{
     
     protected int level = 0;
 	JComboBox<String> comboBox = new JComboBox<>();
 
     public BasicSettingsPanel(Frame frameClass, Obfuscator obfuscator, LayeredPane layeredPane) {
 
-        this.setLayout(null);
+		this.setLayout(null);
+		
+		//add help label
+		JButton helpButton = new JButton("Help");
+		helpButton.setBounds(50, 50, 100, 25);
+		helpButton.setVisible(true);
+		this.add(helpButton);
+		helpButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				Help help = new Help();
+				help.showFrame();
+			}
+		});
 
 		Font lblFont = new Font("Helvetica", Font.BOLD, 16);
 
@@ -47,49 +60,47 @@ public class BasicSettingsPanel extends JPanel implements ChangeListener, Proper
 
         JLabel sliderOptionDescriptionLabel = new JLabel();
 		sliderOptionDescriptionLabel.setBounds(670, 150, 400, 100);
+		//default value is weak
+		sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Class & Method Name Obfuscation");
+		
 		this.add(sliderOptionDescriptionLabel);
 		
 		//JSlider + description label
 		JSlider slider = new JSlider(0, 3, 0);
 
-		//default value is weak
-		sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Class & Method Name Obfuscation");
 		
-		
-
-		slider.addChangeListener((ChangeListener)this);
-
 		slider.addChangeListener(new ChangeListener() {
-		@Override
-		public void stateChanged(ChangeEvent e) {
-			level = ((JSlider)e.getSource()).getValue();
-			if(level == 0) {
-				sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Class & Method Name Obfuscation");
-				lblLevel.setText("Weak");
-				lblLevel.setForeground(green);
-			}
-			else if (level == 1) {
-				sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Class & Method Name Obfuscation<br>Variable & Parameter Name Obfuscation");
-				lblLevel.setText("Medium");
-				lblLevel.setForeground(yellow);
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				level = ((JSlider)e.getSource()).getValue();
+				if(level == 0) {
+					sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Class & Method Name Obfuscation");
+					lblLevel.setText("Weak");
+					lblLevel.setForeground(green);
+				}
+				else if (level == 1) {
+					sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Class & Method Name Obfuscation<br>Variable & Parameter Name Obfuscation");
+					lblLevel.setText("Medium");
+					lblLevel.setForeground(yellow);
 
-			}
-			else if (level == 2) {
-				sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Class & Method Name Obfuscation<br>Variable & Parameter Name Obfuscation<br>String Encoding");
-				lblLevel.setText("Strong");
-				lblLevel.setForeground(Color.ORANGE);
+				}
+				else if (level == 2) {
+					sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Class & Method Name Obfuscation<br>Variable & Parameter Name Obfuscation<br>String Encoding");
+					lblLevel.setText("Strong");
+					lblLevel.setForeground(Color.ORANGE);
 
-			}
-			else if (level == 3) {
-				sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Class & Method Name Obfuscation<br>Variable & Parameter Name Obfuscation<br>String Encoding<br>Dummy Code Insertion");
-				lblLevel.setText("Extreme");
-				lblLevel.setForeground(Color.RED);
+				}
+				else if (level == 3) {
+					sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Class & Method Name Obfuscation<br>Variable & Parameter Name Obfuscation<br>String Encoding<br>Dummy Code Insertion");
+					lblLevel.setText("Extreme");
+					lblLevel.setForeground(Color.RED);
 
+				}
+				
 			}
-			
-		}
-        });
-     
+
+		});
+		
         
         
         //Create the label table 
@@ -201,6 +212,7 @@ public class BasicSettingsPanel extends JPanel implements ChangeListener, Proper
 					ex.printStackTrace();
 				}
 			}
+			
 		});
 		
 
@@ -212,18 +224,7 @@ public class BasicSettingsPanel extends JPanel implements ChangeListener, Proper
 	
 
 
-    @Override
-	public void stateChanged(ChangeEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		// TODO Auto-generated method stub
-		
-	}
+    
 
 
     

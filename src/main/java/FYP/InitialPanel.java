@@ -16,18 +16,20 @@ import java.awt.event.*;
 @SuppressWarnings("serial")
 public class InitialPanel extends JPanel {
 
-	int currIndex;
 
 	public InitialPanel(Frame frame, LayeredPane layeredPane) {
 		
+
 		InitialPanel initialPanel = this;
 		// button to view tutorial
 		JButton btnViewTutorial = new JButton("View tutorial");
 		btnViewTutorial.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
 		
 		btnViewTutorial.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
-				showTutorial();
+				TutorialFrame tutorialFrame = new TutorialFrame();
+				tutorialFrame.showTutorial();
 			}
 		});
 		btnViewTutorial.setBounds(200, 180, 131, 63);
@@ -41,7 +43,7 @@ public class InitialPanel extends JPanel {
 		///////////////////////////////////////////////////////////////////////////////////////////
 		//Button to go to browsefilepanel on initial panel
 		///////////////////////////////////////////////////////////////////////////////////////////
-		JButton btnObfuscateFile = new JButton("Obfuscate a file");
+		JButton btnObfuscateFile = new JButton("Obfuscate File");
 		btnObfuscateFile.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
 
 		btnObfuscateFile.addActionListener(new ActionListener() {
@@ -76,88 +78,84 @@ public class InitialPanel extends JPanel {
 	//tutorial pop up frame
 	private void showTutorial() {
 		
-		currIndex = 0;
+		// currIndex = 0;
 
-		Tutorials tutorial = new Tutorials();
-		ArrayList<String> tutorials = tutorial.getTutorialImages();
+		// Tutorials tutorial = new Tutorials();
+		// ArrayList<ImageIcon> tutorials = tutorial.getTutorial();
 
-		JDialog tutorialDialog = new JDialog();
+		// JDialog tutorialDialog = new JDialog();
 
-		JLabel imgLabel = new JLabel();
+		// JLabel imgLabel = new JLabel();
 
-		//initialize first image
+		// //initialize first image
 		
-		ImageIcon img = new ImageIcon(this.getClass().getClassLoader().getResource(tutorials.get(0)));
 		
-		imgLabel.setIcon(img);
-		imgLabel.setBounds(0, 0, 1000, 650);	
+		// imgLabel.setIcon(tutorials.get(0));
+		// imgLabel.setBounds(0, 0, 1000, 650);	
 	
 
-		JButton btnTutorialEnd = new JButton("End tutorial");
-		btnTutorialEnd.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				tutorialDialog.dispose();
-			}
-		});
+		// JButton btnTutorialEnd = new JButton("End tutorial");
+		// btnTutorialEnd.addActionListener(new ActionListener() {
+		// 	public void actionPerformed(ActionEvent e) {
+		// 		tutorialDialog.dispose();
+		// 	}
+		// });
 		
-		JButton btnTutorialBack = new JButton("Back");
-		JButton btnTutorialNext = new JButton("Next");
+		// JButton btnTutorialBack = new JButton("Back");
+		// JButton btnTutorialNext = new JButton("Next");
 
-		btnTutorialBack.addActionListener(new ActionListener() {
+		// btnTutorialBack.addActionListener(new ActionListener() {
 			
-			public void actionPerformed(ActionEvent e) {
+		// 	public void actionPerformed(ActionEvent e) {
 				
-				if (currIndex > 0) {
-					currIndex--;
+		// 		if (currIndex > 0) {
+		// 			currIndex--;
 					
-					ImageIcon img = new ImageIcon(this.getClass().getClassLoader().getResource(tutorials.get(currIndex)));
-					imgLabel.setIcon(img);
+		// 			imgLabel.setIcon(tutorials.get(currIndex));
 
-					btnTutorialNext.setVisible(true);
-				}
-			}
-		});
+		// 			btnTutorialNext.setVisible(true);
+		// 		}
+		// 	}
+		// });
 		
-		btnTutorialNext.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		// btnTutorialNext.addActionListener(new ActionListener() {
+		// 	public void actionPerformed(ActionEvent e) {
 				
-				if (currIndex < tutorials.size() -1) {
-					currIndex++;
-					ImageIcon img = new ImageIcon(this.getClass().getClassLoader().getResource(tutorials.get(currIndex)));
+		// 		if (currIndex < tutorials.size() -1) {
+		// 			currIndex++;
 
-					imgLabel.setIcon(img);
+		// 			imgLabel.setIcon(tutorials.get(currIndex));
 
-				}
-				if (currIndex == tutorials.size()-1) {
-					btnTutorialNext.setVisible(false);
-				}
-			}
-		});
+		// 		}
+		// 		if (currIndex == tutorials.size()-1) {
+		// 			btnTutorialNext.setVisible(false);
+		// 		}
+		// 	}
+		// });
 		
-		JPanel tutorialPanel = new JPanel();
-		tutorialPanel.add(imgLabel);
-		tutorialPanel.setLayout(null);
-		tutorialPanel.setPreferredSize(new Dimension(1200, 700));
+		// JPanel tutorialPanel = new JPanel();
+		// tutorialPanel.add(imgLabel);
+		// tutorialPanel.setLayout(null);
+		// tutorialPanel.setPreferredSize(new Dimension(1200, 700));
 
-		btnTutorialBack.setBounds(30, 710, 97, 25);
-		btnTutorialNext.setBounds(870, 710, 97, 25);
-		btnTutorialEnd.setBounds(440, 710, 150, 25);
+		// btnTutorialBack.setBounds(30, 710, 97, 25);
+		// btnTutorialNext.setBounds(870, 710, 97, 25);
+		// btnTutorialEnd.setBounds(440, 710, 150, 25);
 		
-		tutorialPanel.add(btnTutorialBack);
-		tutorialPanel.add(btnTutorialNext);
-		tutorialPanel.add(btnTutorialEnd);
+		// tutorialPanel.add(btnTutorialBack);
+		// tutorialPanel.add(btnTutorialNext);
+		// tutorialPanel.add(btnTutorialEnd);
 		
-		tutorialDialog.setLayout(null);
-		tutorialDialog.setSize(1050,800);
-		tutorialDialog.add(btnTutorialBack);
-		tutorialDialog.add(btnTutorialNext);
-		tutorialDialog.add(btnTutorialEnd);
-		tutorialDialog.setTitle("Tutorial");
-		tutorialDialog.setLocationRelativeTo(null);
-		tutorialDialog.add(imgLabel);
+		// tutorialDialog.setLayout(null);
+		// tutorialDialog.setSize(1050,800);
+		// tutorialDialog.add(btnTutorialBack);
+		// tutorialDialog.add(btnTutorialNext);
+		// tutorialDialog.add(btnTutorialEnd);
+		// tutorialDialog.setTitle("Tutorial");
+		// tutorialDialog.setLocationRelativeTo(null);
+		// tutorialDialog.add(imgLabel);
 
-		tutorialDialog.setVisible(true);
+		// tutorialDialog.setVisible(true);
 	
 	}
 }

@@ -107,21 +107,7 @@ public class Obfuscator {
 
     }
 
-    private void saveObfuscatedCode(String code, String outputFilePath) {
-        FileWriter fw;
-        try {
-            fw = new FileWriter(outputFilePath + "\\" + getFileName());
-            
-            fw.write(code);
-            fw.close();
-        } catch (IOException e) {
-
-        }
-    }
-
-    public String getFileName() {
-        return this.fileName;
-    }
+ 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Advance obfuscate
@@ -305,32 +291,7 @@ public class Obfuscator {
         }
     }
 
-    private String dummyCodeInsertion(String code) {
-        CompilationUnit cu = StaticJavaParser.parse(code);
-
-        VoidVisitorAdapter<HashMap<String, String>> dummyVisitor = new StatementAdder();
-
-        HashMap<String, String> hashMap = new HashMap<String, String>();
-        
-        // initialize dummy statistics
-        Statistics stats = new Statistics();
-        stats.setType("Dummy Code");
-
-        dummyVisitor.visit(cu, hashMap);
-
-        
-
-
-        for (String s: hashMap.keySet()) {
-            
-            stats.setStats(s, "");
-        }
-
-        statistics.add(stats);
-
-        return cu.toString();
-    }
-
+    
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // For Methods
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -421,6 +382,102 @@ public class Obfuscator {
         }
 
     }
+
+    
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // For Parameters
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private class ParameterNameVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
+
+        @Override
+        public void visit(Parameter p, HashMap<String, String> parameters) {
+            super.visit(p, parameters);
+            String parameter = p.getNameAsString();
+
+            String newWord = randomWord();
+            if (!parameter.equals("args")) {
+                parameters.put(parameter, newWord);
+            }
+
+        }
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // For Variables
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private class VariableNameVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
+
+        @Override
+        public void visit(VariableDeclarator vd, HashMap<String, String> variables) {
+            super.visit(vd, variables);
+            String newWord = randomWord();
+            String variable = vd.getNameAsString();
+            variables.put(variable, newWord);
+        }
+    }
+
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private class InterfaceVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
+        @Override
+        public void visit(ClassOrInterfaceDeclaration c, HashMap<String, String> interfaceNames) {
+            super.visit(c, null);
+            if (c.isInterface() == true) {
+                interfaceNames.put(c.getNameAsString(), randomWord());
+            }
+        }
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // change class name
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private class ClassVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
+        @Override
+        public void visit(ClassOrInterfaceDeclaration c, HashMap<String, String> classes) {
+            super.visit(c, classes);
+
+            classes.put(c.getNameAsString(), randomWord());
+        }
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    // String Literal Visitor
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    private class StringLiteralEncodeVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
+        @Override
+        public void visit(StringLiteralExpr ex, HashMap<String, String> hash) {
+
+            // create encrypted literal
+            String encrypted = encrypt(ex.toString().substring(1, ex.toString().length() - 1));
+            encrypted = "_D(\"" + encrypted + "\")";
+            hash.put(ex.toString(), encrypted);
+
+        }
+    }
+    private class StringLiteralToUnicodeVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
+        @Override
+        public void visit(StringLiteralExpr ex, HashMap<String, String> hash) {
+
+            String stringLiteral = ex.toString();
+
+            //remove double quotes (e.g. "FooBar" to FooBar) 
+            if (stringLiteral.length() > 0) {
+
+                stringLiteral = stringLiteral.substring(1, stringLiteral.length() - 1);
+                String unicode = StringUnicodeEncoderDecoder.encodeStringToUnicodeSequence(stringLiteral);
+                unicode = "\"" + unicode + "\"";
+                hash.put(ex.toString(), unicode);
+    
+            }
+            
+            
+            
+        }
+    }
+
 
     // Function to call for changing method names using basic slider, methodType =
     // e.g "Public"
@@ -518,23 +575,6 @@ public class Obfuscator {
 
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // For Parameters
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private class ParameterNameVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
-
-        @Override
-        public void visit(Parameter p, HashMap<String, String> parameters) {
-            super.visit(p, parameters);
-            String parameter = p.getNameAsString();
-
-            String newWord = randomWord();
-            if (!parameter.equals("args")) {
-                parameters.put(parameter, newWord);
-            }
-
-        }
-    }
 
     private String changeParameterNames(String code) {
         CompilationUnit cu = StaticJavaParser.parse(code);
@@ -598,20 +638,6 @@ public class Obfuscator {
 
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // For Variables
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private class VariableNameVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
-
-        @Override
-        public void visit(VariableDeclarator vd, HashMap<String, String> variables) {
-            super.visit(vd, variables);
-            String newWord = randomWord();
-            String variable = vd.getNameAsString();
-            variables.put(variable, newWord);
-        }
-    }
-
     private String changeVariableNames(String code) {
         CompilationUnit cu = StaticJavaParser.parse(code);
         HashMap<String, String> variables = new HashMap<String, String>();
@@ -673,18 +699,7 @@ public class Obfuscator {
         return newCode;
 
     }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private class InterfaceVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
-        @Override
-        public void visit(ClassOrInterfaceDeclaration c, HashMap<String, String> interfaceNames) {
-            super.visit(c, null);
-            if (c.isInterface() == true) {
-                interfaceNames.put(c.getNameAsString(), randomWord());
-            }
-        }
-    }
-
+    
     private String changeInterfaceNames(String code) {
         CompilationUnit cu = StaticJavaParser.parse(code);
         HashMap<String, String> interfaceNames = new HashMap<String, String>();
@@ -741,18 +756,6 @@ public class Obfuscator {
 
         statistics.add(stats);
         return newCode;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // change class name
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private class ClassVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
-        @Override
-        public void visit(ClassOrInterfaceDeclaration c, HashMap<String, String> classes) {
-            super.visit(c, classes);
-
-            classes.put(c.getNameAsString(), randomWord());
-        }
     }
 
     private String changeClassName(String code, String selectedClass) {
@@ -816,112 +819,35 @@ public class Obfuscator {
         return newCode;
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // to use for printing all the stats in the frame.java
-    public String getStatistics() {
-        String text = "";
+    
 
-        for (Statistics s : statistics) {
-            text = text + s.printStats();
-        }
-        return text;
-    }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // help remove unecessary spaces in code
-    private String prettyPrinting(String code) {
-        CompilationUnit cu = StaticJavaParser.parse(code);
-        String cleanCode = cu.toString();
-        return cleanCode;
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Remove of comments
-    private String removeComments(String code) {
-
-        StaticJavaParser.getConfiguration().setAttributeComments(false);
+    private String dummyCodeInsertion(String code) {
         CompilationUnit cu = StaticJavaParser.parse(code);
 
-        code = cu.toString();
-        return code;
+        VoidVisitorAdapter<HashMap<String, String>> dummyVisitor = new StatementAdder();
 
-    }
+        HashMap<String, String> hashMap = new HashMap<String, String>();
+        
+        // initialize dummy statistics
+        Statistics stats = new Statistics();
+        stats.setType("Dummy Code");
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private String randomWord() {
-        char[] letters = new char[] { '1', 'I', 'l' };
-        Random rand = new Random();
-        String newWord = "";
-        int wordLength = 12;
+        dummyVisitor.visit(cu, hashMap);
 
-        char[] firstLetters = new char[] { 'l', 'I' };
-        // initialize first random character for new method name, first character cannot
-        // use '1'
+        
 
-        // to initialize first charcter of new method name with either l or I
-        int random = rand.nextInt(2);
-        char firstChar = firstLetters[random];
-        newWord = newWord + firstChar;
 
-        // loop to generate random method name (eg. l1l1lll1IIl)
-        for (int i = 0; i < wordLength; i++) {
-            int randomIndex = rand.nextInt(3);
-            char letter = letters[randomIndex];
-            newWord = newWord + letter;
+        for (String s: hashMap.keySet()) {
+            
+            stats.setStats(s, "");
         }
-        return newWord;
-    }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public String compileCode(String inputFilePath) throws ParseException, FileNotFoundException {
+        statistics.add(stats);
 
-        CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
-
-        this.sourceCode = cu.toString();
         return cu.toString();
-
     }
 
-    // this is for printing during comparison
-    public String printCode(String inputFilePath) {
-        File file = new File(inputFilePath);
-        String code = "";
-        try {
-            Scanner scanner = new Scanner(file);
-            while (scanner.hasNextLine()) {
-                code = code + scanner.nextLine() + "\n";
-            }
-            scanner.close();
-        } catch (FileNotFoundException fe) {
-
-        }
-
-        return code;
-
-    }
-
-    private String removeWhiteSpaces(String code) {
-        code = prettyPrinting(code); // make nice nice first
-        code = code.trim().replaceAll("\\s+", " ");
-        System.out.println("Removing unecessary whitespaces");
-        return code;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-    // String Literal Visitor
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    private class StringLiteralEncodeVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
-        @Override
-        public void visit(StringLiteralExpr ex, HashMap<String, String> hash) {
-
-            // create encrypted literal
-            String encrypted = encrypt(ex.toString().substring(1, ex.toString().length() - 1));
-            encrypted = "_D(\"" + encrypted + "\")";
-            hash.put(ex.toString(), encrypted);
-
-        }
-    }
 
     private String stringEncoding(String code) {
 
@@ -1051,44 +977,8 @@ public class Obfuscator {
         return cu.toString();
     }
 
-    // for combo box to display classes of parsed java file
-    public String[] getClasses() {
-        ArrayList<String> list = new ArrayList<String>();
-        CompilationUnit cu = StaticJavaParser.parse(this.sourceCode);
-        List<Node> childNodes = cu.getChildNodes();
-        for (Node n : childNodes) {
-            if (n instanceof ClassOrInterfaceDeclaration) {
-                ClassOrInterfaceDeclaration c = (ClassOrInterfaceDeclaration) n;
-                list.add(c.getNameAsString());
-                System.out.println(c.getNameAsString() + " hello");
-            }
-        }
-
-        // convert to array
-        String[] classNames = list.toArray(new String[list.size()]);
-        return classNames;
-    }
-
-    private class StringLiteralToUnicodeVisitor extends VoidVisitorAdapter<HashMap<String, String>> {
-        @Override
-        public void visit(StringLiteralExpr ex, HashMap<String, String> hash) {
-
-            String stringLiteral = ex.toString();
-
-            //remove double quotes (e.g. "FooBar" to FooBar) 
-            if (stringLiteral.length() > 0) {
-
-                stringLiteral = stringLiteral.substring(1, stringLiteral.length() - 1);
-                String unicode = StringUnicodeEncoderDecoder.encodeStringToUnicodeSequence(stringLiteral);
-                unicode = "\"" + unicode + "\"";
-                hash.put(ex.toString(), unicode);
     
-            }
-            
-            
-            
-        }
-    }
+    
 
     private String stringToUnicode(String code) {
         CompilationUnit cu = StaticJavaParser.parse(code);
@@ -1151,6 +1041,137 @@ public class Obfuscator {
         statistics.add(stats);
         return newCode;
     }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private void saveObfuscatedCode(String code, String outputFilePath) {
+        FileWriter fw;
+        try {
+            fw = new FileWriter(outputFilePath + "\\" + getFileName());
+            
+            fw.write(code);
+            fw.close();
+        } catch (IOException e) {
+
+        }
+    }
+
+    public String getFileName() {
+        return this.fileName;
+    }
+    public String compileCode(String inputFilePath) throws ParseException, FileNotFoundException {
+
+        CompilationUnit cu = StaticJavaParser.parse(new File(inputFilePath));
+
+        this.sourceCode = cu.toString();
+        return cu.toString();
+
+    }
+
+    // this is for printing during comparison
+    public String printCode(String inputFilePath) {
+        File file = new File(inputFilePath);
+        String code = "";
+        try {
+            Scanner scanner = new Scanner(file);
+            while (scanner.hasNextLine()) {
+                code = code + scanner.nextLine() + "\n";
+            }
+            scanner.close();
+        } catch (FileNotFoundException fe) {
+
+        }
+
+        return code;
+
+    }
+
+    
+
+    // for combo box to display classes of parsed java file
+    public String[] getClasses() {
+        ArrayList<String> list = new ArrayList<String>();
+        CompilationUnit cu = StaticJavaParser.parse(this.sourceCode);
+        List<Node> childNodes = cu.getChildNodes();
+        for (Node n : childNodes) {
+            if (n instanceof ClassOrInterfaceDeclaration) {
+                ClassOrInterfaceDeclaration c = (ClassOrInterfaceDeclaration) n;
+                list.add(c.getNameAsString());
+                System.out.println(c.getNameAsString() + " hello");
+            }
+        }
+
+        // convert to array
+        String[] classNames = list.toArray(new String[list.size()]);
+        return classNames;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // to use for printing all the stats in the frame.java
+    public String getStatistics() {
+        String text = "";
+
+        for (Statistics s : statistics) {
+            text = text + s.printStats();
+        }
+        return text;
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // help remove unecessary spaces in code
+    private String prettyPrinting(String code) {
+        CompilationUnit cu = StaticJavaParser.parse(code);
+        String cleanCode = cu.toString();
+        return cleanCode;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Remove of comments
+    private String removeComments(String code) {
+
+        StaticJavaParser.getConfiguration().setAttributeComments(false);
+        CompilationUnit cu = StaticJavaParser.parse(code);
+
+        code = cu.toString();
+        return code;
+
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private String randomWord() {
+        char[] letters = new char[] { '1', 'I', 'l' };
+        Random rand = new Random();
+        String newWord = "";
+        int wordLength = 12;
+
+        char[] firstLetters = new char[] { 'l', 'I' };
+        // initialize first random character for new method name, first character cannot
+        // use '1'
+
+        // to initialize first charcter of new method name with either l or I
+        int random = rand.nextInt(2);
+        char firstChar = firstLetters[random];
+        newWord = newWord + firstChar;
+
+        // loop to generate random method name (eg. l1l1lll1IIl)
+        for (int i = 0; i < wordLength; i++) {
+            int randomIndex = rand.nextInt(3);
+            char letter = letters[randomIndex];
+            newWord = newWord + letter;
+        }
+        return newWord;
+    }
+
+    
+
+    private String removeWhiteSpaces(String code) {
+        code = prettyPrinting(code); // make nice nice first
+        code = code.trim().replaceAll("\\s+", " ");
+        System.out.println("Removing unecessary whitespaces");
+        return code;
+    }
+
+    
+    
 
 }
 

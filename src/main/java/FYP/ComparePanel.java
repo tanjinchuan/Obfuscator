@@ -14,11 +14,13 @@ import javax.swing.UIManager;
 public class ComparePanel extends JPanel {
 
     public ComparePanel(JFrame frame, Obfuscator obfuscator, String inputFilePath, String outputFilePath) {
+
+        
         String originalText = "";
         String obfuscatedText = "";
-            originalText = obfuscator.printCode(inputFilePath);
+        originalText = obfuscator.printCode(inputFilePath);
             
-            obfuscatedText = obfuscator.printCode(outputFilePath);
+        obfuscatedText = obfuscator.printCode(outputFilePath);
 
         
         JPanel comparePanel = new JPanel();

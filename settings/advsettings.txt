@@ -3,9 +3,9 @@
 0_Public:1
 1_Protected:1
 5_Change Parameter Names:1
-10_Remove Comments:0
+10_Remove Comments:1
 8_String To Unicode:0
 9_Remove White Space:0
-7_String Encoding:0
+7_String Encoding:1
 6_Insert Dummy Code:1
 3_Change Class Names:1

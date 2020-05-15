@@ -17,6 +17,7 @@ public class AnswerPanel extends JPanel {
         
         this.setLayout(null);
 
+        
         JButton continueBtn = new JButton("Continue");
         continueBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
 

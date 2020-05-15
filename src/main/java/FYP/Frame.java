@@ -2,7 +2,8 @@ package FYP;
 
 import java.io.File;
 import java.awt.*;
-
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 
 import javax.swing.*;
@@ -38,7 +39,7 @@ public class Frame {
 	ProgressBarPanel progressBarPanel = new ProgressBarPanel();
 
 	//add final panel
-	FinalPanel finalPanel = new FinalPanel(this, frame, layeredPane, obfuscator);
+	FinalPanel finalPanel = new FinalPanel(this, frame, obfuscator, layeredPane);
 	
 
 	protected int highscore;
@@ -51,10 +52,17 @@ public class Frame {
 			public void run() {
 
 				try {
-					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					//UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 					UIManager.put("ToolTip.background", Color.WHITE);
 					UIManager.put("ToolTip.border",new LineBorder(Color.BLACK,1));
-			
+					UIManager.put("Button.font", new Font("Helvetica", Font.BOLD, 16));
+					UIManager.put("Label.font", new Font("Helvetica", Font.BOLD, 16));
+					UIManager.put("TextField.font", new Font("Helvetica", Font.BOLD, 16));
+					UIManager.put("CheckBox.font", new Font("Helvetica", Font.BOLD, 16));
+					UIManager.put("RadioButton.font", new Font("Helvetica", Font.BOLD, 22));
+					
+					UIManager.put("TextArea.font", new Font("Calibri", Font.BOLD, 22));
+					
 					Frame window = new Frame();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
@@ -100,7 +108,6 @@ public class Frame {
 	 */
 	private void initialize() {
 		
-
 		frame = new JFrame("Obsfuscator");
 		frame.setBounds(100, 100, 1024, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -115,7 +122,6 @@ public class Frame {
 		//initialize advsettings.txt;
 		advSettingsPanel.createSettingsFile();
 
-		
 		
 		
 		

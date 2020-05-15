@@ -27,7 +27,7 @@ import java.beans.PropertyChangeListener;
 public class FinalPanel extends JPanel {
 
 
-	public FinalPanel(Frame frameClass, JFrame frame, LayeredPane layeredPane, Obfuscator obfuscator) {
+	public FinalPanel(Frame frameClass, JFrame frame, Obfuscator obfuscator, LayeredPane layeredPane) {
         
 		this.setLayout(null);
         
@@ -58,7 +58,7 @@ public class FinalPanel extends JPanel {
 				JScrollPane changelogScrollPane = new JScrollPane(changelog); 
 				changelogScrollPane.setPreferredSize(new Dimension (1500, 800));
 				
-				JOptionPane optionPane = new JOptionPane(changelogScrollPane, JOptionPane.YES_NO_OPTION,  JOptionPane.PLAIN_MESSAGE, null, customOptions, null);
+				JOptionPane optionPane = new JOptionPane(changelogScrollPane, JOptionPane.INFORMATION_MESSAGE, JOptionPane.PLAIN_MESSAGE, null, customOptions, null);
 				
 				JDialog dialog = new JDialog(frame);
 				dialog.add(optionPane);
@@ -114,7 +114,7 @@ public class FinalPanel extends JPanel {
 		//Final Panel view output file button
 		//////////////////////////////////////////////////////
 		
-		JButton btnViewOutput = new JButton("View output file");
+		JButton btnViewOutput = new JButton("View Comparison");
 		btnViewOutput.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
 		btnViewOutput.setBounds(130, 196, 180, 60);
 		this.add(btnViewOutput);
