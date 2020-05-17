@@ -43,7 +43,7 @@ public class AdvSettingsPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 				Help help = new Help();
-				help.showFrame();
+				help.openPDF();
 			}
 		});
 

@@ -8,6 +8,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import java.awt.*;
@@ -31,7 +32,7 @@ public class InitialPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 				Help help = new Help();
-				help.showFrame();
+				help.openPDF();
 			}
 		});
 		// button to view tutorial

@@ -12,9 +12,11 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
-    
+
+ 
 
   <dependencies>
+
     <dependency>
       <groupId>com.github.michaelgantman</groupId>
       <artifactId>MgntUtils</artifactId>
@@ -45,10 +47,21 @@
       <version>3.13.3</version>
     </dependency>
 
+ 
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.6</version>
+    </dependency>
     
   </dependencies>
   <build>
     <resources>
+      <resource>
+        <directory>
+          src/help
+        </directory>
+      </resource>
       <resource>
         <directory>
           src/icons
