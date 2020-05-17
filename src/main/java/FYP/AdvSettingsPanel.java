@@ -60,7 +60,7 @@ public class AdvSettingsPanel extends JPanel {
 		JCheckBox chckbxChangeClassName = new JCheckBox("Change Class Names");
 		JCheckBox chckbxChangeVariables = new JCheckBox("Change Variable Names");
 		JCheckBox chckbxChangeParameters = new JCheckBox("Change Parameter Names");
-		JCheckBox chckbxRemoveWhitespace = new JCheckBox("Remove White Space");
+		JCheckBox chckbxRemoveWhitespace = new JCheckBox("Compact Code");
 		JCheckBox chckbxInsertDummyCode = new JCheckBox("Insert Dummy Code");
 		JCheckBox chckbxRemoveComments = new JCheckBox("Remove Comments");
 		JCheckBox chckbxStringEncoding = new JCheckBox("String Encoding");
