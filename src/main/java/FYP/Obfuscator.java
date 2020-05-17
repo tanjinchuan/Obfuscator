@@ -196,7 +196,7 @@ public class Obfuscator {
 
         // because my methods make the code neat, Removing white spaces must put at end
         // if user wants it
-        if (settings.get("9_Remove White Space") == 1) {
+        if (settings.get("9_Compact Code") == 1) {
             code = removeWhiteSpaces(code);
         } else {
             code = prettyPrinting(code);
