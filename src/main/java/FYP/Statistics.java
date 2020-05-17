@@ -35,10 +35,15 @@ class Statistics {
     
             }
         }
+        else if (this.statType.equals("Removed Comments")) {
+            for (String s: stats.keySet()) {
+                text = text + String.format("%-20s %-20s\n\n", this.statType + ": ", s);
+            }
+        }
         else {
                 
             for(String s: stats.keySet()) {
-                text = text + String.format("%-20s %-20s -----------> %-20s Replaced %2d times\n\n", this.statType + ": ", s, stats.get(s), counts.get(s));
+                text = text + String.format("%-20s %-20s -----------> %-30s Replaced %2d times\n\n", this.statType + ": ", s, stats.get(s), counts.get(s));
 
             }
         }

@@ -52,11 +52,11 @@ public class Help extends JFrame{
 		this.getContentPane().add(panel2);
 
         UserManual um = new UserManual();
-        ArrayList<ImageIcon> userManual = um.getUserManual();
+        ArrayList<ArrayList<ImageIcon>> userManual = um.getUserManual();
 
 		//create jtextpane
 		JTextPane jt = new JTextPane();
-		jt.insertIcon(userManual.get(0));
+		jt.insertIcon(userManual.get(0).get(0));
 		jt.setLocation(0, 0);
 		jt.setEditable(false);
 		jt.setBackground(Color.WHITE);
@@ -96,51 +96,51 @@ public class Help extends JFrame{
 		b0.addActionListener(new ActionListener() {
             @Override
 			public void actionPerformed(ActionEvent e) {
-				jt.insertIcon(userManual.get(0));
+				jt.insertIcon(userManual.get(0).get(0));
 			}
 		});
 		
 		b1.addActionListener(new ActionListener() {
             @Override
 			public void actionPerformed(ActionEvent e) {
-				jt.insertIcon(userManual.get(1));
+				jt.insertIcon(userManual.get(1).get(0));
 			}
 		});
 		
 		b2.addActionListener(new ActionListener() {
             @Override
 			public void actionPerformed(ActionEvent e) {
-				jt.insertIcon(userManual.get(2));
+				jt.insertIcon(userManual.get(2).get(0));
 			}
 		});
 		
 		b3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				jt.insertIcon(userManual.get(3));
+				jt.insertIcon(userManual.get(3).get(0));
 			}
 		});
 		
 		b4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				jt.insertIcon(userManual.get(4));
+				jt.insertIcon(userManual.get(4).get(0));
 			}
 		});
 		
 		b5.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				jt.insertIcon(userManual.get(5));
+				jt.insertIcon(userManual.get(5).get(0));
 			}
 		});
 		
 		b6.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				jt.insertIcon(userManual.get(5));
+				jt.insertIcon(userManual.get(6).get(0));
 			}
 		});
 		
 		b7.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				jt.insertIcon(userManual.get(5));
+				jt.insertIcon(userManual.get(7).get(0));
 			}
 		});
 		

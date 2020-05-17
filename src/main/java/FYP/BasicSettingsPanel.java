@@ -28,6 +28,7 @@ public class BasicSettingsPanel extends JPanel{
 
 		this.setLayout(null);
 		
+		
 		//add help label
 		JButton helpButton = new JButton("Help");
 		helpButton.setBounds(50, 50, 100, 25);

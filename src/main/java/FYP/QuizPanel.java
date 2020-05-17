@@ -21,10 +21,10 @@ public class QuizPanel extends JPanel {
 	Quiz quiz = new Quiz();
 
 	protected int currentScore = 0;
-
+	
 	public QuizPanel(Frame frame, LayeredPane layeredPane, JPanel initialPanel) {
 		this.setLayout(null);
-
+		
 		QuizPanel quizPanel = this;
 
 		ArrayList<Questions> quizList = quiz.getQuizList();
@@ -35,7 +35,7 @@ public class QuizPanel extends JPanel {
 		Collections.shuffle(quizList);
 
 		Questions firstQuestion = quizList.get(0);
-		quizTextArea.setText("Question 1 of " + quizList.size() + "\n" + firstQuestion.getQuestion());
+		quizTextArea.setText("Question 1 of " + quizList.size() + "\n\n" + firstQuestion.getQuestion());
 
 		quizTextArea.setBounds(5, 40, 1024, 249);
 		quizTextArea.setEditable(false);
@@ -44,20 +44,20 @@ public class QuizPanel extends JPanel {
 		highscoreLabel.setBounds(50, 10, 100, 25);
 		this.add(highscoreLabel);
 		
-		JRadioButton rdbtn1 = new JRadioButton("a");
-		rdbtn1.setBounds(113, 297, 127, 25);
+		JRadioButton rdbtn1 = new JRadioButton();
+		rdbtn1.setBounds(20, 297, 800, 25);
 		rdbtn1.setActionCommand("a");
 
-		JRadioButton rdbtn2 = new JRadioButton("b");
-		rdbtn2.setBounds(113, 332, 127, 25);
+		JRadioButton rdbtn2 = new JRadioButton();
+		rdbtn2.setBounds(20, 332, 800, 25);
 		rdbtn2.setActionCommand("b");
 
-		JRadioButton rdbtn3 = new JRadioButton("c");
-		rdbtn3.setBounds(113, 367, 127, 25);
+		JRadioButton rdbtn3 = new JRadioButton();
+		rdbtn3.setBounds(20, 367, 800, 25);
 		rdbtn3.setActionCommand("c");
 
-		JRadioButton rdbtn4 = new JRadioButton("d");
-		rdbtn4.setBounds(113, 402, 127, 25);
+		JRadioButton rdbtn4 = new JRadioButton();
+		rdbtn4.setBounds(20, 402, 800, 25);
 		rdbtn4.setActionCommand("d");
 
 		ButtonGroup rdbtnGroup = new ButtonGroup();
@@ -67,16 +67,22 @@ public class QuizPanel extends JPanel {
 		rdbtnGroup.add(rdbtn4);
 
 	
-		int options = firstQuestion.getOptions();
+		int options = firstQuestion.getOptions().length;
 
 		if (options == 2) {
-			rdbtn3.setVisible(false);
-			rdbtn4.setVisible(false);
+			rdbtn1.setText(quizList.get(0).getOptions()[0]);
+			rdbtn2.setText(quizList.get(0).getOptions()[1]);
+		}
+		else {
+			rdbtn1.setText(quizList.get(0).getOptions()[0]);
+			rdbtn2.setText(quizList.get(0).getOptions()[1]);
+			rdbtn3.setText(quizList.get(0).getOptions()[2]);
+			rdbtn4.setText(quizList.get(0).getOptions()[3]);
 		}
 
 		JButton btnQuizSubmit = new JButton("Submit");
 		btnQuizSubmit.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
-		btnQuizSubmit.setBounds(800, 399, 97, 25);
+		btnQuizSubmit.setBounds(830, 399, 97, 25);
 		btnQuizSubmit.setEnabled(false);
 
 		//submit button 
@@ -104,16 +110,18 @@ public class QuizPanel extends JPanel {
 					try {
 
 						Questions question = quizList.get(quizIndex);
-						int options = question.getOptions();
-						quizTextArea.setText("Question " + (quizIndex + 1) + " of " + quizList.size() + "\n" + question.getQuestion());
+						int options = question.getOptions().length;
+						quizTextArea.setText("Question " + (quizIndex + 1) + " of " + quizList.size() + "\n\n" + question.getQuestion());
 						rdbtnGroup.clearSelection();
 						if (options == 2) {
-							rdbtn3.setVisible(false);
-							rdbtn4.setVisible(false);
+							rdbtn1.setText(quizList.get(quizIndex).getOptions()[0]);
+							rdbtn2.setText(quizList.get(quizIndex).getOptions()[1]);
 						}
 						else {
-							rdbtn3.setVisible(true);
-							rdbtn4.setVisible(true);
+							rdbtn1.setText(quizList.get(quizIndex).getOptions()[0]);
+							rdbtn2.setText(quizList.get(quizIndex).getOptions()[1]);
+							rdbtn3.setText(quizList.get(quizIndex).getOptions()[2]);
+							rdbtn4.setText(quizList.get(quizIndex).getOptions()[3]);
 						}
 					} catch (IndexOutOfBoundsException exception) {
 						
@@ -143,6 +151,7 @@ public class QuizPanel extends JPanel {
 				radio.addItemListener(new ItemListener() {
 					@Override
 					public void itemStateChanged(ItemEvent e) {
+						
 						if (rdbtnGroup.getSelection() != null) {
 							btnQuizSubmit.setEnabled(true);
 						}				

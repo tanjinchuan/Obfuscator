@@ -5,21 +5,19 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 
 public class UserManual {
-    private ArrayList<ImageIcon> userManual = new ArrayList<ImageIcon>();
+    private ArrayList<ArrayList<ImageIcon>> userManual = new ArrayList<ArrayList<ImageIcon>>();
 
     public UserManual() {
         loadImages();
     }
     private void loadImages() {
-        this.userManual.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson1.jpg")));
-        this.userManual.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson2.jpg")));
-        this.userManual.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson3.jpg")));
-        this.userManual.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson4.jpg")));
-        this.userManual.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson5.jpg")));
         
+        // ArrayList<ImageIcon> part1 = new ArrayList<ImageIcon>();
+        // part1.add(new ImageIcon(this.getClass().getClassLoader().getResource("manual1.jpg")));
+        // this.userManual.add(part1);
     }
 
-    public ArrayList<ImageIcon> getUserManual() {
+    public ArrayList<ArrayList<ImageIcon>> getUserManual() {
         return this.userManual;
     }
 }

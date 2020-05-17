@@ -59,7 +59,7 @@ public class Frame {
 					UIManager.put("Label.font", new Font("Helvetica", Font.BOLD, 16));
 					UIManager.put("TextField.font", new Font("Helvetica", Font.BOLD, 16));
 					UIManager.put("CheckBox.font", new Font("Helvetica", Font.BOLD, 16));
-					UIManager.put("RadioButton.font", new Font("Helvetica", Font.BOLD, 22));
+					UIManager.put("RadioButton.font", new Font("Helvetica", Font.BOLD, 16));
 					
 					UIManager.put("TextArea.font", new Font("Calibri", Font.BOLD, 22));
 					

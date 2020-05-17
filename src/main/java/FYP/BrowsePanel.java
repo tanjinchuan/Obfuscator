@@ -40,7 +40,6 @@ public class BrowsePanel extends JPanel {
 
     public BrowsePanel(JFrame frame, Frame frameClass, Obfuscator obfuscator, LayeredPane layeredPane) {
 		
-		
 		JLabel inputFileTypeLabel = new JLabel("");
 		
 		inputTextField.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
@@ -58,8 +57,6 @@ public class BrowsePanel extends JPanel {
         outputTextField.setEditable(false);
         this.add(outputTextField);
         
-        
-
 
 		inputFileTypeLabel.setBounds(200, 181, 470, 16);
 	    this.add(inputFileTypeLabel);

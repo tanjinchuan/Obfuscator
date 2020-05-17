@@ -33,7 +33,7 @@ public class AdvSettingsPanel extends JPanel {
 	public AdvSettingsPanel(Frame frameClass, Obfuscator obfuscator, LayeredPane layeredPane) {
 
 		this.setLayout(null);
-
+		
 		//add help label
 		JButton helpButton = new JButton("Help");
 		helpButton.setBounds(50, 50, 100, 25);

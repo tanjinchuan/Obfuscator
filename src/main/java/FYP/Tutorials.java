@@ -14,33 +14,29 @@ class Tutorials {
     }
     private void loadTutorialImages() {
         ArrayList<ImageIcon> chapter0 = new ArrayList<ImageIcon>();
-        chapter0.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson1.jpg")));
-        chapter0.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson2.jpg")));
-        chapter0.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson3.jpg")));
-        chapter0.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson4.jpg")));
-        chapter0.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson5.jpg")));
+        chapter0.add(new ImageIcon(this.getClass().getClassLoader().getResource("Slide1.PNG")));
+        chapter0.add(new ImageIcon(this.getClass().getClassLoader().getResource("Slide2.PNG")));
+        chapter0.add(new ImageIcon(this.getClass().getClassLoader().getResource("Slide3.PNG")));
         
         ArrayList<ImageIcon> chapter1 = new ArrayList<ImageIcon>();
-        chapter1.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson1.jpg")));
-        chapter1.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson2.jpg")));
-        chapter1.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson3.jpg")));
-        chapter1.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson4.jpg")));
-        chapter1.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson5.jpg")));
+        chapter1.add(new ImageIcon(this.getClass().getClassLoader().getResource("Slide4.PNG")));
+        chapter1.add(new ImageIcon(this.getClass().getClassLoader().getResource("Slide5.PNG")));
+        chapter1.add(new ImageIcon(this.getClass().getClassLoader().getResource("Slide6.PNG")));
         
         ArrayList<ImageIcon> chapter2 = new ArrayList<ImageIcon>();
-        chapter2.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson1.jpg")));
-        chapter2.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson2.jpg")));
-        chapter2.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson3.jpg")));
-        chapter2.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson4.jpg")));
-        chapter2.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson5.jpg")));
+        chapter2.add(new ImageIcon(this.getClass().getClassLoader().getResource("Slide7.PNG")));
+        chapter2.add(new ImageIcon(this.getClass().getClassLoader().getResource("Slide8.PNG")));
+        chapter2.add(new ImageIcon(this.getClass().getClassLoader().getResource("Slide9.PNG")));
+        chapter2.add(new ImageIcon(this.getClass().getClassLoader().getResource("Slide10.PNG")));
+        chapter2.add(new ImageIcon(this.getClass().getClassLoader().getResource("Slide11.PNG")));
+        chapter2.add(new ImageIcon(this.getClass().getClassLoader().getResource("Slide12.PNG")));
         
         ArrayList<ImageIcon> chapter3 = new ArrayList<ImageIcon>();
-        chapter3.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson1.jpg")));
-        chapter3.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson2.jpg")));
-        chapter3.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson3.jpg")));
-        chapter3.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson4.jpg")));
-        chapter3.add(new ImageIcon(this.getClass().getClassLoader().getResource("lesson5.jpg")));
-        
+        chapter3.add(new ImageIcon(this.getClass().getClassLoader().getResource("Slide13.PNG")));
+        chapter3.add(new ImageIcon(this.getClass().getClassLoader().getResource("Slide14.PNG")));
+        chapter3.add(new ImageIcon(this.getClass().getClassLoader().getResource("Slide15.PNG")));
+        chapter3.add(new ImageIcon(this.getClass().getClassLoader().getResource("Slide16.PNG")));
+        chapter3.add(new ImageIcon(this.getClass().getClassLoader().getResource("Slide17.PNG")));
         
         this.chapters.add(chapter0);
         this.chapters.add(chapter1);

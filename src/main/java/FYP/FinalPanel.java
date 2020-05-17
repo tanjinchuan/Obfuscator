@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 
@@ -70,12 +71,18 @@ public class FinalPanel extends JPanel {
 				optionPane.addPropertyChangeListener(new PropertyChangeListener() {
 					@Override
 					public void propertyChange(PropertyChangeEvent evt) {
+						
 						if (optionPane.getValue() == customOptions[0]) {
 							
 							dialog.setVisible(false);
 						}
 
 						else if (optionPane.getValue() == customOptions[1]){
+							try {
+								UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+							} catch (Exception exception) {
+			
+							}
 							optionPane.setValue(JOptionPane.UNINITIALIZED_VALUE);
 							JFileChooser fc = new JFileChooser();
 							fc.setDialogTitle("Specify a place to save Changelog");
@@ -86,18 +93,27 @@ public class FinalPanel extends JPanel {
 							if (user_selection == JFileChooser.APPROVE_OPTION) {
 									
 								File changelogFile = new File(fc.getSelectedFile() + ".txt");
+								
 								try {
 
 									FileWriter fw = new FileWriter(changelogFile);
 									fw.write(changelog.getText());
 									fw.close();
+
 									
-									
+									JOptionPane.showMessageDialog(frame, String.format("%s has been saved!", changelogFile.getName()), "Message", JOptionPane.INFORMATION_MESSAGE);
+
 								
 
 								} catch (IOException ie) {
 									System.out.println("IO Error");
 								}
+							}
+
+							try {
+								UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+							} catch (Exception exception) {
+			
 							}
 						}
 					}

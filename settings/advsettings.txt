@@ -1,11 +1,11 @@
-4_Change Variable Names:1
-2_Private:1
-0_Public:1
-1_Protected:1
-5_Change Parameter Names:1
-10_Remove Comments:1
+4_Change Variable Names:0
+2_Private:0
+0_Public:0
+1_Protected:0
+5_Change Parameter Names:0
+10_Remove Comments:0
 8_String To Unicode:0
 9_Remove White Space:0
-7_String Encoding:1
-6_Insert Dummy Code:1
-3_Change Class Names:1
+7_String Encoding:0
+6_Insert Dummy Code:0
+3_Change Class Names:0

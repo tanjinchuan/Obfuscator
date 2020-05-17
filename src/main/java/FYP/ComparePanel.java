@@ -15,11 +15,15 @@ public class ComparePanel extends JPanel {
 
     public ComparePanel(JFrame frame, Obfuscator obfuscator, String inputFilePath, String outputFilePath) {
 
-        
         String originalText = "";
         String obfuscatedText = "";
-        originalText = obfuscator.printCode(inputFilePath);
+        try {
+
+            originalText = obfuscator.compileCode(inputFilePath);
             
+        } catch (Exception e) {
+
+        }
         obfuscatedText = obfuscator.printCode(outputFilePath);
 
         

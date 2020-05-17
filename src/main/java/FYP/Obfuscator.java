@@ -1127,10 +1127,16 @@ public class Obfuscator {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Remove of comments
     private String removeComments(String code) {
-
-        StaticJavaParser.getConfiguration().setAttributeComments(false);
+        Statistics stats = new Statistics();
+        stats.setType("Removed Comments");
+        
         CompilationUnit cu = StaticJavaParser.parse(code);
-
+        for (Node n: cu.getComments()) {
+            stats.setStats(n.toString().trim(), "");
+            n.remove();
+        }
+        statistics.add(stats);
+        
         code = cu.toString();
         return code;
 

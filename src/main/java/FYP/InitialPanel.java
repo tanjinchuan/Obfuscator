@@ -19,8 +19,21 @@ public class InitialPanel extends JPanel {
 
 	public InitialPanel(Frame frame, LayeredPane layeredPane) {
 		
-
+		
 		InitialPanel initialPanel = this;
+
+		//add help label
+		JButton helpButton = new JButton("Help");
+		helpButton.setBounds(50, 50, 100, 25);
+		helpButton.setVisible(true);
+		this.add(helpButton);
+		helpButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				Help help = new Help();
+				help.showFrame();
+			}
+		});
 		// button to view tutorial
 		JButton btnViewTutorial = new JButton("View tutorial");
 		btnViewTutorial.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));

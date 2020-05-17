@@ -4,12 +4,12 @@ class Questions {
 
     private String question;
     private String answer;
-    private int options; // to show the amount of options for the question
+    private String[] options; // to show the amount of options for the question
 
-    public Questions(String ques, String ans, int num){
+    public Questions(String ques, String[] answers, String ans){
         this.question = ques;
         this.answer = ans;
-        this.options = num;
+        this.options = answers;
     }
 
     public String getAnswer() {
@@ -18,7 +18,7 @@ class Questions {
     public String getQuestion() {
         return question;
     }
-    public int getOptions() {
+    public String[] getOptions() {
         return options;
     }
 
