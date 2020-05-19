@@ -36,22 +36,6 @@ public class Help {
 
 	}
 
-	public void copyPDF() {
-		File source = new File(this.getClass().getClassLoader().getResource("helpmanual.pdf").getFile());
-		File target = new File("./help/");  
-		if (target.exists() == false) {
-			try {
-				FileUtils.copyFileToDirectory(source, target);
-
-			} catch (IOException e) {
-	
-				e.printStackTrace();
-			}
-		}
-		
-
-	}
-
 
 }
            

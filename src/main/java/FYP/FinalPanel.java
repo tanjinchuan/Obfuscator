@@ -102,7 +102,7 @@ public class FinalPanel extends JPanel {
 
 									
 									JOptionPane.showMessageDialog(frame, String.format("%s has been saved!", changelogFile.getName()), "Message", JOptionPane.INFORMATION_MESSAGE);
-
+									
 								
 
 								} catch (IOException ie) {

@@ -226,7 +226,7 @@ public class BrowsePanel extends JPanel {
 		btnBrowsePanelBack.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				layeredPane.switchPanel(frameClass.initialPanel);
+				layeredPane.switchPanel(frameClass.homePanel);
 			}
 		});
 		btnBrowsePanelBack.setBounds(48, 360, 100, 60);

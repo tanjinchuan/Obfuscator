@@ -35,7 +35,7 @@ public class ComparePanel extends JPanel {
         originalTextArea.setWrapStyleWord(true); 
         originalTextArea.setEditable(false);
         JScrollPane originalScrollPane = new JScrollPane(originalTextArea); 
-        originalScrollPane.setPreferredSize(new Dimension(500, 600));
+        originalScrollPane.setPreferredSize(new Dimension(800, 900));
         
         //Text area for obfuscated code
         JTextArea obfuscatedTextArea = new JTextArea(obfuscatedText);
@@ -45,12 +45,11 @@ public class ComparePanel extends JPanel {
         obfuscatedTextArea.setEditable(false);
         
         JScrollPane obfuscatedScrollPane = new JScrollPane(obfuscatedTextArea);  
-        obfuscatedScrollPane.setPreferredSize(new Dimension(500, 600));
+        obfuscatedScrollPane.setPreferredSize(new Dimension(800, 900));
         
         comparePanel.add(originalScrollPane);
         comparePanel.add(obfuscatedScrollPane);
         
-        UIManager.put("OptionPane.minimumSize",new Dimension(700,700)); 
         JOptionPane.showConfirmDialog(frame, comparePanel, "Comparing files", JOptionPane.CLOSED_OPTION , JOptionPane.PLAIN_MESSAGE, null);
         
     

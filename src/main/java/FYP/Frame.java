@@ -24,7 +24,7 @@ public class Frame {
 	BrowsePanel browsePanel = new BrowsePanel(frame, this, obfuscator, layeredPane);
 
 	
-	InitialPanel initialPanel = new InitialPanel(this, layeredPane);
+	HomePanel homePanel = new HomePanel(this, layeredPane);
 
 	
 	//for advanced settings
@@ -61,8 +61,11 @@ public class Frame {
 					UIManager.put("CheckBox.font", new Font("Helvetica", Font.BOLD, 16));
 					UIManager.put("RadioButton.font", new Font("Helvetica", Font.BOLD, 16));
 					
-					UIManager.put("TextArea.font", new Font("Calibri", Font.BOLD, 22));
-					
+					UIManager.put("TextArea.font", new Font("Calibri", Font.BOLD, 20));
+					UIManager.put("OptionPane.maximumSize",new Dimension(300,200)); 
+					UIManager.put("OptionPane.minimumSize",new Dimension(100,100)); 
+
+
 					Frame window = new Frame();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
@@ -117,7 +120,7 @@ public class Frame {
 		frame.getContentPane().add(layeredPane);
 		
 		//testing
-		layeredPane.switchPanel(initialPanel);
+		layeredPane.switchPanel(homePanel);
 
 		//initialize advsettings.txt;
 		advSettingsPanel.createSettingsFile();

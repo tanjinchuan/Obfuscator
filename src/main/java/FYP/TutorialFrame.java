@@ -50,13 +50,24 @@ public class TutorialFrame extends JFrame{
 
         //create Jbuttons
 		JButton b0 = new JButton("1. Introduction");
-		b0.setBounds(0, 0, 230, 40);
+		b0.setBounds(0, 0, 220, 40);
 		JButton b1 = new JButton("2. Types of Obfuscation");
-		b1.setBounds(0, 40, 230, 40);
+		b1.setBounds(0, 40, 220, 40);
 		JButton b2 = new JButton("3. Effects of Obfuscation");
-		b2.setBounds(0, 80, 230, 40);
+		b2.setBounds(0, 80, 220, 40);
 		JButton b3 = new JButton("4. Impacts of Obfuscation");
-		b3.setBounds(0, 120, 230, 40);
+		b3.setBounds(0, 120, 220, 40);
+
+		JButton endTutorial = new JButton("End Tutorial");
+		endTutorial.setBounds(0, 540, 220, 40);
+		this.add(endTutorial);
+		JFrame tut = this;
+		endTutorial.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				tut.dispose();
+			}
+		});
 
         //add to arraylist
 		ArrayList<JButton>buttons = new ArrayList<JButton>();

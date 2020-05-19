@@ -71,7 +71,7 @@ public class EndQuizPanel extends JPanel {
         backBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                layeredPane.switchPanel(frame.initialPanel);
+                layeredPane.switchPanel(frame.homePanel);
             }
         });
 
@@ -87,7 +87,7 @@ public class EndQuizPanel extends JPanel {
         retakeQuizBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-				QuizPanel quizPanel = new QuizPanel(frame, layeredPane, frame.initialPanel);
+				QuizPanel quizPanel = new QuizPanel(frame, layeredPane, frame.homePanel);
                 layeredPane.switchPanel(quizPanel);
             }
         });
