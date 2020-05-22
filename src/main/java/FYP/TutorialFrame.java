@@ -24,7 +24,7 @@ public class TutorialFrame extends JFrame{
 		this.setVisible(true);
 		this.setTitle("Tutorial");
 		this.setResizable(false);
-        this.setBounds(100, 100, 1220, 620);
+        this.setBounds(0, 0, 1220, 620);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 

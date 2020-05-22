@@ -43,14 +43,35 @@ public class Quiz {
         "c) Hackers have higher difficulty sidestepping the limitations enforced by licensing.",
         "d) Applications will be less vulnerable to threats."}, "b");
 
-    Questions q6 = new Questions("Which of the following is a disadvantage of obfuscation",
-
+    Questions q6 = new Questions("Which of the following is a disadvantage of obfuscation?",
     new String[] {"a) Hackers will take a long time to reverse engineer obfuscated code",
     "b)	Tempered code will be able to be detected by owners faster.",
     "c) Renaming of variables create higher obscurity.",
     "d) Performance will be affected by higher levels of obfuscation."}, "d");
 
+    Questions q7 = new Questions("Comment removal forces third parties to fully analyze and understand the entire project, making analysis inefficient.",
+    new String[] {"a) True", "b) False"}, "a");
+    
+    Questions q8 = new Questions("What does Control Flow Obfuscation do to code?",
+    new String[] {"a) Disrupts the logic of the code such that it is hard for programmers to understand.",
+    "b) Decrease runtime execution.",
+    "c) Renames different variables of code such that it confuses third parties.",
+    "d) Convert Strings to make them readable and discoverable."}, "a");
 
+    Questions q9 = new Questions("Which of the following obfuscation techniques hides strings in the executables with the consequence of \nruntime performance?",
+    new String[] {"a) Comment Removal",
+    "b) Control Flow Obfuscation",
+    "c) Dummy Code Insertion",
+    "d) String Encryption"}, "d");
+    
+    Questions q10 = new Questions("Which of the following is true?",
+    new String[] {"a) Obfuscation is a permanent modification of an executable which is NOT possible to reverse engineer.",
+        "b) Obfuscation results in triggering certain Anti-virus programmes due to the nature of the process.",
+        "c) Obfuscation is illegal.",
+        "d) Obfuscation creates decreases runtime performance without any significant increase to security to executables."
+        }, "b");
+    
+    
 
     public Quiz() {
         this.quizList.add(q1);
@@ -59,6 +80,10 @@ public class Quiz {
         this.quizList.add(q4);
         this.quizList.add(q5);
         this.quizList.add(q6);
+        this.quizList.add(q7);
+        this.quizList.add(q8);
+        this.quizList.add(q9);
+        this.quizList.add(q10);
         
     }
 

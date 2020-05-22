@@ -3,7 +3,6 @@ package FYP;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.awt.Color;
-import java.awt.Font;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
@@ -15,7 +14,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
-import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -182,12 +180,9 @@ public class BrowsePanel extends JPanel {
                 
 				String inputFilePath = getInput();
 				String outputFilePath = getOutput();
-				if (checkFileExists(inputFilePath) == false) {
-					JOptionPane.showMessageDialog(frame, "Please choose valid input .java file", "Warning", JOptionPane.OK_OPTION);
-
-				}
 				
-				else if (checkDir(outputFilePath) == false){
+				
+				if (checkDir(outputFilePath) == false){
 					JOptionPane.showMessageDialog(frame, "Please choose valid output location", "Warning", JOptionPane.OK_OPTION);
 
 				}
@@ -203,13 +198,18 @@ public class BrowsePanel extends JPanel {
 						DefaultComboBoxModel model = new DefaultComboBoxModel(array);
 						frameClass.basicSettingsPanel.comboBox.setModel(model);
 						frameClass.advSettingsPanel.comboBox.setModel (model);
+						layeredPane.switchPanel(frameClass.basicSettingsPanel);
 
 					} catch (FileNotFoundException fe) {
+						JOptionPane.showMessageDialog(frame, "Input File Not Found! ", "Warning", JOptionPane.OK_OPTION);
 
 					} catch (ParseException ie) {
 						
+					} catch (Exception excep) {
+						JOptionPane.showMessageDialog(frame, "Syntax Error in Input file, Please check Java File ", "Warning", JOptionPane.OK_OPTION);
+
 					}
-					layeredPane.switchPanel(frameClass.basicSettingsPanel);
+					
 
 				}
 				

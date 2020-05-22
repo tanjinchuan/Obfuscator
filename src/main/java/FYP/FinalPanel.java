@@ -57,14 +57,14 @@ public class FinalPanel extends JPanel {
 				changelog.setEditable(false);
 
 				JScrollPane changelogScrollPane = new JScrollPane(changelog); 
-				changelogScrollPane.setPreferredSize(new Dimension (1500, 800));
+				changelogScrollPane.setPreferredSize(new Dimension (1200, 650));
 				
 				JOptionPane optionPane = new JOptionPane(changelogScrollPane, JOptionPane.INFORMATION_MESSAGE, JOptionPane.PLAIN_MESSAGE, null, customOptions, null);
 				
 				JDialog dialog = new JDialog(frame);
 				dialog.add(optionPane);
 
-				dialog.setBounds(0, 0, 1500, 800);
+				dialog.setBounds(0, 0, 1200, 650);
 				dialog.setVisible(true);
 				
 

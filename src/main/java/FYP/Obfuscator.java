@@ -72,12 +72,12 @@ public class Obfuscator {
                 code = changeInterfaceNames(code);
                 code = changeVariableNames(code);
                 code = changeParameterNames(code);
-                code = removeWhiteSpaces(code);
 
                 //add string encoding and libraries and decrypt method
                 code = stringEncoding(code);
                 code = addLibraries(code);
                 code = addDecryptMethod(code);  
+                code = removeWhiteSpaces(code);
 
                 break;
             }

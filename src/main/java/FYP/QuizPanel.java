@@ -45,19 +45,19 @@ public class QuizPanel extends JPanel {
 		this.add(highscoreLabel);
 		
 		JRadioButton rdbtn1 = new JRadioButton();
-		rdbtn1.setBounds(20, 297, 800, 25);
+		rdbtn1.setBounds(20, 297, 900, 20);
 		rdbtn1.setActionCommand("a");
 
 		JRadioButton rdbtn2 = new JRadioButton();
-		rdbtn2.setBounds(20, 332, 800, 25);
+		rdbtn2.setBounds(20, 332, 900, 20);
 		rdbtn2.setActionCommand("b");
 
 		JRadioButton rdbtn3 = new JRadioButton();
-		rdbtn3.setBounds(20, 367, 800, 25);
+		rdbtn3.setBounds(20, 367, 900, 20);
 		rdbtn3.setActionCommand("c");
 
 		JRadioButton rdbtn4 = new JRadioButton();
-		rdbtn4.setBounds(20, 402, 800, 25);
+		rdbtn4.setBounds(20, 402, 900, 20);
 		rdbtn4.setActionCommand("d");
 
 		ButtonGroup rdbtnGroup = new ButtonGroup();
@@ -72,17 +72,20 @@ public class QuizPanel extends JPanel {
 		if (options == 2) {
 			rdbtn1.setText(quizList.get(0).getOptions()[0]);
 			rdbtn2.setText(quizList.get(0).getOptions()[1]);
+			rdbtn3.setVisible(false);
+			rdbtn4.setVisible(false);
 		}
 		else {
 			rdbtn1.setText(quizList.get(0).getOptions()[0]);
 			rdbtn2.setText(quizList.get(0).getOptions()[1]);
 			rdbtn3.setText(quizList.get(0).getOptions()[2]);
 			rdbtn4.setText(quizList.get(0).getOptions()[3]);
+			
 		}
 
 		JButton btnQuizSubmit = new JButton("Submit");
 		btnQuizSubmit.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
-		btnQuizSubmit.setBounds(830, 399, 97, 25);
+		btnQuizSubmit.setBounds(900, 423, 100, 25);
 		btnQuizSubmit.setEnabled(false);
 
 		//submit button 
@@ -116,8 +119,12 @@ public class QuizPanel extends JPanel {
 						if (options == 2) {
 							rdbtn1.setText(quizList.get(quizIndex).getOptions()[0]);
 							rdbtn2.setText(quizList.get(quizIndex).getOptions()[1]);
+							rdbtn3.setVisible(false);
+							rdbtn4.setVisible(false);
 						}
 						else {
+							rdbtn3.setVisible(true);
+							rdbtn4.setVisible(true);
 							rdbtn1.setText(quizList.get(quizIndex).getOptions()[0]);
 							rdbtn2.setText(quizList.get(quizIndex).getOptions()[1]);
 							rdbtn3.setText(quizList.get(quizIndex).getOptions()[2]);

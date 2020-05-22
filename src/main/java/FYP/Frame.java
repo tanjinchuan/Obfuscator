@@ -2,8 +2,7 @@ package FYP;
 
 import java.io.File;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+
 import java.io.IOException;
 
 import javax.swing.*;
@@ -111,7 +110,7 @@ public class Frame {
 	 */
 	private void initialize() {
 		
-		frame = new JFrame("Obsfuscator");
+		frame = new JFrame("Java Obsfuscator");
 		frame.setBounds(100, 100, 1024, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocationRelativeTo(null);

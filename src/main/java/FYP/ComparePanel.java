@@ -8,7 +8,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.UIManager;
 
 
 public class ComparePanel extends JPanel {
@@ -35,7 +34,7 @@ public class ComparePanel extends JPanel {
         originalTextArea.setWrapStyleWord(true); 
         originalTextArea.setEditable(false);
         JScrollPane originalScrollPane = new JScrollPane(originalTextArea); 
-        originalScrollPane.setPreferredSize(new Dimension(800, 900));
+        originalScrollPane.setPreferredSize(new Dimension(600, 500));
         
         //Text area for obfuscated code
         JTextArea obfuscatedTextArea = new JTextArea(obfuscatedText);
@@ -45,7 +44,7 @@ public class ComparePanel extends JPanel {
         obfuscatedTextArea.setEditable(false);
         
         JScrollPane obfuscatedScrollPane = new JScrollPane(obfuscatedTextArea);  
-        obfuscatedScrollPane.setPreferredSize(new Dimension(800, 900));
+        obfuscatedScrollPane.setPreferredSize(new Dimension(600, 500));
         
         comparePanel.add(originalScrollPane);
         comparePanel.add(obfuscatedScrollPane);

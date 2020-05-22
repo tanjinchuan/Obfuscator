@@ -15,8 +15,6 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 @SuppressWarnings("serial")
 public class BasicSettingsPanel extends JPanel{
@@ -62,7 +60,7 @@ public class BasicSettingsPanel extends JPanel{
         JLabel sliderOptionDescriptionLabel = new JLabel();
 		sliderOptionDescriptionLabel.setBounds(670, 150, 400, 100);
 		//default value is weak
-		sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Class & Method Name Obfuscation");
+		sliderOptionDescriptionLabel.setText("<html>Compact Code & Remove Comments<br>Class & Method Name Obfuscation");
 		
 		this.add(sliderOptionDescriptionLabel);
 		
@@ -75,24 +73,24 @@ public class BasicSettingsPanel extends JPanel{
 			public void stateChanged(ChangeEvent e) {
 				level = ((JSlider)e.getSource()).getValue();
 				if(level == 0) {
-					sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Class & Method Name Obfuscation");
+					sliderOptionDescriptionLabel.setText("<html>Compact Code & Remove Comments<br>Class & Method Name Obfuscation");
 					lblLevel.setText("Weak");
 					lblLevel.setForeground(green);
 				}
 				else if (level == 1) {
-					sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Class & Method Name Obfuscation<br>Variable & Parameter Name Obfuscation");
+					sliderOptionDescriptionLabel.setText("<html>Compact Code & Remove Comments<br>Class & Method Name Obfuscation<br>Variable & Parameter Name Obfuscation");
 					lblLevel.setText("Medium");
 					lblLevel.setForeground(yellow);
 
 				}
 				else if (level == 2) {
-					sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Class & Method Name Obfuscation<br>Variable & Parameter Name Obfuscation<br>String Encoding");
+					sliderOptionDescriptionLabel.setText("<html>Compact Code & Remove Comments<br>Class & Method Name Obfuscation<br>Variable & Parameter Name Obfuscation<br>String Encoding");
 					lblLevel.setText("Strong");
 					lblLevel.setForeground(Color.ORANGE);
 
 				}
 				else if (level == 3) {
-					sliderOptionDescriptionLabel.setText("<html>Comments & White Space Removal<br>Class & Method Name Obfuscation<br>Variable & Parameter Name Obfuscation<br>String Encoding<br>Dummy Code Insertion");
+					sliderOptionDescriptionLabel.setText("<html>Compact Code & Remove Comments<br>Class & Method Name Obfuscation<br>Variable & Parameter Name Obfuscation<br>String Encoding<br>Dummy Code Insertion");
 					lblLevel.setText("Extreme");
 					lblLevel.setForeground(Color.RED);
 

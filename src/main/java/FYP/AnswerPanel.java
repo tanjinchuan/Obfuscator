@@ -21,7 +21,7 @@ public class AnswerPanel extends JPanel {
         JButton continueBtn = new JButton("Continue");
         continueBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
 
-        continueBtn.setBounds(800, 399, 97, 25);
+        continueBtn.setBounds(900, 423, 97, 25);
         this.add(continueBtn);
 
         continueBtn.addActionListener(new ActionListener() {
@@ -35,7 +35,7 @@ public class AnswerPanel extends JPanel {
         JButton endQuiz = new JButton("End Quiz");
         endQuiz.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
 
-        endQuiz.setBounds(800, 350, 100, 25);
+        endQuiz.setBounds(900, 350, 100, 25);
         this.add(endQuiz);
         endQuiz.setVisible(false);    
 
