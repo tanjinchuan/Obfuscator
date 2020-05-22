@@ -124,8 +124,7 @@ public class Frame {
 		//initialize advsettings.txt;
 		advSettingsPanel.createSettingsFile();
 
-		
-		
+			
 	}
 	
 }
